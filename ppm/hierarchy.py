@@ -166,17 +166,24 @@ def actualization_timescale(k: float) -> dict:
         'sub_cycles_k57': None,
     }
 
-    # At k=61: compute integration window and sub-cycle counts
+    # At k_conscious: compute integration window and sub-cycle counts.
+    #
+    # The integration window is derived self-consistently:
+    #   t_integrate = sqrt(N_eff) * tau_quantum
+    #   where N_eff = t_integrate / tau_ref  (sub-boundary cycles per window)
+    #
+    # Solving: t_integrate = tau(k_conscious)^2 / tau(k_ref=51)
+    #
+    # This is a framework-derived quantity, not a biological count.
+    # See Section 7.4.3 and the Integration Time derivation.
     k_conscious = FRAMEWORK['k_conscious']
     if abs(k - k_conscious) < 0.5:
-        # N_boundaries ~ 10^14 sub-boundaries participate in integration
-        N_boundaries = 1e14
-        t_integrate_s = np.sqrt(N_boundaries) * tau_s
-        t_integrate_ms = t_integrate_s * 1e3
-
-        # Sub-cycle counts: how many k=51 and k=57 cycles fit in one k=61 window
         tau_k51_s = hbar / (hierarchy_energy(51) * MeV_to_J)
         tau_k57_s = hbar / (hierarchy_energy(57) * MeV_to_J)
+
+        # Self-consistent integration window: tau(k_c)^2 / tau(k_ref=51)
+        t_integrate_s = tau_s**2 / tau_k51_s
+        t_integrate_ms = t_integrate_s * 1e3
 
         result['integration_ms'] = t_integrate_ms
         result['sub_cycles_k51'] = t_integrate_s / tau_k51_s
@@ -219,7 +226,8 @@ def print_hierarchy_table() -> None:
     k_c = FRAMEWORK['k_conscious']
     t_c = actualization_timescale(k_c)
     print(f"\nk_conscious = {k_c:.2f} (derived from E(k) = k_BT at {FRAMEWORK['T_bio']}K)")
-    print(f"Integration window: {t_c['integration_ms']:.1f} ms "
-          f"(specious present: 50-200 ms)")
+    print(f"tau_quantum at k_conscious: {t_c['tau_quantum_s']:.3e} s  ({t_c['tau_quantum_s']*1e15:.1f} fs)")
+    print(f"Integration window (self-consistent): {t_c['integration_ms']:.4f} ms")
+    print(f"  N_eff (confinement sub-cycles): {t_c['sub_cycles_k51']:.2e}")
     print(f"k=51 cycles per window:  {t_c['sub_cycles_k51']:.2e}")
     print(f"k=57 cycles per window:  {t_c['sub_cycles_k57']:.2e}")
