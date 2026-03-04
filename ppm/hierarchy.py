@@ -195,13 +195,20 @@ def actualization_timescale(k: float) -> dict:
 def print_hierarchy_table() -> None:
     """
     Print formatted table of all key k-levels with energies,
-    timescales, and physical interpretations.
+    timescales, measured values, and percent errors.
 
     Matches Table in manuscript Section 3.3 / Appendix C.6.
     """
+    col_k     = 6
+    col_pred  = 13
+    col_obs   = 13
+    col_err   = 8
+    col_tau   = 13
+    col_name  = 22
+
     header = (
-        f"{'k':>5}  {'E (MeV)':>12}  {'E (GeV)':>12}  "
-        f"{'tau (s)':>12}  {'Description'}"
+        f"{'k':>{col_k}}  {'Pred (MeV)':>{col_pred}}  {'Obs (MeV)':>{col_obs}}  "
+        f"{'% err':>{col_err}}  {'tau (s)':>{col_tau}}  {'Name / particle':<{col_name}}"
     )
     sep = "-" * len(header)
 
@@ -211,14 +218,31 @@ def print_hierarchy_table() -> None:
     print(header)
     print(sep)
 
+    # Neutrino entries: hierarchy energy ≠ physical mass (seesaw required)
+    SEESAW_ENTRIES = {'Nu1', 'Nu2', 'Nu3'}
+
     # Sorted by k-level
     entries = sorted(ENERGY_SCALES.items(), key=lambda x: x[1]['k'])
     for name, entry in entries:
-        k = entry['k']
-        E_MeV = hierarchy_energy(k)
-        E_GeV = E_MeV / 1e3
-        tau = actualization_timescale(k)['tau_quantum_s']
-        print(f"{k:5.1f}  {E_MeV:12.3e}  {E_GeV:12.3e}  {tau:12.3e}  {name}: {entry['description']}")
+        k        = entry['k']
+        # Use E_GeV_predicted which includes geometric factors (e.g. π × E for Top)
+        E_pred   = entry['E_GeV_predicted'] * 1e3   # GeV → MeV
+        E_obs    = entry['E_GeV_observed'] * 1e3    # GeV → MeV
+        tau      = actualization_timescale(k)['tau_quantum_s']
+
+        if name in SEESAW_ENTRIES:
+            # Hierarchy energy is not the physical mass; seesaw closes the gap
+            err_str = "seesaw"
+        elif E_obs > 0:
+            pct = (E_pred - E_obs) / E_obs * 100.0
+            err_str = f"{pct:+.1f}%"
+        else:
+            err_str = "—"
+
+        print(
+            f"{k:{col_k}.1f}  {E_pred:{col_pred}.3e}  {E_obs:{col_obs}.3e}  "
+            f"{err_str:>{col_err}}  {tau:{col_tau}.3e}  {name}"
+        )
 
     print(sep)
 
