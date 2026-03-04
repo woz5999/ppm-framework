@@ -7,6 +7,6 @@ setup(
     install_requires=["numpy>=1.24.0", "scipy>=1.11.0", "matplotlib>=3.7.0"],
     python_requires=">=3.9",
     description="PPM Framework — Deriving Physical Constants from Z2 → RP3 Topology",
-    author="PPM Framework Authors",
+    author="Jeff Wozniak",
     license="MIT",
 )

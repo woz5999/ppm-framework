@@ -4,7 +4,7 @@ The Process-Phenomenology Mapping (PPM) framework derives fundamental physical c
 
 This repository contains the computational implementation and reproducible notebooks for the PPM manuscript.
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/USERNAME/ppm-framework/HEAD)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD)
 
 ## Installation
 
@@ -23,12 +23,12 @@ Run the notebooks in order:
 
 ## Reproducing Manuscript Results
 
-| Notebook | Manuscript Section | Result |
-|----------|--------------------|--------|
-| 01 | Section 3.3, 7.4.3 | Energy hierarchy table, actualization timescales, temporal nesting |
-| 02 | Section 2.4.1, Appendix B.2, 6.10 | Constraint solver output, parameter comparison, Level 2 count |
-| 03 | Section 3.4, Appendix A.3 | Phase coherence → α = 1/137, sensitivity analysis |
-| 04 | Section 7.1, 7.2, 7.4.3 | Integration measure Φ(k), critical point signatures, specious present |
+| Notebook | Manuscript Section                | Result                                                                |
+| -------- | --------------------------------- | --------------------------------------------------------------------- |
+| 01       | Section 3.3, 7.4.3                | Energy hierarchy table, actualization timescales, temporal nesting    |
+| 02       | Section 2.4.1, Appendix B.2, 6.10 | Constraint solver output, parameter comparison, Level 2 count         |
+| 03       | Section 3.4, Appendix A.3         | Phase coherence → α = 1/137, sensitivity analysis                     |
+| 04       | Section 7.1, 7.2, 7.4.3           | Integration measure Φ(k), critical point signatures, specious present |
 
 ## Running Tests
 
