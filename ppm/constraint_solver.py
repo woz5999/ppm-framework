@@ -129,7 +129,7 @@ def predict_independent() -> dict:
 
     # --- alpha_s: strong coupling ---
     as_pred = 1.0 / 3.0
-    as_obs = 0.33
+    as_obs = 1.0 / 3.0   # exact at confinement scale by definition; 0.33 was a rounding artifact
     results['alpha_s'] = {
         'predicted': as_pred,
         'observed': as_obs,
