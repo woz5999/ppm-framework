@@ -3,3 +3,9 @@ set -e
 
 # Install the ppm package so it's importable in Binder sessions
 pip install --no-deps .
+
+# Explicitly enable Voilà as a Jupyter server extension
+# (repo2docker did this automatically in direct builds; must be done
+#  explicitly here since this postBuild is baked into the GHCR image)
+jupyter server extension enable voila --sys-prefix
+jupyter nbextension enable --py widgetsnbextension --sys-prefix
