@@ -26,7 +26,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build and push Binder image to GHCR
         uses: jupyterhub/repo2docker-action@master
@@ -36,4 +36,4 @@ jobs:
           IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/ppm-framework
           FORCE_REPO2DOCKER_VERSION: "2024.07.0"
           DOCKER_USERNAME: ${{ github.actor }}
-          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_PASSWORD: ${{ secrets.GHCR_TOKEN }}
