@@ -8,5 +8,7 @@ pip install --no-deps .
 jupyter nbextension enable --py widgetsnbextension --sys-prefix
 
 # Pre-execute the notebook so all outputs are populated on open
+# (non-fatal: build succeeds even if execution hits a resource limit)
 jupyter nbconvert --to notebook --execute --inplace \
-    notebooks/constraint_sensitivity.ipynb
+    notebooks/constraint_sensitivity.ipynb || \
+    echo "Warning: pre-execution skipped — cells will run on first open"
