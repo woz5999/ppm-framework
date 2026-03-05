@@ -1,9 +1,7 @@
 FROM python:3.11-slim
 
-RUN pip install jupyterlab
-
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+COPY requirements.txt requirements-dev.txt ./
+RUN pip install -r requirements-dev.txt
 
 WORKDIR /workspace
 EXPOSE 8888
