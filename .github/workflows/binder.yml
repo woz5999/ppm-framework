@@ -11,6 +11,10 @@ on:
       - "notebooks/*.ipynb"
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   binder:
     runs-on: ubuntu-latest
