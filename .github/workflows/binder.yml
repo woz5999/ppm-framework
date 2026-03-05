@@ -35,3 +35,6 @@ jobs:
           # from your repo — this naming convention is what enables the cache hit.
           image_name: ghcr.io/${{ github.repository_owner }}/ppm-framework
           repo2docker_version: "2024.07.0"
+        env:
+          DOCKER_USERNAME: ${{ github.actor }}
+          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
