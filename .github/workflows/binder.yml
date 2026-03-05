@@ -9,7 +9,6 @@ on:
       - "pyproject.toml"
       - ".github/workflows/binder.yml"
       - "notebooks/*.ipynb"
-      - ".github/workflows/binder.yml"
   workflow_dispatch:
 
 permissions:
