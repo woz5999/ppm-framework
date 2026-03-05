@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ppm-framework"
 version = "0.1.0"
-description = "PPM Framework — Deriving Physical Constants from Z2 → RP3 Topology"
+description = "Projective Process Monism — Physical Constants from Topology"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "Jeff Wozniak" }]

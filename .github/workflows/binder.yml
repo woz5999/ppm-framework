@@ -8,6 +8,7 @@ on:
       - "requirements.txt"
       - "pyproject.toml"
       - ".github/workflows/binder.yml"
+      - "notebooks/*.ipynb"
   workflow_dispatch:
 
 jobs:
