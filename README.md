@@ -1,5 +1,9 @@
 # PPM Framework — Deriving Physical Constants from First Principles
 
+<p align="center">
+  <img src="title.jpg" width="480" alt="Two projective spheres connected through an intersecting plane, with geodesic field lines radiating from the projection point — depicting the CP³ → RP³ structure at the heart of the framework."/>
+</p>
+
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD)
 
 ---
@@ -223,15 +227,15 @@ ppm-framework/
 The primary interactive demonstration notebook. Seven sections, ordered from most empirically
 direct to most conceptually far-reaching:
 
-| Section | Topic | Unexplained mystery addressed |
-|---------|-------|-------------------------------|
-| 1 | Full particle spectrum | Why do particle masses span 30 orders of magnitude? |
-| 2 | `g = 2π` from topology | What fixes the spacing between energy levels? |
-| 3 | `k_EWSB = 44.5` from RP³ | What determines the Higgs mass scale? |
-| 4 | `n = 5/6`: holographic exponent | Why is `α = 1/137`? |
-| 5 | `N_cosmic = 10⁸²`, G, Λ, H₀, cosmic time | Why is gravity weak? Why is Λ small? |
-| 6 | Phase coherence crossing | What connects quantum scales to biological scales? |
-| 7 | Consciousness critical point | Why does biology operate at 310 K? |
+| Section | Topic                                    | Unexplained mystery addressed                       |
+| ------- | ---------------------------------------- | --------------------------------------------------- |
+| 1       | Full particle spectrum                   | Why do particle masses span 30 orders of magnitude? |
+| 2       | `g = 2π` from topology                   | What fixes the spacing between energy levels?       |
+| 3       | `k_EWSB = 44.5` from RP³                 | What determines the Higgs mass scale?               |
+| 4       | `n = 5/6`: holographic exponent          | Why is `α = 1/137`?                                 |
+| 5       | `N_cosmic = 10⁸²`, G, Λ, H₀, cosmic time | Why is gravity weak? Why is Λ small?                |
+| 6       | Phase coherence crossing                 | What connects quantum scales to biological scales?  |
+| 7       | Consciousness critical point             | Why does biology operate at 310 K?                  |
 
 Each section includes interactive sliders that let you deviate from the framework's predicted
 values and observe the simultaneous degradation of multiple independent observables. The more
@@ -272,16 +276,16 @@ pytest tests/test_all.py -v
 All predictions below use `g = 2π` (topology) and `m_π = 140 MeV` (one experimental anchor).
 No other free parameters.
 
-| Observable | Formula | Prediction | Observed | Error |
-|-----------|---------|-----------|---------|-------|
-| Higgs VEV | `2√2(2π)^(1/4) × E(44.5)` | 246.1 GeV | 246.2 GeV | < 0.1% |
-| Top quark | `π × E(44.5)` | 172.8 GeV | 172.7 GeV | < 0.1% |
-| `α⁻¹` | Phase coherence, `n = 5/6` | 137.036 | 137.036 | < 0.1% |
-| `G` | `16π⁴ħcα / (m_π² √N)` | ~6.5×10⁻¹¹ | 6.674×10⁻¹¹ | ~4% |
-| `Λ` | `2m_π² / ((ħc)² N)` | ~1.0×10⁻⁵² m⁻² | ~1.1×10⁻⁵² m⁻² | ~9% |
-| `T_bio` | Phase coherence crossing at `n = 5/6` | 310 K | 310 K | exact |
-| `α_w` | `1/(3π²)` from RP³ geometry | `1/29.6` | `1/29.9` | ~1% |
-| `α_s` | Confinement condition at `k = 51` | `1/3` | `1/3` | exact |
+| Observable | Formula                               | Prediction     | Observed       | Error  |
+| ---------- | ------------------------------------- | -------------- | -------------- | ------ |
+| Higgs VEV  | `2√2(2π)^(1/4) × E(44.5)`             | 246.1 GeV      | 246.2 GeV      | < 0.1% |
+| Top quark  | `π × E(44.5)`                         | 172.8 GeV      | 172.7 GeV      | < 0.1% |
+| `α⁻¹`      | Phase coherence, `n = 5/6`            | 137.036        | 137.036        | < 0.1% |
+| `G`        | `16π⁴ħcα / (m_π² √N)`                 | ~6.5×10⁻¹¹     | 6.674×10⁻¹¹    | ~4%    |
+| `Λ`        | `2m_π² / ((ħc)² N)`                   | ~1.0×10⁻⁵² m⁻² | ~1.1×10⁻⁵² m⁻² | ~9%    |
+| `T_bio`    | Phase coherence crossing at `n = 5/6` | 310 K          | 310 K          | exact  |
+| `α_w`      | `1/(3π²)` from RP³ geometry           | `1/29.6`       | `1/29.9`       | ~1%    |
+| `α_s`      | Confinement condition at `k = 51`     | `1/3`          | `1/3`          | exact  |
 
 ---
 
@@ -309,7 +313,7 @@ new observation.
 @article{ppm-framework-2026,
   title   = {Projective Process Monism: Deriving Physical Constants
              from Z2 x Z2 -> RP3 Topology},
-  author  = {},
+  author  = {Jeff Wozniak},
   year    = {2026},
   url     = {https://github.com/woz5999/ppm-framework}
 }
