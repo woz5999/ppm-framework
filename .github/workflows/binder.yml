@@ -1,0 +1,28 @@
+name: Build and push Binder image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "binder/**"
+      - "requirements.txt"
+      - "pyproject.toml"
+      - ".github/workflows/binder.yml"
+  workflow_dispatch:
+
+jobs:
+  binder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and push Binder image to GHCR
+        uses: jupyterhub/repo2docker-action@master
+        with:
+          # Image name must match exactly what mybinder.org would compute
+          # from your repo — this naming convention is what enables the cache hit.
+          image_name: ghcr.io/${{ github.repository_owner }}/ppm-framework
+          repo2docker_ref: "2024.07.0"
+        env:
+          DOCKER_USERNAME: ${{ github.actor }}
+          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
