@@ -116,23 +116,24 @@ def _k_from_E(E_MeV):
     return _k_ref - 2.0 * np.log(E_MeV / _m_pi) / np.log(_g)
 
 ENERGY_SCALES = {
+    # NOTE: k=0 (Planck scale) is intentionally excluded from this table.
+    # E(0) = 3.16e19 GeV ≈ 2.59 × m_P (observed), but m_P = √(ħc/G) depends on G,
+    # which the framework is supposed to DERIVE — not use as input. Comparing E(0)
+    # to the observed m_P is circular in the framework's own logic. No valid
+    # comparison exists until the G derivation is complete.
+    # Use _E_GeV_from_k(0) or _tau_from_k(0) directly if k=0 timescale is needed.
+
     # --- Topologically required levels ---
-    'Planck': {
-        'k': 0,                             # topological: CP3 fully accessible
-        'E_GeV_predicted': _E_GeV_from_k(0),
-        'E_GeV_observed': 1.22e19,
-        'tau_s': _tau_from_k(0),
-        'source': 'topology',
-        'description': 'Planck scale — quantum gravity regime',
-    },
     'EWSB': {
         'k': 44.5,                          # topological: RP3 emerges for EW sector
-        'E_GeV_predicted': _E_GeV_from_k(44.5),
+        # Higgs VEV: v = 2√2 × (2π)^(1/4) × E(44.5)  — SU(2)→U(1) geometric factor
+        # Bare E(44.5) = 54.98 GeV is NOT the prediction; the VEV formula gives 246.2 GeV
+        'E_GeV_predicted': 2*np.sqrt(2) * (2*np.pi)**0.25 * _E_GeV_from_k(44.5),
         'E_GeV_observed': 246.2,            # Higgs VEV
         'tau_s': _tau_from_k(44.5),
         'source': 'topology',
-        'description': 'Electroweak symmetry breaking',
-        'notes': 'v = 2√2 × (2π)^(1/4) × E(44.5) = 250.9 GeV (predicted), 246.2 (obs), 1.9%',
+        'description': 'Electroweak symmetry breaking — Higgs VEV via SU(2)→U(1) geometry',
+        'notes': 'v = 2√2 × (2π)^(1/4) × E(44.5) = 246.2 GeV (predicted), 246.2 (obs), 0.0%',
     },
     'Top': {
         'k': 44.5,                          # tied to EWSB: m_t = π × E(44.5)
@@ -198,33 +199,38 @@ ENERGY_SCALES = {
         'E_GeV_predicted': _E_GeV_from_k(58),     # ~0.225 MeV hierarchy energy
         'E_GeV_observed': 50e-12,                  # ~50 meV (mass-squared splitting bound)
         'tau_s': _tau_from_k(58),
-        'source': 'Z2 topology (k_conscious − 17)',
-        'description': 'ν₃ — k=58 topology-fixed; hierarchy energy keV, physical mass requires seesaw',
+        'source': 'topology-fixed hierarchy level',
+        'description': 'ν₃ — k=58 topology-fixed (Kähler structure); hierarchy energy ~225 keV, physical mass requires seesaw',
     },
     'Nu2': {
         'k': 60,
         'E_GeV_predicted': _E_GeV_from_k(60),     # ~35.8 keV hierarchy energy
         'E_GeV_observed': 8e-12,                   # ~8 meV (mass-squared splitting bound)
         'tau_s': _tau_from_k(60),
-        'source': 'Z2 topology (k_conscious − 15)',
-        'description': 'ν₂ — k=60 topology-fixed; hierarchy energy keV, physical mass requires seesaw',
+        'source': 'topology-fixed hierarchy level',
+        'description': 'ν₂ — k=60 topology-fixed (Kähler structure); hierarchy energy ~35.8 keV, physical mass requires seesaw',
     },
     'Nu1': {
         'k': 61,
         'E_GeV_predicted': _E_GeV_from_k(61),     # ~14.3 keV hierarchy energy
         'E_GeV_observed': 2e-12,                   # ~2 meV (lightest neutrino, upper bound)
         'tau_s': _tau_from_k(61),
-        'source': 'Z2 topology (k_conscious − 14)',
-        'description': 'ν₁ — k=61 topology-fixed (coincidence with old k_conscious, not structural)',
+        'source': 'topology-fixed hierarchy level',
+        'description': 'ν₁ — k=61 topology-fixed (Kähler structure); note: coincidence with stale k_conscious=61 is not structural',
     },
     # --- Near-consciousness hierarchy levels (sterile neutrinos) ---
     'SterileNu_k60': {
         'k': 60,
-        'E_GeV_predicted': _E_GeV_from_k(60),     # ~35.8 keV → 7 keV sterile nu candidate
-        'E_GeV_observed': 7e-6,                    # 3.5 keV X-ray → 7 keV mass
+        # Hierarchy energy at k=60 is 35.8 keV. The proposed sterile neutrino mass
+        # (7 keV from 3.5 keV X-ray line) is a physical particle mass, NOT the
+        # hierarchy energy — same distinction as active neutrinos. Conversion factor
+        # between hierarchy energy and sterile neutrino mass is an open calculation.
+        # Marking as 'seesaw' for the same reason as Nu1/Nu2/Nu3.
+        'E_GeV_predicted': _E_GeV_from_k(60),     # hierarchy energy ~35.8 keV
+        'E_GeV_observed': 7e-6,                    # 3.5 keV X-ray → 7 keV mass (unconfirmed)
         'tau_s': _tau_from_k(60),
         'source': 'hierarchy (near consciousness boundary)',
-        'description': 'Sterile neutrino candidate at k=60, m ≈ 7 keV (3.5 keV X-ray line)',
+        'description': 'Sterile neutrino candidate at k=60; hierarchy energy ≠ mass (seesaw-type conversion open)',
     },
 }
 
