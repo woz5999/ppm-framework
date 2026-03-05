@@ -70,7 +70,7 @@ predicts particle masses across 30 orders of magnitude. The same geometric const
 mass hierarchy also fixes the strength of electromagnetism, the weakness of gravity, the
 cosmological constant, and the temperature at which biological life is possible.
 
-This is a strong claim. The interactive notebook (`06_constraint_sensitivity.ipynb`) lets you test
+This is a strong claim. The interactive notebook (`constraint_sensitivity.ipynb`) lets you test
 it directly. For each predicted quantity, you can vary the underlying parameters and observe what
 happens to the predictions. In every case, the correct prediction requires the parameter to sit at
 a unique, geometrically determined value — and moving away from that value degrades multiple
@@ -220,13 +220,13 @@ ppm-framework/
 │   └── twistor.py              # Twistor/CP³ geometry
 │
 ├── notebooks/
-│   └── 06_constraint_sensitivity.ipynb   # Interactive constraint demonstrations
+│   └── constraint_sensitivity.ipynb   # Interactive constraint demonstrations
 │
 └── tests/
     └── test_all.py
 ```
 
-### Notebook 06 — Constraint Sensitivity: An Interactive Case
+### Constraint Sensitivity: An Interactive Case
 
 The primary interactive demonstration notebook. Seven sections, ordered from most empirically
 direct to most conceptually far-reaching:
@@ -258,7 +258,7 @@ pip install -e .
 To run the interactive notebook:
 
 ```bash
-jupyter notebook notebooks/06_constraint_sensitivity.ipynb
+jupyter notebook notebooks/constraint_sensitivity.ipynb
 ```
 
 Or launch directly in your browser via Binder (no installation required):
@@ -307,7 +307,39 @@ The framework has one experimental anchor (`m_π = 140 MeV`) and one topology-de
 
 The sequence is deterministic: topology fixes `g`, geometry fixes `k_EWSB` and `n`, holography
 fixes `N_cosmic`, and phase coherence fixes `T_bio`. No step adjusts a previous result to fit a
-new observation.
+new observation. The chain also closes on itself: `T_bio = 310 K` is not a free endpoint — it
+corresponds to `k_c ≈ 75.4` on the same `E(k)` ladder the chain began with, the hierarchy built
+from `g = 2π`.
+
+```
+  topology: Z₂ × Z₂
+        │  Vol(RP³) = π²
+        ▼
+     g = 2π  ◄─────────────────────────────────────────────────────┐
+        │                                                           │
+        │  E(k) = m_π · g^((51−k)/2)                               │
+        │                                                           │
+   ┌────┴──────────────────┐                                        │
+   ▼                       ▼                                        │
+k = 44.5               k = 51                                       │
+EW sector              anchor: m_π = 140 MeV                        │
+Higgs, top, τ, μ, e                                                 │
+   │                                                                │
+   ▼                                                                │
+n = 5/6  (CP³ phase space: 5 of 6 dims projected by Z₂)            │
+   │                                                                │
+   ├──►  α = 1/137                                                  │
+   │                                                                │
+   ▼                                                                │
+N_cosmic = 10⁸²                                                     │
+   │                                                                │
+   ├──►  G,  Λ,  H₀                                                 │
+   │                                                                │
+   ▼                                                                │
+T_bio = 310 K                                                       │
+   │                                                                │
+   └──  k_c ≈ 75.4  ·  E(k_c) = k_B × 310 K  ·  on E(k) above ───┘
+```
 
 ---
 
