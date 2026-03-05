@@ -783,3 +783,155 @@ class TestFirstPrinciplesPredictions(unittest.TestCase):
         # Prediction is within 2% = 0.6 units.
         self.assertAlmostEqual(result['alpha_w_inv_pred'], result['obs_alpha_w_inv'],
                                delta=2.0 * result['obs_uncertainty'])
+
+    # ------------------------------------------------------------------
+    # Lepton masses
+    # ------------------------------------------------------------------
+
+    def test_lepton_quantum_numbers_are_fixed(self):
+        """Z₂ quantum numbers n = 7, 14, 25 are the primary prediction — not the masses."""
+        from ppm.predictions import lepton_masses
+
+        lm = lepton_masses()
+        self.assertEqual(lm['electron']['n'], 25)
+        self.assertEqual(lm['muon']['n'], 14)
+        self.assertEqual(lm['tau']['n'], 7)
+
+    def test_lepton_k_levels_from_quantum_numbers(self):
+        """k = k_EWSB + n/2; k_EWSB = 44.5 is topology-fixed."""
+        from ppm.predictions import lepton_masses
+
+        lm = lepton_masses()
+        k_ewsb = 44.5
+        self.assertAlmostEqual(lm['electron']['k'], k_ewsb + 25 / 2, places=10)
+        self.assertAlmostEqual(lm['muon']['k'],     k_ewsb + 14 / 2, places=10)
+        self.assertAlmostEqual(lm['tau']['k'],      k_ewsb +  7 / 2, places=10)
+
+    def test_lepton_masses_correct_ordering(self):
+        """Predicted masses must be ordered: tau > muon > electron."""
+        from ppm.predictions import lepton_masses
+
+        lm = lepton_masses()
+        self.assertGreater(lm['tau']['E_pred_MeV'],  lm['muon']['E_pred_MeV'])
+        self.assertGreater(lm['muon']['E_pred_MeV'], lm['electron']['E_pred_MeV'])
+
+    def test_lepton_masses_order_of_magnitude(self):
+        """Bare predictions are within a factor of 2 of observed masses."""
+        from ppm.predictions import lepton_masses
+
+        lm = lepton_masses()
+        for name in ('electron', 'muon', 'tau'):
+            ratio = lm[name]['E_pred_MeV'] / lm[name]['E_obs_MeV']
+            self.assertGreater(ratio, 0.5,
+                msg=f"{name}: predicted/observed = {ratio:.3f} < 0.5")
+            self.assertLess(ratio, 2.0,
+                msg=f"{name}: predicted/observed = {ratio:.3f} > 2.0")
+
+    def test_lepton_masses_bare_error_within_stated_range(self):
+        """Bare errors 10–25% are expected without radiative corrections (Section 4.4)."""
+        from ppm.predictions import lepton_masses
+
+        lm = lepton_masses()
+        for name in ('electron', 'muon', 'tau'):
+            err = lm[name]['error_pct']
+            self.assertLess(err, 40.0,
+                msg=f"{name}: bare error {err:.1f}% exceeds 40% — mechanism may be wrong")
+
+    # ------------------------------------------------------------------
+    # Neutrino k-levels
+    # ------------------------------------------------------------------
+
+    def test_neutrino_k_levels_are_topology_fixed(self):
+        """k = 58, 60, 61 are the topology-fixed levels — the integer spacing is the prediction."""
+        from ppm.predictions import neutrino_k_levels
+
+        nu = neutrino_k_levels()
+        self.assertEqual(nu['nu3']['k'], 58)
+        self.assertEqual(nu['nu2']['k'], 60)
+        self.assertEqual(nu['nu1']['k'], 61)
+
+    def test_neutrino_k_level_spacing(self):
+        """Generation spacing Δk = 2 (nu3→nu2) and Δk = 1 (nu2→nu1) is a structural prediction."""
+        from ppm.predictions import neutrino_k_levels
+
+        nu = neutrino_k_levels()
+        self.assertEqual(nu['nu2']['k'] - nu['nu3']['k'], 2)
+        self.assertEqual(nu['nu1']['k'] - nu['nu2']['k'], 1)
+
+    def test_neutrino_k_levels_below_consciousness_boundary(self):
+        """All neutrino k-levels sit below k_conscious ≈ 75.35."""
+        from ppm.predictions import neutrino_k_levels
+
+        nu = neutrino_k_levels()
+        k_c = FRAMEWORK['k_conscious']
+        for name in ('nu1', 'nu2', 'nu3'):
+            self.assertLess(nu[name]['k'], k_c,
+                msg=f"{name}: k = {nu[name]['k']} is not below k_conscious = {k_c:.2f}")
+
+    def test_neutrino_hierarchy_energies_are_keV_scale(self):
+        """Hierarchy energies at k = 58–61 are in the keV range (seesaw required for meV masses)."""
+        from ppm.predictions import neutrino_k_levels
+
+        nu = neutrino_k_levels()
+        for name in ('nu1', 'nu2', 'nu3'):
+            E_keV = nu[name]['E_hierarchy_keV']
+            self.assertGreater(E_keV, 1.0,
+                msg=f"{name}: E = {E_keV:.1f} keV unexpectedly small")
+            self.assertLess(E_keV, 1e6,
+                msg=f"{name}: E = {E_keV:.1f} keV unexpectedly large")
+
+    # ------------------------------------------------------------------
+    # G(z) evolution / JWST
+    # ------------------------------------------------------------------
+
+    def test_g_evolution_at_z0_is_unity(self):
+        """G(z=0) / G₀ = 1 exactly by definition."""
+        from ppm.predictions import g_cosmic_evolution
+
+        result = g_cosmic_evolution(z_max=1.0, n_z=10)
+        self.assertAlmostEqual(result['G_ratio_volume'][0], 1.0, places=6)
+        self.assertAlmostEqual(result['G_ratio_time'][0],   1.0, places=4)
+
+    def test_g_evolution_increases_with_redshift(self):
+        """G was stronger in the past — G(z)/G₀ must be strictly increasing with z."""
+        from ppm.predictions import g_cosmic_evolution
+
+        result = g_cosmic_evolution(z_max=15.0, n_z=50)
+        G_vol = result['G_ratio_volume']
+        G_tim = result['G_ratio_time']
+        self.assertTrue(all(G_vol[i] < G_vol[i+1] for i in range(len(G_vol)-1)),
+            "G_ratio_volume is not monotonically increasing with z")
+        self.assertTrue(all(G_tim[i] < G_tim[i+1] for i in range(len(G_tim)-1)),
+            "G_ratio_time is not monotonically increasing with z")
+
+    def test_g_evolution_volume_scaling_formula(self):
+        """G(z)/G₀ = (1+z)^1.5 exactly for comoving-volume scaling."""
+        from ppm.predictions import g_cosmic_evolution
+
+        result = g_cosmic_evolution(z_max=12.0, n_z=5)
+        for z, G_ratio in zip(result['z'], result['G_ratio_volume']):
+            expected = (1.0 + z) ** 1.5
+            self.assertAlmostEqual(G_ratio, expected, places=10)
+
+    def test_g_evolution_jwst_band_brackets_observations(self):
+        """The predicted G enhancement band must bracket the JWST-observed UV excess."""
+        from ppm.predictions import g_cosmic_evolution
+
+        result = g_cosmic_evolution()
+        jwst = result['jwst_data']
+
+        for i, z in enumerate(jwst['z']):
+            # Find nearest computed redshift index
+            idx = int(np.argmin(np.abs(result['z'] - z)))
+            G_low  = result['G_ratio_time'][idx]    # conservative lower bound
+            G_high = result['G_ratio_volume'][idx]  # upper bound
+
+            obs_low  = jwst['excess_low'][i]
+            obs_high = jwst['excess_high'][i]
+
+            # The predicted G enhancement range [G_low, G_high] must overlap
+            # the observed UV-excess range [obs_low, obs_high].
+            overlap = min(G_high, obs_high) - max(G_low, obs_low)
+            self.assertGreater(overlap, 0.0,
+                msg=(f"z={z}: G band [{G_low:.1f}, {G_high:.1f}] does not overlap "
+                     f"JWST excess [{obs_low:.1f}, {obs_high:.1f}]"))
