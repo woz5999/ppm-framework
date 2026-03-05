@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "ppm-framework"
+version = "0.1.0"
+description = "PPM Framework — Deriving Physical Constants from Z2 → RP3 Topology"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Jeff Wozniak" }]
+dependencies = [
+    "numpy>=1.24.0",
+    "scipy>=1.11.0",
+    "matplotlib>=3.7.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
