@@ -36,6 +36,8 @@ from .predictions import (lepton_masses, neutrino_k_levels,
                           k_conscious_temperatures, brain_power_budget,
                           gravitational_decoherence_rate,
                           self_referential_consistency,
+                          ckm_cp_phase, pmns_tribimaximal,
+                          hubble_constant_prediction, weak_coupling_prediction,
                           print_predictions_summary)
 from .cosmology import (G_newton, G_evolution, lambda_cosmological,
                         lambda_evolution, hubble_parameter, dark_energy_eos,
