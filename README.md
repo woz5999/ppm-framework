@@ -57,6 +57,17 @@ g² = |Z₂ × Z₂| × Vol(RP³) = 4 × π² = 4π²   →   g = 2π
 No particle mass data enters this calculation. The topology of 3D space determines the step size
 between every energy level in the hierarchy.
 
+That single formula — anchored at one measured input, with its step size fixed by geometry alone —
+predicts particle masses across 30 orders of magnitude. The same geometric constant that sets the
+mass hierarchy also fixes the strength of electromagnetism, the weakness of gravity, the
+cosmological constant, and the temperature at which biological life is possible.
+
+This is a strong claim. The interactive notebook (`06_constraint_sensitivity.ipynb`) lets you test
+it directly. For each predicted quantity, you can vary the underlying parameters and observe what
+happens to the predictions. In every case, the correct prediction requires the parameter to sit at
+a unique, geometrically determined value — and moving away from that value degrades multiple
+independent observables simultaneously.
+
 ---
 
 ## The logical chain of predictions
