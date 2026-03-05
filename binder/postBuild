@@ -4,9 +4,6 @@ set -e
 # Install the ppm package so it's importable in Binder sessions
 pip install --no-deps .
 
-# Ensure ipywidgets is enabled for classic Notebook fallback
-jupyter nbextension enable --py widgetsnbextension --sys-prefix
-
 # Pre-execute the notebook so all outputs are populated on open
 # (non-fatal: build succeeds even if execution hits a resource limit)
 jupyter nbconvert --to notebook --execute --inplace \
