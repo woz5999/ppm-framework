@@ -38,3 +38,4 @@ jobs:
           DOCKER_REGISTRY: ghcr.io
           DOCKER_USERNAME: ${{ github.actor }}
           DOCKER_PASSWORD: ${{ secrets.GHCR_TOKEN }}
+          BINDER_CACHE: "true"
