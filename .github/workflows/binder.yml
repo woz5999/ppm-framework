@@ -33,7 +33,8 @@ jobs:
         with:
           # Image name must match exactly what mybinder.org would compute
           # from your repo — this naming convention is what enables the cache hit.
-          IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/ppm-framework
+          IMAGE_NAME: ${{ github.repository_owner }}/ppm-framework
+          DOCKER_REGISTRY: ghcr.io
           DOCKER_USERNAME: ${{ github.actor }}
           DOCKER_PASSWORD: ${{ secrets.GHCR_TOKEN }}
           BINDER_CACHE: "true"
