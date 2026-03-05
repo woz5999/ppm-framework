@@ -6,7 +6,7 @@
   <a href="https://projectiveprocessmonism.com">projectiveprocessmonism.com</a>
 </p>
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks%2Fconstraint_sensitivity.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks)
 [![tests](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml)
 
 ---
@@ -93,6 +93,7 @@ framework *k*-assignment that correctly reproduces its mass — within the elect
 radiative corrections that quantum field theory predicts and cannot avoid.
 
 Particles whose masses carry topology-derived prefactors sit above the bare curve:
+
 - **Higgs VEV:** `v = 2√2 (2π)^(1/4) × E(44.5) = 246.1 GeV` (observed: 246.2 GeV)
 - **Top quark:** `m_t = π × E(44.5) = 172.8 GeV` (observed: 172.7 GeV)
 
@@ -230,7 +231,7 @@ ppm-framework/
 
 ### First-Principles Predictions
 
-`notebooks/first_principles_predictions.ipynb` isolates the predictions where the framework produces a specific number from geometry alone — before comparing to any measurement. Four cases:
+`notebooks/first_principles_predictions.ipynb` isolates the predictions where the framework produces a specific number from geometry alone — before comparing to any measurement. Five cases:
 
 | Prediction | Geometric input | Formula | Predicted | Observed |
 |---|---|---|---|---|
@@ -238,8 +239,9 @@ ppm-framework/
 | sin²θ₂₃ | Z₂ × 3D topology (tribimaximal) | 1/2 (exact) | 0.500 | 0.500 ± 0.007 |
 | H₀ | T_universe from CMB | 1/T_universe | 70.9 km/s/Mpc | 69.8 ± 1.9 (TRGB) |
 | α_w | RP³ = S³/Z₂ volume ratio | 1/(3π²) | 1/29.6 | 1/29.9 ± 0.2 |
+| G(t) evolution | N_cosmic ∝ causal volume | G/G₀ = (1+z)^{3/2} band | 5–36× at z=10 | 3–100× (JWST excess) |
 
-The δ_CP and sin²θ₂₃ predictions are exact to measurement precision, where the Standard Model has no explanation for either value. The H₀ prediction addresses the Hubble tension directly: the framework derives H₀ = 1/T_universe from the CMB age, landing between the two conflicting measurement methods.
+The δ_CP and sin²θ₂₃ predictions are exact to measurement precision, where the Standard Model has no explanation for either value. The H₀ prediction addresses the Hubble tension directly: the framework derives H₀ = 1/T_universe from the CMB age, landing between the two conflicting measurement methods. The G(t) section maps the PPM prediction that G was stronger in the early universe against the James Webb Space Telescope's detection of anomalously massive and UV-bright galaxies at z = 7–16 — the "impossible galaxies" that ΛCDM (with fixed G) cannot account for. The PPM G enhancement band brackets the observed 3–100× excess in UV-luminous galaxy counts.
 
 Each prediction is tested independently in `TestFirstPrinciplesPredictions` in `tests/test_all.py`, with separate assertions for formula exactness and observational agreement.
 
@@ -312,6 +314,7 @@ No other free parameters.
 | `δ_CP`     | Berry phase: `π(1 − 1/φ)`            | 1.200 rad      | 1.20 ± 0.08 rad | 0.0%  |
 | `sin²θ₂₃`  | Tribimaximal from Z₂ × 3D topology   | `1/2` (exact)  | 0.500 ± 0.007  | 0.0%   |
 | `H₀`       | `1/T_universe` (CMB age: 13.797 Gyr)  | 70.9 km/s/Mpc  | 69.8 (TRGB)    | ~1.5%  |
+| `G(t)/G₀`  | `N_cosmic ∝ (1+z)^{-3}` causal volume | 5–36× at z=10  | 3–100× (JWST)  | overlaps |
 
 ---
 

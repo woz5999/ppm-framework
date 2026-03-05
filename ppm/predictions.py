@@ -828,3 +828,107 @@ def weak_coupling_prediction() -> dict:
         'obs_uncertainty':  obs_unc,
         'error_pct':        abs(alpha_w_inv - obs_inv) / obs_inv * 100.0,
     }
+
+
+def g_cosmic_evolution(z_max: float = 20.0, n_z: int = 300) -> dict:
+    """
+    G(z) / G₀ — gravitational coupling evolution over cosmic time.
+
+    Derivation
+    ----------
+    The PPM formula for G is:
+
+        G = 16π⁴ ħ c α / (m_π² √N_cosmic)
+
+    so G ∝ 1/√N_cosmic.  Two natural scalings bound the prediction:
+
+    **Comoving-volume scaling** (existing cosmology.py formula):
+        N_cosmic ∝ (1+z)^(-3) — proportional to comoving horizon volume,
+        giving  G(z) / G₀ = (1+z)^(3/2)
+
+    **Cumulative-count scaling** (conservative lower bound):
+        N_cosmic accumulates proportionally to cosmic time (rate ∝ particle
+        count × H), giving N ∝ t and G(z) / G₀ = √(t₀ / t(z))
+
+    The true G evolution lies between these two; both are computed.
+    Redshift is mapped to age via the flat-ΛCDM integral (H₀=67.4, Ω_m=0.315).
+
+    Parameters
+    ----------
+    z_max : float
+        Maximum redshift to compute (default 20).
+    n_z : int
+        Number of redshift sample points.
+
+    Returns
+    -------
+    dict
+        - 'z'              : redshift array  (0 → z_max)
+        - 't_Gyr'          : cosmic age in Gyr at each z
+        - 't0_Gyr'         : current age (Gyr)
+        - 'G_ratio_volume' : G(z)/G₀ from comoving-volume N  — (1+z)^(3/2)
+        - 'G_ratio_time'   : G(z)/G₀ from cumulative-time N  — √(t₀/t)
+        - 'z_key'          : key JWST-era redshifts
+        - 'G_key_volume'   : G/G₀ (volume) at z_key
+        - 'G_key_time'     : G/G₀ (time)   at z_key
+        - 'jwst_data'      : JWST UV-excess observations
+    """
+    # Cosmological parameters (Planck 2018)
+    H0_kms = 67.4
+    Om     = 0.315
+    OL     = 0.685
+    H0_per_s   = H0_kms * 1e3 / 3.08568e22
+    Gyr_per_s  = 1e9 * 365.25 * 24.0 * 3600.0
+    H0_per_Gyr = H0_per_s * Gyr_per_s
+
+    def _age_gyr(z: float, n_quad: int = 4000) -> float:
+        z_arr = np.linspace(z, 1000.0, n_quad)
+        integrand = 1.0 / ((1.0 + z_arr) * np.sqrt(Om * (1.0 + z_arr)**3 + OL))
+        return np.trapezoid(integrand, z_arr) / H0_per_Gyr
+
+    z_arr = np.linspace(0.0, z_max, n_z)
+    t_arr = np.array([_age_gyr(z) for z in z_arr])
+    t0    = t_arr[0]
+
+    # Two G scalings
+    G_volume = (1.0 + z_arr) ** 1.5          # comoving-volume N
+    G_time   = np.sqrt(t0 / t_arr)           # cumulative-time  N
+
+    # Key JWST redshifts
+    z_key = np.array([7.0, 9.0, 10.0, 12.5, 14.0, 16.0])
+    t_key = np.array([_age_gyr(z) for z in z_key])
+    G_key_volume = (1.0 + z_key) ** 1.5
+    G_key_time   = np.sqrt(t0 / t_key)
+
+    # ── JWST observed UV-luminosity-function excess vs ΛCDM predictions ───────
+    # "Excess" = n_obs(M_UV < -20) / n_ΛCDM-predicted(M_UV < -20).
+    # Sources: Harikane+2022 (ApJS 259), Finkelstein+2023 (ApJ 946),
+    #          McLeod+2024, Donnan+2023, Carniani+2024 (z=14.32 JADES).
+    # Low/high bounds span the spread across independent analyses.
+    jwst_data = {
+        'z':           np.array([7.5,  8.5,  9.5,  11.0,  12.5,  14.0]),
+        'excess_low':  np.array([1.5,  2.0,  4.0,   6.0,   8.0,   5.0]),
+        'excess_mid':  np.array([3.0,  5.0,  12.0,  20.0,  30.0,  15.0]),
+        'excess_high': np.array([9.0, 15.0,  40.0,  80.0, 100.0,  80.0]),
+        'source': [
+            'JADES/CEERS (Finkelstein+23)',
+            'Multiple JWST surveys',
+            'Harikane+22 / McLeod+24',
+            'Harikane+22 / Donnan+23',
+            'Harikane+22',
+            'Carniani+24 / Harikane+22',
+        ],
+    }
+
+    return {
+        'z':              z_arr,
+        't_Gyr':          t_arr,
+        't0_Gyr':         t0,
+        'G_ratio_volume': G_volume,
+        'G_ratio_time':   G_time,
+        'z_key':          z_key,
+        't_key_Gyr':      t_key,
+        'G_key_volume':   G_key_volume,
+        'G_key_time':     G_key_time,
+        'jwst_data':      jwst_data,
+    }
