@@ -4,7 +4,8 @@ set -e
 IMAGE_NAME="${1:-ppm}"
 PORT="${2:-8888}"
 
-docker build -t "$IMAGE_NAME" .
+# Run from repo root: bash dev/run.sh
+docker build -f dev/Dockerfile -t "$IMAGE_NAME" .
 echo "Building Docker image '$IMAGE_NAME' completed."
 
 docker stop "$IMAGE_NAME" 2>/dev/null || true

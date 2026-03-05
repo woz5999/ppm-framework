@@ -6,7 +6,7 @@
   <a href="https://projectiveprocessmonism.com">projectiveprocessmonism.com</a>
 </p>
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=lab/tree/notebooks/constraint_sensitivity.ipynb)
 
 ---
 
@@ -263,7 +263,7 @@ jupyter notebook notebooks/constraint_sensitivity.ipynb
 
 Or launch directly in your browser via Binder (no installation required):
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=lab/tree/notebooks/constraint_sensitivity.ipynb)
 
 ---
 
@@ -354,6 +354,16 @@ T_bio = 310 K                                                       │
   url     = {https://projectiveprocessmonism.com}
 }
 ```
+
+---
+
+## Run locally (Docker)
+
+```bash
+bash dev/run.sh
+```
+
+Opens Jupyter Lab at `http://localhost:8888`. No Python environment setup required. `dev/` also contains `Dockerfile` and `requirements-dev.txt` if you prefer to build manually.
 
 ---
 
