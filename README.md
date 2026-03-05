@@ -6,7 +6,7 @@
   <a href="https://projectiveprocessmonism.com">projectiveprocessmonism.com</a>
 </p>
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=lab/tree/notebooks/constraint_sensitivity.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks%2Fconstraint_sensitivity.ipynb)
 
 ---
 
@@ -263,7 +263,7 @@ jupyter notebook notebooks/constraint_sensitivity.ipynb
 
 Or launch directly in your browser via Binder (no installation required):
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=lab/tree/notebooks/constraint_sensitivity.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks%2Fconstraint_sensitivity.ipynb)
 
 ---
 
