@@ -229,7 +229,10 @@ class TestConstants(unittest.TestCase):
         self.assertNotEqual(k_c, int(k_c))
 
     def test_energy_scales_complete(self):
-        required = ["Planck", "EWSB", "Confinement", "Electron", "Consciousness"]
+        # "Planck" is intentionally excluded from ENERGY_SCALES — comparing E(0)
+        # to the observed Planck mass is circular in the framework's own logic.
+        # Use hierarchy_energy(0) directly if k=0 timescale is needed.
+        required = ["EWSB", "Confinement", "Electron", "Consciousness"]
         for scale in required:
             self.assertIn(scale, ENERGY_SCALES)
 
@@ -250,7 +253,8 @@ class TestConstants(unittest.TestCase):
         from ppm.hierarchy import hierarchy_energy
 
         # Topological levels have exact k-values
-        self.assertEqual(ENERGY_SCALES["Planck"]["k"], 0)
+        # Note: "Planck" (k=0) is intentionally absent from ENERGY_SCALES; comparing
+        # E(0) to the observed Planck mass is circular — use hierarchy_energy(0) directly.
         self.assertEqual(ENERGY_SCALES["EWSB"]["k"], 44.5)
         self.assertEqual(ENERGY_SCALES["Confinement"]["k"], 51)
         # Z2 quantization levels: k = 44.5 + n/2

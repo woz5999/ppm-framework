@@ -7,6 +7,7 @@
 </p>
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks%2Fconstraint_sensitivity.ipynb)
+[![tests](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml)
 
 ---
 
