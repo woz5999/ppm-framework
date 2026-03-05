@@ -6,7 +6,7 @@
   <a href="https://projectiveprocessmonism.com">projectiveprocessmonism.com</a>
 </p>
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks%2Fconstraint_sensitivity.ipynb)
 [![tests](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml)
 
 > **Note:** Binder cold start takes 1–2 minutes on first load. The environment is building — it will open.
@@ -295,8 +295,12 @@ pytest tests/test_all.py -v
 bash dev/run.sh
 ```
 
-Opens Jupyter Lab at `http://localhost:8888`. No Python environment setup required. `dev/` also
-contains `Dockerfile` and `requirements-dev.txt` if you prefer to build manually.
+Starts two servers — no Python environment setup required:
+
+- **Jupyter Lab** (code visible): `http://localhost:8888`
+- **Voilà** (rendered app, code hidden): `http://localhost:8889`
+
+Custom ports: `bash dev/run.sh ppm 8888 8889`. `dev/` contains `Dockerfile`, `requirements-dev.txt`, and `start.sh` if you prefer to build manually.
 
 ---
 
