@@ -34,7 +34,7 @@ def hierarchy_energy(k: float,
     ----------
     k : float
         Hierarchy level. k=0 is Planck scale; k=51 is confinement;
-        k=61 is the consciousness critical point.
+        k≈75.35 is the consciousness critical point (derived from E(k) = k_BT).
     g : float, optional
         Hierarchy scaling factor. Defaults to FRAMEWORK['g'] = 2*pi.
     k_ref : int, optional
@@ -55,9 +55,9 @@ def hierarchy_energy(k: float,
 
     Examples
     --------
-    >>> hierarchy_energy(0)     # Planck scale ~1.22e25 MeV
-    >>> hierarchy_energy(51)    # Confinement (reference) = 140.0 MeV
-    >>> hierarchy_energy(61)    # Consciousness boundary ~0.018 MeV
+    >>> hierarchy_energy(0)      # Planck scale ~1.22e25 MeV
+    >>> hierarchy_energy(51)     # Confinement (reference) = 140.0 MeV
+    >>> hierarchy_energy(75.35)  # Consciousness boundary ~0.027 MeV ≈ k_BT at 310 K
     """
     if g is None:
         g = FRAMEWORK['g']

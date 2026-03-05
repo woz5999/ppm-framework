@@ -201,12 +201,13 @@ def phase_matching_sensitivity(
     N_vals = np.logspace(np.log10(N_range[0]), np.log10(N_range[1]), 50)
     K_vals = np.linspace(K_range[0], K_range[1], 50)
 
+    k_c = FRAMEWORK['k_conscious']
     alpha_vs_T = np.array([
-        solve_alpha_from_coherence(T=T, N_boundaries=100, K=10)
+        solve_alpha_from_coherence(T=T, N_boundaries=100, K=k_c)
         for T in T_vals
     ])
     alpha_vs_N = np.array([
-        solve_alpha_from_coherence(T=310, N_boundaries=N, K=10)
+        solve_alpha_from_coherence(T=310, N_boundaries=N, K=k_c)
         for N in N_vals
     ])
     alpha_vs_K = np.array([
