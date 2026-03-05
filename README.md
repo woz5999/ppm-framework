@@ -1,7 +1,9 @@
-# PPM Framework — Deriving Physical Constants from First Principles
+# Projective Process Monism — Physical Constants from Topology
 
 <p align="center">
   <img src="title.jpg" width="480" alt="Two projective spheres connected through an intersecting plane, with geodesic field lines radiating from the projection point — depicting the CP³ → RP³ structure at the heart of the framework."/>
+  <br/><br/>
+  <a href="https://projectiveprocessmonism.com">projectiveprocessmonism.com</a>
 </p>
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD)
@@ -32,6 +34,8 @@ These are not gaps at the edges of knowledge. They are holes at its center.
 ---
 
 ## What this framework proposes
+
+This repository is the computational companion to [projectiveprocessmonism.com](https://projectiveprocessmonism.com) — the complete theoretical framework, derivations, and manuscript.
 
 **Projective Process Monism (PPM)** proposes that physical reality has a discrete, hierarchical
 structure. Energy scales are not continuous — they sit on a ladder, with rungs indexed by a
@@ -315,7 +319,7 @@ new observation.
              from Z2 x Z2 -> RP3 Topology},
   author  = {Jeff Wozniak},
   year    = {2026},
-  url     = {https://github.com/woz5999/ppm-framework}
+  url     = {https://projectiveprocessmonism.com}
 }
 ```
 
