@@ -12,7 +12,7 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks%2Fconstraint_sensitivity.ipynb)
 [![tests](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml)
 
-> **Note:** Binder cold start takes 1–2 minutes on first load. The environment is building — it will open.
+> **Note:** The interactive notebooks run on [Fly.io](https://ppm-framework.fly.dev) — on-demand cloud hosting that starts in seconds.
 
 ---
 
@@ -68,7 +68,7 @@ observed 3–100× excess.
 Each prediction is derived, visualized, and compared to measurement in the notebook. Each is also
 independently tested in `tests/test_all.py`.
 
-[**→ Run in browser (no install)**](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks%2Ffirst_principles_predictions.ipynb)
+[**→ Run in browser (no install)**](https://ppm-framework.fly.dev)
 
 ### `constraint_sensitivity.ipynb` — Are the parameters fitted or forced?
 
@@ -93,7 +93,7 @@ all break together. The parameters are not individually fitted to any one observ
 value of each satisfies all constraints at once, and that value is determined by the geometry
 before any measurement enters.
 
-[**→ Run in browser (no install)**](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks%2Fconstraint_sensitivity.ipynb)
+[**→ Run in browser (no install)**](https://ppm-framework.fly.dev)
 
 ---
 
@@ -265,8 +265,7 @@ jupyter notebook notebooks/first_principles_predictions.ipynb
 jupyter notebook notebooks/constraint_sensitivity.ipynb
 ```
 
-Or launch either notebook directly in your browser via the Binder links above (no installation
-required).
+Or launch either notebook directly in your browser at [ppm-framework.fly.dev](https://ppm-framework.fly.dev) (no installation required).
 
 ---
 
