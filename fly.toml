@@ -1,0 +1,25 @@
+# Fly.io config — serves Voilà only (no Jupyter Lab exposed)
+# Run `fly apps create <your-app-name>` then `fly deploy` to launch.
+# Update `app` below to match whatever name you create.
+
+app = "ppm-framework"
+primary_region = "iad"
+
+[build]
+  dockerfile = "fly/Dockerfile"
+
+[http_service]
+  internal_port = 8889
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 10
+    soft_limit = 5
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
