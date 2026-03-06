@@ -1,15 +1,12 @@
-# Fly.io config — serves Voilà only (no Jupyter Lab exposed)
-# Deploy: fly deploy --no-cache
 # The --no-cache flag ensures Fly always pulls the latest GHCR image.
 
 app = "ppm-framework"
 primary_region = "iad"
 
 [build]
-  image = "ghcr.io/woz5999/ppm-framework:latest"
 
 [processes]
-  app = "/srv/conda/envs/notebook/bin/voila /home/jovyan/notebooks/constraint_sensitivity.ipynb --port=8889 --no-browser --Voila.ip=0.0.0.0 --strip_sources=True"
+  dockerfile = "fly/Dockerfile"
 
 [http_service]
   internal_port = 8889
