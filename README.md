@@ -68,7 +68,7 @@ observed 3–100× excess.
 Each prediction is derived, visualized, and compared to measurement in the notebook. Each is also
 independently tested in `tests/test_all.py`.
 
-[**→ Run in browser (no install)**](https://ppm-framework.fly.dev)
+[**→ Run in browser (no install)**](https://ppm-framework.fly.dev/voila/render/first_principles_predictions.ipynb)
 
 ### `constraint_sensitivity.ipynb` — Are the parameters fitted or forced?
 
@@ -93,7 +93,7 @@ all break together. The parameters are not individually fitted to any one observ
 value of each satisfies all constraints at once, and that value is determined by the geometry
 before any measurement enters.
 
-[**→ Run in browser (no install)**](https://ppm-framework.fly.dev)
+[**→ Run in browser (no install)**](https://ppm-framework.fly.dev/voila/render/constraint_sensitivity.ipynb)
 
 ---
 
@@ -265,7 +265,8 @@ jupyter notebook notebooks/first_principles_predictions.ipynb
 jupyter notebook notebooks/constraint_sensitivity.ipynb
 ```
 
-Or launch either notebook directly in your browser at [ppm-framework.fly.dev](https://ppm-framework.fly.dev) (no installation required).
+Or launch either notebook directly in your browser (no installation required):
+[first_principles_predictions.ipynb](https://ppm-framework.fly.dev/voila/render/first_principles_predictions.ipynb) · [constraint_sensitivity.ipynb](https://ppm-framework.fly.dev/voila/render/constraint_sensitivity.ipynb)
 
 ---
 
