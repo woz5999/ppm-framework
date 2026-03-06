@@ -23,7 +23,7 @@ COPY notebooks/ ./notebooks/
 
 EXPOSE 8889
 
-CMD ["voila", "notebooks/", \
+CMD ["voila", "/app/notebooks/", \
      "--port=8889", \
      "--no-browser", \
      "--Voila.ip=0.0.0.0", \
