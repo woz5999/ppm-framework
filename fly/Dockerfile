@@ -1,6 +1,6 @@
 # Pull the pre-built Binder image from GHCR and serve only Voilà.
 # The repo content is at /home/jovyan/ inside the repo2docker image.
-FROM ghcr.io/woz5999/ppm-framework:latest
+FROM ghcr.io/woz5999/ppm-framework:2d8768a20535
 
 EXPOSE 8889
 
