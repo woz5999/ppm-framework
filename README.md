@@ -1,10 +1,13 @@
-# Projective Process Monism — Physical Constants from Topology
+
+# Projective Process Monism
 
 <p align="center">
   <img src="title.jpg" width="480" alt="Two projective spheres connected through an intersecting plane, with geodesic field lines radiating from the projection point — depicting the CP³ → RP³ structure at the heart of the framework."/>
   <br/><br/>
   <a href="https://projectiveprocessmonism.com">projectiveprocessmonism.com</a>
 </p>
+
+## A Topological Framework for Fundamental Constants, Quantum Gravity, and Consciousness
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila%2Frender%2Fnotebooks%2Fconstraint_sensitivity.ipynb)
 [![tests](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml)
