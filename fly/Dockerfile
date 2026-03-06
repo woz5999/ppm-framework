@@ -4,9 +4,9 @@ WORKDIR /app
 
 # Install dependencies
 RUN pip install --no-cache-dir \
-    numpy~=1.24 \
-    scipy~=1.11 \
-    matplotlib~=3.7 \
+    numpy~=2.0 \
+    scipy~=1.13 \
+    matplotlib~=3.9 \
     ipywidgets~=8.0 \
     voila~=0.5 \
     ipykernel
