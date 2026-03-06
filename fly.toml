@@ -1,11 +1,7 @@
-# The --no-cache flag ensures Fly always pulls the latest GHCR image.
-
 app = "ppm-framework"
 primary_region = "iad"
 
 [build]
-
-[processes]
   dockerfile = "fly/Dockerfile"
 
 [http_service]
