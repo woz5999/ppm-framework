@@ -6,12 +6,10 @@ on:
     paths:
       - "binder/**"
       - "!binder/Dockerfile"
-      - "!fly/Dockerfile"
       - "requirements.txt"
       - "pyproject.toml"
       - ".github/workflows/binder.yml"
       - "notebooks/*.ipynb"
-      - fly/**
   workflow_dispatch:
 
 permissions:
@@ -42,13 +40,3 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.GHCR_TOKEN }}
           BINDER_CACHE: "true"
           ADDITIONAL_TAG: latest
-
-      - name: Sync fly/Dockerfile to new image tag
-        run: |
-          TAG=$(grep "^FROM" binder/Dockerfile | awk -F: '{print $2}')
-          sed -i "s|FROM ghcr.io/${{ github.repository_owner }}/ppm-framework:.*|FROM ghcr.io/${{ github.repository_owner }}/ppm-framework:${TAG}|" fly/Dockerfile
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fly/Dockerfile
-          git diff --staged --quiet || git commit -m "chore: sync fly/Dockerfile to image tag ${TAG}"
-          git push
