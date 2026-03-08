@@ -12,8 +12,6 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD)
 [![tests](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml)
 
-> **Note:** The interactive notebooks run on [Fly.io](https://ppm-framework.fly.dev) — on-demand cloud hosting that starts in seconds.
-
 ---
 
 ## The problem
