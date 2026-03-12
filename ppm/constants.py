@@ -133,7 +133,7 @@ ENERGY_SCALES = {
         'tau_s': _tau_from_k(44.5),
         'source': 'topology',
         'description': 'Electroweak symmetry breaking — Higgs VEV via SU(2)→U(1) geometry',
-        'notes': 'v = 2√2 × (2π)^(1/4) × E(44.5) = 246.2 GeV (predicted), 246.2 (obs), 0.0%',
+        'notes': 'v = 2√2 × (2π)^(1/4) × E(44.5) = 246.2 GeV (predicted from full-precision E(44.5)=54.98 GeV), 246.2 (obs), 0.0%',
     },
     'Top': {
         'k': 44.5,                          # tied to EWSB: m_t = π × E(44.5)
@@ -142,7 +142,7 @@ ENERGY_SCALES = {
         'tau_s': _tau_from_k(44.5),
         'source': 'topology',
         'description': 'Top quark — π × E(EWSB) from SU(2)→U(1) geometry',
-        'notes': 'm_t = π × E(44.5) = 175.8 GeV (predicted), 173.0 (obs), 1.6%',
+        'notes': 'm_t = π × E(44.5) = 172.7 GeV (predicted from full-precision E(44.5)=54.98 GeV), 173.0 (obs), 0.2%',
     },
     'Confinement': {
         'k': 51,                            # topological: RP3 fully crystallized

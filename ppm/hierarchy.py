@@ -55,7 +55,7 @@ def hierarchy_energy(k: float,
 
     Examples
     --------
-    >>> hierarchy_energy(0)      # Planck scale ~1.22e25 MeV
+    >>> hierarchy_energy(0)      # Planck vicinity ~3.16e25 MeV (~2.6× E_P)
     >>> hierarchy_energy(51)     # Confinement (reference) = 140.0 MeV
     >>> hierarchy_energy(75.35)  # Consciousness boundary ~0.027 MeV ≈ k_BT at 310 K
     """

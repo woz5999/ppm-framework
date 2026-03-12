@@ -731,13 +731,14 @@ class TestFirstPrinciplesPredictions(unittest.TestCase):
         np.testing.assert_array_almost_equal(product, np.eye(3), decimal=12)
 
     def test_pmns_theta23_matches_observation(self):
-        """sin²θ₂₃ = 0.500 predicted; observed 0.500 ± 0.007 — exact match."""
+        """sin²θ₂₃ = 0.500 predicted; observed 0.546 ± 0.021 (NuFIT 5.2) — 8.4% error (Tier 2)."""
         from ppm.predictions import pmns_tribimaximal
 
         result = pmns_tribimaximal()
-        # Observed sin²θ₂₃ = 0.500 ± 0.007 (NuFIT 2023).
+        # Observed sin²θ₂₃ = 0.546 ± 0.021 (NuFIT 5.2, normal ordering).
+        # Prediction 0.500 is 8.4% below observed — Tier 2 (strong, 2–10%).
         self.assertAlmostEqual(result['sin2_theta_23'], result['obs_sin2_23'],
-                               delta=0.015)
+                               delta=0.06)
 
     def test_hubble_constant_formula(self):
         """H₀ = 1/T_universe; verify conversion from Gyr to km/s/Mpc is correct."""

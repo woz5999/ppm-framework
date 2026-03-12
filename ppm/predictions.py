@@ -299,9 +299,10 @@ def brain_power_budget(
 
     Notes
     -----
-    The predicted modulation (0.003–0.3 W) is ~0.015–1.5% of total brain
-    metabolism, consistent with observed PET/fMRI metabolic differences
-    between conscious states.
+    The predicted modulation (3 μW – 0.3 mW) is ~0.00002–0.002% of total brain
+    metabolism. This sub-milliwatt signal is below current whole-brain calorimetry
+    resolution but may be detectable via differential MEG or targeted cortical
+    measurements.
 
     Manuscript reference: Section 7.2 (Power Budget)
     """
@@ -571,7 +572,7 @@ def print_predictions_summary() -> None:
     print(f"  P_deep_sleep  = {pb['P_deep_sleep']:.4e} W  (0.1 × wake)")
     print(f"  ΔP (wake−deep)= {pb['Delta_P_watts']:.4e} W  "
           f"({pb['modulation_pct']:.3f}% of total brain metabolism)")
-    print(f"  Manuscript claim: 0.003–0.3 W modulation (0.015–1.5% of 20 W total)")
+    print(f"  Manuscript claim: 3 μW – 0.3 mW modulation (~0.00002–0.002% of 20 W total)")
     print(f"  N and f are not independently fixed by the framework — result scales as N × f.")
 
     # --- Gravitational decoherence ---
@@ -703,10 +704,10 @@ def pmns_tribimaximal() -> dict:
     sin2_23_pred = 1.0 / 2.0   # exact — maximal mixing
     sin2_13_pred = 0.0          # leading order
 
-    # Observed values (PDG 2023)
-    obs_12 = 0.310   # NuFIT 2023 central value
-    obs_23 = 0.500   # NuFIT 2023 central value
-    obs_13 = 0.022   # NuFIT 2023 central value
+    # Observed values (NuFIT 5.2, normal ordering)
+    obs_12 = 0.310   # NuFIT 5.2 central value
+    obs_23 = 0.546   # NuFIT 5.2 global fit, normal ordering
+    obs_13 = 0.022   # NuFIT 5.2 central value
 
     return {
         'U_TBM':          U_TBM,
@@ -902,21 +903,23 @@ def g_cosmic_evolution(z_max: float = 20.0, n_z: int = 300) -> dict:
 
     # ── JWST observed UV-luminosity-function excess vs ΛCDM predictions ───────
     # "Excess" = n_obs(M_UV < -20) / n_ΛCDM-predicted(M_UV < -20).
-    # Sources: Harikane+2022 (ApJS 259), Finkelstein+2023 (ApJ 946),
+    # Sources: Harikane+2022 (ApJS 259), Naidu+2022, Harikane+2023 (ApJS 265),
+    #          Labbé+2023 (z≈7–9), Finkelstein+2023 (ApJ 946),
     #          McLeod+2024, Donnan+2023, Carniani+2024 (z=14.32 JADES).
-    # Low/high bounds span the spread across independent analyses.
+    # Collectively these cover z ≈ 7–16. Low/high bounds span the spread
+    # across independent analyses.
     jwst_data = {
         'z':           np.array([7.5,  8.5,  9.5,  11.0,  12.5,  14.0]),
         'excess_low':  np.array([1.5,  2.0,  4.0,   6.0,   8.0,   5.0]),
         'excess_mid':  np.array([3.0,  5.0,  12.0,  20.0,  30.0,  15.0]),
         'excess_high': np.array([9.0, 15.0,  40.0,  80.0, 100.0,  80.0]),
         'source': [
-            'JADES/CEERS (Finkelstein+23)',
-            'Multiple JWST surveys',
-            'Harikane+22 / McLeod+24',
-            'Harikane+22 / Donnan+23',
-            'Harikane+22',
-            'Carniani+24 / Harikane+22',
+            'JADES/CEERS (Finkelstein+23, Labbé+23)',
+            'Multiple JWST surveys (Labbé+23, Harikane+23)',
+            'Harikane+23 / McLeod+24',
+            'Naidu+22 / Harikane+23 / Donnan+23',
+            'Naidu+22 / Harikane+23',
+            'Carniani+24 / Harikane+23',
         ],
     }
 
