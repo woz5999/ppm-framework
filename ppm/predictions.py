@@ -1021,15 +1021,15 @@ def sterile_neutrino_dark_matter() -> dict:
     """
     Sterile neutrino dark matter prediction from the PPM k-level hierarchy.
 
-    The Planck-anchored hierarchy  E(k) = E_Planck / (2pi)^(k/2)  places a
-    sterile neutrino at k = 60--61.  The two adjacent integer levels bracket
+    The confinement-anchored hierarchy  E(k) = m_pi * (2pi)^((51-k)/2)  places
+    a sterile neutrino at k = 61--62.  The two adjacent integer levels bracket
     the observed 7 keV mass:
 
-        E(60) = E_P / (2pi)^30 ≈ 13.84 keV
-        E(61) = E_P / (2pi)^30.5 ≈ 5.52 keV
+        E(61) = 140 MeV / (2pi)^5 ≈ 14.30 keV
+        E(62) = 140 MeV / (2pi)^5.5 ≈ 5.70 keV
 
     The observed mass 7 keV (inferred from the 3.55 keV X-ray decay line via
-    m = 2 E_gamma) lies at fractional k ≈ 60.74, within this bracket.
+    m = 2 E_gamma) lies at fractional k ≈ 61.78, within this bracket.
 
     The prediction is a *scale* prediction: the hierarchy places a keV-class
     sterile neutrino in this part of the ladder.  The precise mass is fixed by
@@ -1046,13 +1046,13 @@ def sterile_neutrino_dark_matter() -> dict:
     Returns
     -------
     dict
-        - 'E_k60_keV'       : Planck-anchored E(60) in keV (13.84 keV)
-        - 'E_k61_keV'       : Planck-anchored E(61) in keV (5.52 keV)
+        - 'E_k61_keV'       : confinement-anchored E(61) in keV (14.30 keV)
+        - 'E_k62_keV'       : confinement-anchored E(62) in keV (5.70 keV)
         - 'k_fractional'    : fractional k that yields the observed 7 keV
         - 'obs_mass_keV'    : observed sterile neutrino mass (from X-ray line)
         - 'obs_line_keV'    : observed X-ray photon energy in keV
-        - 'bracket_lo_keV'  : lower bracket mass (E(61))
-        - 'bracket_hi_keV'  : upper bracket mass (E(60))
+        - 'bracket_lo_keV'  : lower bracket mass (E(62))
+        - 'bracket_hi_keV'  : upper bracket mass (E(61))
         - 'E_gamma_keV'     : E_gamma from observed mass (= obs_mass / 2)
         - 'error_pct'       : fractional displacement within bracket (0 = exact)
         - 'Omega_total'     : combined relic density estimate
@@ -1063,34 +1063,40 @@ def sterile_neutrino_dark_matter() -> dict:
     """
     import math
 
-    # Planck-anchored masses at adjacent integer k levels
-    E_Planck_keV = 1.22089e28 / 1000.0   # keV
-    E_k60 = E_Planck_keV / (2.0 * math.pi) ** 30       # 13.84 keV
-    E_k61 = E_Planck_keV / (2.0 * math.pi) ** 30.5     # 5.52 keV
+    # Confinement-anchored masses at adjacent integer k levels
+    # E(k) = m_pi * (2pi)^((51-k)/2), with m_pi = 140 MeV
+    m_pi_keV = 140.0e3   # 140 MeV in keV
+    g = 2.0 * math.pi
+
+    E_k61 = m_pi_keV * g ** ((51 - 61) / 2.0)     # 14.30 keV
+    E_k62 = m_pi_keV * g ** ((51 - 62) / 2.0)     # 5.70 keV
 
     obs_mass_keV = 7.0    # inferred from 3.55 keV X-ray line: m = 2 * E_gamma
     obs_line     = 3.55   # keV — Bulbul+2014, Boyarsky+2014
 
-    # Fractional k at which Planck-anchored formula gives 7 keV
-    k_frac = 2.0 * math.log(E_Planck_keV / obs_mass_keV) / math.log(2.0 * math.pi)
+    # Fractional k at which confinement-anchored formula gives 7 keV
+    k_frac = 51.0 - 2.0 * math.log(obs_mass_keV / m_pi_keV) / math.log(g)
 
-    # Relic abundance — primary state from X-ray mass; adjacent states Planck-anchored
+    # Relic abundance — primary state from X-ray mass; adjacent states from hierarchy
+    E_k60 = m_pi_keV * g ** ((51 - 60) / 2.0)     # 35.84 keV
+    E_k59 = m_pi_keV * g ** ((51 - 59) / 2.0)     # 89.83 keV
+
     states = {
         'nu_R_primary': {
-            'k': k_frac, 'label': 'nu_R (obs, k~60.7)',
+            'k': k_frac, 'label': 'nu_R (obs, k~61.8)',
             'm_keV': obs_mass_keV, 'E_gamma_keV': obs_mass_keV / 2.0,
             'mixing_angle': 0.032, 'Omega': 0.20,
         },
-        'nu_R_k59': {
-            'k': 59, 'label': 'nu_R (k=59)',
-            'm_keV': E_Planck_keV / (2.0 * math.pi) ** 29.5,
-            'E_gamma_keV': E_Planck_keV / (2.0 * math.pi) ** 29.5 / 2.0,
+        'nu_R_k60': {
+            'k': 60, 'label': 'nu_R (k=60)',
+            'm_keV': E_k60,
+            'E_gamma_keV': E_k60 / 2.0,
             'mixing_angle': 0.010, 'Omega': 0.03,
         },
-        'nu_R_k58': {
-            'k': 58, 'label': 'nu_R (k=58)',
-            'm_keV': E_Planck_keV / (2.0 * math.pi) ** 29.0,
-            'E_gamma_keV': E_Planck_keV / (2.0 * math.pi) ** 29.0 / 2.0,
+        'nu_R_k59': {
+            'k': 59, 'label': 'nu_R (k=59)',
+            'm_keV': E_k59,
+            'E_gamma_keV': E_k59 / 2.0,
             'mixing_angle': 0.003, 'Omega': 0.01,
         },
     }
@@ -1100,10 +1106,10 @@ def sterile_neutrino_dark_matter() -> dict:
 
     return {
         'states':           states,
-        'E_k60_keV':        E_k60,
         'E_k61_keV':        E_k61,
-        'bracket_lo_keV':   E_k61,
-        'bracket_hi_keV':   E_k60,
+        'E_k62_keV':        E_k62,
+        'bracket_lo_keV':   E_k62,
+        'bracket_hi_keV':   E_k61,
         'k_fractional':     k_frac,
         'obs_mass_keV':     obs_mass_keV,
         'obs_line_keV':     obs_line,
