@@ -137,7 +137,7 @@ ENERGY_SCALES = {
     },
     'Top': {
         'k': 44.5,                          # tied to EWSB: m_t = π × E(44.5)
-        'E_GeV_predicted': np.pi * _E_GeV_from_k(44.5),  # 175.8 GeV
+        'E_GeV_predicted': np.pi * _E_GeV_from_k(44.5),  # 172.7 GeV
         'E_GeV_observed': 173.0,
         'tau_s': _tau_from_k(44.5),
         'source': 'topology',

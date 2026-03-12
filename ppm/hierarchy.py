@@ -5,10 +5,10 @@ PPM Framework — Energy Hierarchy
 Implements the energy hierarchy E(k) = E_ref * g^((k_ref - k) / 2)
 spanning from the Planck scale (k=0) to the consciousness boundary (k=61).
 
-The scaling factor g = 2π is derived exactly from Z2 → RP3 topology
-(Appendix A.2). The square-root exponent arises from the geometric mean
-structure of projective geometry: RP3 is the geometric mean space between
-CP3 and R.
+The scaling factor g = 2π follows from g^2 = |Z2 × Z2| × Vol(RP3) = 4π²
+(Appendix A.2). The square-root exponent arises from phase-space scaling:
+if phase-space volume scales by g^2 per level, the energy-wavelength
+relation gives E(k) ~ g^(-k/2).
 
 Manuscript references: Section 3.3, Appendix C.6
 """
@@ -27,8 +27,8 @@ def hierarchy_energy(k: float,
     E(k) = E_ref * g^((k_ref - k) / 2)
 
     The scaling factor g = 2*pi is derived exactly from Z2 → RP3
-    topology (not fitted). The square root exponent arises from the
-    geometric mean structure of projective geometry.
+    topology (not fitted). The square root exponent arises from
+    phase-space scaling (g^2 per level → E ~ g^(-k/2)).
 
     Parameters
     ----------

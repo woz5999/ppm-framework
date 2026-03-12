@@ -128,8 +128,8 @@ With `g = 2π` established, every subsequent quantity follows without new free p
 **Particle spectrum.** `E(k)` spans from the Planck scale (`k ≈ 0`) to the thermal energy of a
 living cell. Every major Standard Model particle has a k-assignment that reproduces its mass.
 Particles with topology-derived prefactors sit above the bare curve: the Higgs VEV
-`v = 2√2(2π)^(1/4) × E(44.5) = 246.1 GeV` (observed: 246.2 GeV) and the top quark
-`m_t = π × E(44.5) = 172.8 GeV` (observed: 172.7 GeV). The prefactors come from SU(2) → U(1)
+`v = 2√2(2π)^(1/4) × E(44.5) = 246.2 GeV` (observed: 246.2 GeV) and the top quark
+`m_t = π × E(44.5) = 172.7 GeV` (observed: 173.0 GeV). The prefactors come from SU(2) → U(1)
 geometry, not fitting.
 
 **Electroweak sector.** The level at which electroweak symmetry breaks is fixed by the RP³
@@ -170,8 +170,8 @@ No other free parameters.
 
 | Observable | Formula | Prediction | Observed | Error |
 |---|---|---|---|---|
-| Higgs VEV | `2√2(2π)^(1/4) × E(44.5)` | 246.1 GeV | 246.2 GeV | < 0.1% |
-| Top quark | `π × E(44.5)` | 172.8 GeV | 172.7 GeV | < 0.1% |
+| Higgs VEV | `2√2(2π)^(1/4) × E(44.5)` | 246.2 GeV | 246.2 GeV | < 0.01% |
+| Top quark | `π × E(44.5)` | 172.7 GeV | 173.0 GeV | 0.2% |
 | `α⁻¹` | Phase coherence, `n = 5/6` | 137.036 | 137.036 | < 0.1% |
 | `G` | `16π⁴ħcα / (m_π² √N)` | ~6.5×10⁻¹¹ | 6.674×10⁻¹¹ | ~4% |
 | `Λ` | `2m_π² / ((ħc)² N)` | ~1.0×10⁻⁵² m⁻² | ~1.1×10⁻⁵² m⁻² | ~9% |
