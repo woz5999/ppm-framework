@@ -1,45 +1,45 @@
-name: Build and push Binder image
+# name: Build and push Binder image
 
-on:
-  push:
-    branches: [main]
-    paths:
-      - "binder/**"
-      - "!binder/Dockerfile"
-      - "requirements.txt"
-      - "pyproject.toml"
-      - ".github/workflows/binder.yml"
-      - "notebooks/*.ipynb"
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: [main]
+#     paths:
+#       - "binder/**"
+#       - "!binder/Dockerfile"
+#       - "requirements.txt"
+#       - "pyproject.toml"
+#       - ".github/workflows/binder.yml"
+#       - "notebooks/*.ipynb"
+#   workflow_dispatch:
 
-permissions:
-  contents: write
-  packages: write
+# permissions:
+#   contents: write
+#   packages: write
 
-jobs:
-  binder:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+# jobs:
+#   binder:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
 
-      - name: Remove stale binder/Dockerfile so repo2docker uses requirements.txt
-        run: rm -f binder/Dockerfile
+#       - name: Remove stale binder/Dockerfile so repo2docker uses requirements.txt
+#         run: rm -f binder/Dockerfile
 
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+#       - name: Log in to GHCR
+#         uses: docker/login-action@v3
+#         with:
+#           registry: ghcr.io
+#           username: ${{ github.actor }}
+#           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Build and push Binder image to GHCR
-        uses: jupyterhub/repo2docker-action@master
-        with:
-          # Image name must match exactly what mybinder.org would compute
-          # from your repo — this naming convention is what enables the cache hit.
-          IMAGE_NAME: ${{ github.repository_owner }}/ppm-framework
-          DOCKER_REGISTRY: ghcr.io
-          DOCKER_USERNAME: ${{ github.actor }}
-          DOCKER_PASSWORD: ${{ secrets.GHCR_TOKEN }}
-          BINDER_CACHE: "true"
-          ADDITIONAL_TAG: latest
+#       - name: Build and push Binder image to GHCR
+#         uses: jupyterhub/repo2docker-action@master
+#         with:
+#           # Image name must match exactly what mybinder.org would compute
+#           # from your repo — this naming convention is what enables the cache hit.
+#           IMAGE_NAME: ${{ github.repository_owner }}/ppm-framework
+#           DOCKER_REGISTRY: ghcr.io
+#           DOCKER_USERNAME: ${{ github.actor }}
+#           DOCKER_PASSWORD: ${{ secrets.GHCR_TOKEN }}
+#           BINDER_CACHE: "true"
+#           ADDITIONAL_TAG: latest
