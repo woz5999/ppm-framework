@@ -7,7 +7,7 @@
   <a href="https://projectiveprocessmonism.com">projectiveprocessmonism.com</a>
 </p>
 
-## A Topological Framework for Fundamental Constants, Quantum Gravity, and Consciousness
+## A Topological Framework for Fundamental Constants, Gravity, and Consciousness
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD)
 [![tests](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml)
@@ -46,13 +46,13 @@ The sharpest test of any framework is whether it produces correct numbers *befor
 the measurements. This notebook isolates five quantities that PPM derives from geometry alone,
 with no experimental input beyond the pion mass:
 
-| Prediction | Geometric input | Formula | Predicted | Observed |
-|---|---|---|---|---|
-| CKM δ_CP | 720° Berry phase on RP³ | π(1 − 1/φ) | 1.200 rad | 1.20 ± 0.08 rad |
-| sin²θ₂₃ | Z₂ × 3D topology (tribimaximal) | 1/2 (exact) | 0.500 | 0.546 ± 0.021 |
-| H₀ | T_universe from CMB | 1/T_universe | 70.9 km/s/Mpc | 69.8 ± 1.9 (TRGB) |
-| α_w | RP³ = S³/Z₂ volume ratio | 1/(3π²) | 1/29.6 | 1/29.9 ± 0.2 |
-| G(t) evolution | N_cosmic ∝ causal volume | G/G₀ = (1+z)^{3/2} band | 5–36× at z=10 | 3–100× (JWST excess) |
+| Prediction     | Geometric input                 | Formula                 | Predicted     | Observed             |
+| -------------- | ------------------------------- | ----------------------- | ------------- | -------------------- |
+| CKM δ_CP       | 720° Berry phase on RP³         | π(1 − 1/φ)              | 1.200 rad     | 1.20 ± 0.08 rad      |
+| sin²θ₂₃        | Z₂ × 3D topology (tribimaximal) | 1/2 (exact)             | 0.500         | 0.546 ± 0.021        |
+| H₀             | T_universe from CMB             | 1/T_universe            | 70.9 km/s/Mpc | 69.8 ± 1.9 (TRGB)    |
+| α_w            | RP³ = S³/Z₂ volume ratio        | 1/(3π²)                 | 1/29.6        | 1/29.9 ± 0.2         |
+| G(t) evolution | N_cosmic ∝ causal volume        | G/G₀ = (1+z)^{3/2} band | 5–36× at z=10 | 3–100× (JWST excess) |
 
 The CP-violation phase is exact to measurement precision; the atmospheric mixing angle prediction (0.500 vs observed 0.546) has 8.4% error, consistent with a leading-order geometric approximation — values
 the Standard Model treats as unexplained inputs. The Hubble constant prediction addresses the
@@ -75,15 +75,15 @@ the fact. This notebook addresses that question directly. It presents seven coup
 from the particle mass spectrum through electroweak symmetry breaking to Newton's constant and
 body temperature — and lets you move the underlying parameters with interactive sliders.
 
-| Section | Topic | Mystery addressed |
-|---|---|---|
-| 1 | Full particle spectrum | Why do masses span 30 orders of magnitude? |
-| 2 | `g = 2π` from topology | What fixes the energy level spacing? |
-| 3 | `k_EWSB = 44.5` from RP³ | What determines the Higgs mass scale? |
-| 4 | Λ_obs → N → α consistency prediction | Why is α = 1/137? |
-| 5 | `N_cosmic = 10⁸²`, G, Λ, H₀ | Why is gravity weak? Why is Λ small? |
-| 6 | Phase coherence crossing | What connects quantum scales to biology? |
-| 7 | Consciousness critical point | Why does biology operate at 310 K? |
+| Section | Topic                                | Mystery addressed                          |
+| ------- | ------------------------------------ | ------------------------------------------ |
+| 1       | Full particle spectrum               | Why do masses span 30 orders of magnitude? |
+| 2       | `g = 2π` from topology               | What fixes the energy level spacing?       |
+| 3       | `k_EWSB = 44.5` from RP³             | What determines the Higgs mass scale?      |
+| 4       | Λ_obs → N → α consistency prediction | Why is α = 1/137?                          |
+| 5       | `N_cosmic = 10⁸²`, G, Λ, H₀          | Why is gravity weak? Why is Λ small?       |
+| 6       | Phase coherence crossing             | What connects quantum scales to biology?   |
+| 7       | Consciousness critical point         | Why does biology operate at 310 K?         |
 
 When you move a parameter away from its geometrically predicted value, multiple independent
 observables degrade simultaneously — particle masses, force constants, and biological temperature
@@ -170,20 +170,20 @@ established by electromagnetism.
 All predictions use `g = 2π` (topology) and `m_π = 140 MeV` (one experimental anchor).
 No other free parameters.
 
-| Observable | Formula | Prediction | Observed | Error |
-|---|---|---|---|---|
-| Higgs VEV | `2√2(2π)^(1/4) × E(44.5)` | 246.2 GeV | 246.2 GeV | < 0.01% |
-| Top quark | `π × E(44.5)` | 172.7 GeV | 173.0 GeV | 0.2% |
-| `α⁻¹` | Consistency: Λ_obs → N → α | 137.6 ± 1.3 | 137.036 | 0.4% |
-| `G` | `16π⁴ħcα / (m_π² √N)` | ~6.5×10⁻¹¹ | 6.674×10⁻¹¹ | ~4% |
-| `Λ` | `2m_π² / ((ħc)² N)` | ~1.0×10⁻⁵² m⁻² | ~1.1×10⁻⁵² m⁻² | ~9% |
-| `T_bio` | Phase coherence crossing at `n = 5/6` | 310 K | 310 K | exact |
-| `α_w` | `1/(3π²)` from RP³ geometry | `1/29.6` | `1/29.9` | ~1% |
-| `α_s` | Confinement condition at `k = 51` | `1/3` | `1/3` | exact |
-| `δ_CP` | Berry phase: `π(1 − 1/φ)` | 1.200 rad | 1.20 ± 0.08 rad | 0.0% |
-| `sin²θ₂₃` | Tribimaximal from Z₂ × 3D topology | `1/2` (exact) | 0.546 ± 0.021 | 8.4% |
-| `H₀` | `1/T_universe` (CMB age: 13.797 Gyr) | 70.9 km/s/Mpc | 69.8 (TRGB) | ~1.5% |
-| `G(t)/G₀` | `N_cosmic ∝ (1+z)^{-3}` causal volume | 5–36× at z=10 | 3–100× (JWST) | overlaps |
+| Observable | Formula                               | Prediction     | Observed        | Error    |
+| ---------- | ------------------------------------- | -------------- | --------------- | -------- |
+| Higgs VEV  | `2√2(2π)^(1/4) × E(44.5)`             | 246.2 GeV      | 246.2 GeV       | < 0.01%  |
+| Top quark  | `π × E(44.5)`                         | 172.7 GeV      | 173.0 GeV       | 0.2%     |
+| `α⁻¹`      | Consistency: Λ_obs → N → α            | 137.6 ± 1.3    | 137.036         | 0.4%     |
+| `G`        | `16π⁴ħcα / (m_π² √N)`                 | ~6.5×10⁻¹¹     | 6.674×10⁻¹¹     | ~4%      |
+| `Λ`        | `2m_π² / ((ħc)² N)`                   | ~1.0×10⁻⁵² m⁻² | ~1.1×10⁻⁵² m⁻²  | ~9%      |
+| `T_bio`    | Phase coherence crossing at `n = 5/6` | 310 K          | 310 K           | exact    |
+| `α_w`      | `1/(3π²)` from RP³ geometry           | `1/29.6`       | `1/29.9`        | ~1%      |
+| `α_s`      | Confinement condition at `k = 51`     | `1/3`          | `1/3`           | exact    |
+| `δ_CP`     | Berry phase: `π(1 − 1/φ)`             | 1.200 rad      | 1.20 ± 0.08 rad | 0.0%     |
+| `sin²θ₂₃`  | Tribimaximal from Z₂ × 3D topology    | `1/2` (exact)  | 0.546 ± 0.021   | 8.4%     |
+| `H₀`       | `1/T_universe` (CMB age: 13.797 Gyr)  | 70.9 km/s/Mpc  | 69.8 (TRGB)     | ~1.5%    |
+| `G(t)/G₀`  | `N_cosmic ∝ (1+z)^{-3}` causal volume | 5–36× at z=10  | 3–100× (JWST)   | overlaps |
 
 ---
 
