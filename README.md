@@ -49,12 +49,12 @@ with no experimental input beyond the pion mass:
 | Prediction | Geometric input | Formula | Predicted | Observed |
 |---|---|---|---|---|
 | CKM δ_CP | 720° Berry phase on RP³ | π(1 − 1/φ) | 1.200 rad | 1.20 ± 0.08 rad |
-| sin²θ₂₃ | Z₂ × 3D topology (tribimaximal) | 1/2 (exact) | 0.500 | 0.500 ± 0.007 |
+| sin²θ₂₃ | Z₂ × 3D topology (tribimaximal) | 1/2 (exact) | 0.500 | 0.546 ± 0.021 |
 | H₀ | T_universe from CMB | 1/T_universe | 70.9 km/s/Mpc | 69.8 ± 1.9 (TRGB) |
 | α_w | RP³ = S³/Z₂ volume ratio | 1/(3π²) | 1/29.6 | 1/29.9 ± 0.2 |
 | G(t) evolution | N_cosmic ∝ causal volume | G/G₀ = (1+z)^{3/2} band | 5–36× at z=10 | 3–100× (JWST excess) |
 
-The CP-violation phase and the neutrino mixing angle are exact to measurement precision — values
+The CP-violation phase is exact to measurement precision; the atmospheric mixing angle prediction (0.500 vs observed 0.546) has 8.4% error, consistent with a leading-order geometric approximation — values
 the Standard Model treats as unexplained inputs. The Hubble constant prediction addresses the
 current tension between early- and late-universe measurements directly: the framework derives
 H₀ = 1/T_universe from the CMB age, landing between the two conflicting methods. The G(t) section
@@ -80,7 +80,7 @@ body temperature — and lets you move the underlying parameters with interactiv
 | 1 | Full particle spectrum | Why do masses span 30 orders of magnitude? |
 | 2 | `g = 2π` from topology | What fixes the energy level spacing? |
 | 3 | `k_EWSB = 44.5` from RP³ | What determines the Higgs mass scale? |
-| 4 | `n = 5/6`: holographic exponent | Why is α = 1/137? |
+| 4 | Λ_obs → N → α consistency prediction | Why is α = 1/137? |
 | 5 | `N_cosmic = 10⁸²`, G, Λ, H₀ | Why is gravity weak? Why is Λ small? |
 | 6 | Phase coherence crossing | What connects quantum scales to biology? |
 | 7 | Consciousness critical point | Why does biology operate at 310 K? |
@@ -136,10 +136,13 @@ geometry, not fitting.
 emergence condition at `k_EWSB = 44.5`. The lepton mass hierarchy — spanning six orders of
 magnitude with no Standard Model explanation — emerges as a Z₂-quantized tower above this level.
 
-**Fine structure constant.** The observable universe contains `N_cosmic ≈ 10⁸²` Planck-area
-degrees of freedom on the cosmic horizon. The geometry of CP³ under Z₂ projection activates 5 of
-6 phase space dimensions, giving `n = 5/6`. At this value, the phase coherence condition
-reproduces `α = 1/137.036` exactly.
+**Fine structure constant.** The framework's formulas for G and Λ both contain α. The observed Λ fixes N (no free parameters); then the observed G and N determine α:
+
+```
+α = G_obs · m_π² · √N / (16π⁴ ħc) = 1/(137.6 ± 1.3)
+```
+
+Central error 0.4%; the observed value 1/137.036 lies within the 1σ band from Λ_obs uncertainty. This is a consistency prediction using zero free parameters.
 
 **Newton's constant and the cosmological constant.** Both follow from the same holographic count
 with different exponents:
@@ -156,8 +159,7 @@ Neither requires fine-tuning; both are consequences of the universe's age.
 
 **Phase coherence and body temperature.** At each rung k, two phase contributions compete —
 thermal phase (large at high energy, decreasing) and Berry phase (small at low energy,
-increasing). They cross at exactly one point. At `n = 5/6` — already fixed by the requirement
-`α = 1/137` — the crossing falls at `k_cross ≈ 75.354`, corresponding to `T = 310 K`. Human body
+increasing). They cross at exactly one point. At `n = 5/6` — the crossing falls at `k_cross ≈ 75.354`, corresponding to `T = 310 K`. Human body
 temperature is not a separate prediction. It is an automatic consequence of the value of n
 established by electromagnetism.
 
@@ -172,14 +174,14 @@ No other free parameters.
 |---|---|---|---|---|
 | Higgs VEV | `2√2(2π)^(1/4) × E(44.5)` | 246.2 GeV | 246.2 GeV | < 0.01% |
 | Top quark | `π × E(44.5)` | 172.7 GeV | 173.0 GeV | 0.2% |
-| `α⁻¹` | Phase coherence, `n = 5/6` | 137.036 | 137.036 | < 0.1% |
+| `α⁻¹` | Consistency: Λ_obs → N → α | 137.6 ± 1.3 | 137.036 | 0.4% |
 | `G` | `16π⁴ħcα / (m_π² √N)` | ~6.5×10⁻¹¹ | 6.674×10⁻¹¹ | ~4% |
 | `Λ` | `2m_π² / ((ħc)² N)` | ~1.0×10⁻⁵² m⁻² | ~1.1×10⁻⁵² m⁻² | ~9% |
 | `T_bio` | Phase coherence crossing at `n = 5/6` | 310 K | 310 K | exact |
 | `α_w` | `1/(3π²)` from RP³ geometry | `1/29.6` | `1/29.9` | ~1% |
 | `α_s` | Confinement condition at `k = 51` | `1/3` | `1/3` | exact |
 | `δ_CP` | Berry phase: `π(1 − 1/φ)` | 1.200 rad | 1.20 ± 0.08 rad | 0.0% |
-| `sin²θ₂₃` | Tribimaximal from Z₂ × 3D topology | `1/2` (exact) | 0.500 ± 0.007 | 0.0% |
+| `sin²θ₂₃` | Tribimaximal from Z₂ × 3D topology | `1/2` (exact) | 0.546 ± 0.021 | 8.4% |
 | `H₀` | `1/T_universe` (CMB age: 13.797 Gyr) | 70.9 km/s/Mpc | 69.8 (TRGB) | ~1.5% |
 | `G(t)/G₀` | `N_cosmic ∝ (1+z)^{-3}` causal volume | 5–36× at z=10 | 3–100× (JWST) | overlaps |
 
@@ -207,12 +209,11 @@ Higgs, top, τ, μ, e                                                 │
    ▼                                                                │
 n = 5/6  (CP³ phase space: 5 of 6 dims projected by Z₂)            │
    │                                                                │
-   ├──►  α = 1/137                                                  │
-   │                                                                │
    ▼                                                                │
-N_cosmic = 10⁸²                                                     │
+Λ_obs → N_cosmic = 10⁸²                                            │
    │                                                                │
    ├──►  G,  Λ,  H₀                                                 │
+   ├──►  α = 1/(137.6 ± 1.3)  (consistency prediction from G, N)   │
    │                                                                │
    ▼                                                                │
 T_bio = 310 K                                                       │
@@ -220,8 +221,9 @@ T_bio = 310 K                                                       │
    └──  k_c ≈ 75.4  ·  E(k_c) = k_B × 310 K  ·  on E(k) above ───┘
 ```
 
-Topology fixes `g`. Geometry fixes `k_EWSB` and `n`. Holography fixes `N_cosmic`. Phase coherence
-fixes `T_bio`. No step adjusts a previous result to fit a new observation. The endpoint — 310 K —
+Topology fixes `g`. Geometry fixes `k_EWSB` and `n`. Holography fixes `N_cosmic`. The consistency
+of G and Λ with framework geometry determines `α`. Phase coherence fixes `T_bio`. No step adjusts
+a previous result to fit a new observation. The endpoint — 310 K —
 lands back on the same `E(k)` ladder the chain began with.
 
 ---

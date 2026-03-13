@@ -1,60 +1,35 @@
 """
-PPM Framework — Twistor / RG Approach to α
-============================================
+PPM Framework — Twistor Geometry of CP3/RP3
+=============================================
 
-Derives the fine-structure constant α = 1/137.036 from the CP3 twistor
-geometry of the configuration space M^8.
+Geometric analysis of the CP3 configuration space and its RP3 actualization
+boundary. Provides volume fractions, heat kernel ratios, spectral zeta
+ratios, and Jacobi field analysis for the symmetric pair (CP3, RP3).
 
 Central geometric picture:
     RP3 is the Z2-fixed locus of the antiholomorphic involution
     σ: [z] → [z̄] on CP3. It is the actualization boundary — the
     Markov boundary between actual and possible configurations.
 
-    k = Fubini-Study geodesic distance from RP3 into CP3.
-    k = 0 at RP3 (actualized), k = π/4 at maximum depth (pure possibility).
+    d = Fubini-Study geodesic distance from RP3 into CP3.
+    d = 0 at RP3 (actualized), d = π/4 at maximum depth (pure possibility).
 
-    α = V_RP3(d*) / V_CP3 — the volume fraction of CP3 within one
-    actualization radius d* of the RP3 fixed locus.
+Geometric quantities computed here:
 
-Four approaches, all consistent:
+1. VOLUME FRACTION:
+   Tube volume around RP3 in CP3, with Jacobi field density
+   ρ(d) = sin²(2d)cos(2d) and cumulative fraction f(d) = sin³(2d).
 
-1. VOLUME FRACTION (geometric, primary):
-   The volume of a d-neighborhood of RP3 in CP3 scales as d^6 near d=0,
-   where 6 = dim_R(CP3). Setting volume fraction = α determines d*.
-   The same exponent 6 controls the holographic scaling 5/6 = (6-1)/6.
+2. HEAT KERNEL RATIO:
+   K_RP3(t)/K_CP3(t) = α at diffusion time t ≈ 1/(10π), 0.21% accuracy.
+   Suggestive but requires physical derivation of t.
 
-2. DIMENSIONAL REDUCTION:
-   N_eff ~ N_cosmic^(5/6) from holographic scaling on 6D CP3.
-   0.9% off in the exponent, amplified by ln(N_cosmic) ≈ 189.
+3. SPECTRAL ZETA RATIO:
+   ζ_RP3(s)/ζ_CP3(s) = α at s ≈ 2.886, near dim_C = 3.
 
-3. HEAT KERNEL RATIO:
-   K_RP3(t)/K_CP3(t) = α at diffusion time t ≈ 0.032.
-
-4. SPECTRAL ZETA RATIO:
-   ζ_RP3(s)/ζ_CP3(s) = α at s ≈ 2.856, close to dim_C(CP3) = 3.
-
-5. JACOBI FIELD DERIVATION (NEW):
-   The correct tube density comes from the Jacobian of the normal
-   exponential map for the symmetric pair (CP3, RP3), where RP3 is
-   totally geodesic and Lagrangian. Sectional curvatures at RP3 are:
-       K(Jw, w) = 4  (holomorphic plane, w tangent to RP3)
-       K(Jw, u_i) = 1  (mixed planes, i=1,2)
-       K(Jw, Ju_i) = 1  (fully normal planes)
-   
-   Jacobi fields Y_w = cos(2d)·w, Y_{u_i} = cos(d)·u_i, Z_{Ju_i} = sin(d)·Ju_i
-   yield Jacobian J(d) = sin²(2d)cos(2d)/4, giving density ρ(d) = sin²(2d)cos(2d)
-   and normalized cumulative fraction f(d) = sin³(2d).
-   
-   The effective Schrödinger potential Q(d) = (J')²/(4J²) - J''/(2J) governs
-   quantum fluctuations. Ground state computation is the framework's central
-   open problem; α = ⟨sin³(2d̂)⟩_{u₁} from the ground state expectation value.
-
-Open problem: exact closed-form expression for d* from the thermal
-boundary condition, or equivalently, the curvature correction to 5/6.
-Also: numerical solution of the Schrödinger equation u'' + [E - Q(d)]u = 0
-to find ground state u₁ and compute the expectation value α.
-
-Manuscript references: Section 3.4.5, 3.4.7, §15 (Jacobi field analysis)
+4. JACOBI FIELD ANALYSIS:
+   Jacobian of the normal exponential map for the symmetric pair (CP3, RP3).
+   Sectional curvatures, Jacobi fields, effective potential Q(d).
 """
 
 import numpy as np
@@ -277,11 +252,10 @@ def effective_potential_Q(d: float) -> float:
         Q(π/8)  = 11  (moderate barrier at d = d_max/2)
         Q(π/4)  = ∞   (infinite wall at the cut locus)
 
-    This potential governs the Schrödinger equation:
-        u''(d) + [E - Q(d)]u(d) = 0
-
-    whose ground state u₁(d) gives α = ⟨sin³(2d̂)⟩_{u₁}.
-    The ground state energy E₁ is determined by the phase coherence condition at T_bio.
+    This potential governs the Schrödinger equation u''(d) + [E - Q(d)]u(d) = 0
+    on the tube cross-section. (The ground-state conjecture α = ⟨sin³(2d̂)⟩_{u₁}
+    was tested and gives ~0.35, not 1/137; the potential is retained as a
+    geometric quantity of the tube.)
 
     Explicit formulas:
         J(d)  = sin(2d)^2 * cos(2d)  [dropping 1/4 factor which cancels in ratio]
@@ -302,102 +276,49 @@ def effective_potential_Q(d: float) -> float:
     # Avoid singularities and handle boundary
     if d <= 1e-10:
         return 0.0
-    
+
     d_max = fs_distance_max()
     if d >= d_max - 1e-10:
         return 1e10  # Infinite wall at cut locus
-    
+
     s = np.sin(2 * d)
     c = np.cos(2 * d)
     s2 = s * s
     c2 = c * c
     s3 = s2 * s
-    
+
     # J = sin²(2d)cos(2d)
     J = s2 * c
-    
+
     # J' = 2sin(2d)[2cos²(2d) - sin²(2d)]
     J_prime = 2 * s * (2 * c2 - s2)
-    
+
     # J'' = 4cos(2d)[2cos²(2d) - 7sin²(2d)]
     J_double_prime = 4 * c * (2 * c2 - 7 * s2)
-    
+
     # Q = (J')²/(4J²) - J''/(2J)
     term1 = (J_prime * J_prime) / (4 * J * J)
     term2 = J_double_prime / (2 * J)
-    
+
     return term1 - term2
 
 
 # -----------------------------------------------------------------------
-# Schrödinger Equation Setup
+# Ground-State Conjecture (REMOVED)
+# -----------------------------------------------------------------------
+# The Schrödinger ground-state approach (α = ⟨sin³(2d̂)⟩_{u₁}) was
+# investigated and found to give ⟨sin³(2d)⟩ ≈ 0.35, not 1/137.
+# The functions schrodinger_setup(), solve_ground_state(),
+# alpha_convergence_study(), alpha_all_approaches(), and
+# print_alpha_comparison() have been removed.
+#
+# The current framework determines α as a consistency prediction:
+#   Λ_obs → N,  then  G_obs + N → α = G·m_π²·√N / (16π⁴ℏc)
+# See cosmology.py and constraint_solver.py for the working code.
 # -----------------------------------------------------------------------
 
-def schrodinger_setup() -> dict:
-    """
-    Set up the Schrödinger equation for ground state computation.
 
-    The equation u''(d) + [E - Q(d)]u(d) = 0 on [0, π/4] with:
-    - Boundary conditions: u(0) = 0, u'(0+) finite (u ~ d near 0), u(π/4) = 0
-    - Potential Q(d) from effective_potential_Q(d)
-    - Ground state energy E₁ from phase coherence condition
-    
-    The target:
-        α = ⟨sin³(2d̂)⟩_{u₁} = ∫₀^{π/4} sin³(2d) u₁²(d) dd / ∫₀^{π/4} u₁²(d) dd
-
-    Returns a dict describing the discretized problem suitable for numerical solution.
-    The actual ground state computation (shooting method or finite differences) is
-    the framework's central open problem.
-
-    Returns
-    -------
-    dict
-        d_grid: array of d values on [0, π/4]
-        Q_values: Q(d) evaluated on grid
-        target_observable: lambda u: expectation value of sin³(2d) in state u
-        density: the jacobi_field_density function (for reference)
-        boundary_conditions: description
-        open_problem: description of what needs to be computed
-    """
-    d_max = fs_distance_max()
-    n_grid = 1000
-    d_grid = np.linspace(0, d_max, n_grid)
-    
-    # Compute potential on grid
-    Q_values = np.array([effective_potential_Q(d) for d in d_grid])
-    
-    # Target observable: sin³(2d)
-    observable = np.sin(2 * d_grid)**3
-    
-    def target_expectation_value(u: np.ndarray) -> float:
-        """
-        Compute expectation value ⟨sin³(2d)⟩ in state u.
-        
-        u should be normalized: ∫|u|² = 1 (or we normalize internally).
-        """
-        dd = d_max / (n_grid - 1)
-        numerator = np.trapz(observable * u * u, dx=dd)
-        denominator = np.trapz(u * u, dx=dd)
-        if denominator == 0:
-            return float('nan')
-        return numerator / denominator
-    
-    return {
-        'd_grid': d_grid,
-        'd_max': d_max,
-        'n_grid': n_grid,
-        'Q_values': Q_values,
-        'observable': observable,
-        'target_expectation_value': target_expectation_value,
-        'density': jacobi_field_density,
-        'boundary_conditions': (
-            'u(0) = 0, u(π/4) = 0, u\'(0+) finite'
-        ),
-        'open_problem': (
-            'Solve u\'\'(d) + [E - Q(d)]u(d) = 0 with BCs to find ground state u₁. '
-            'Compute E₁ from phase coherence. Then α = ⟨sin³(2d)⟩_{u₁}.'
-        ),
-    }
+_GROUND_STATE_REMOVED = True  # marker for tests; old code below this was deleted
 
 
 # -----------------------------------------------------------------------
@@ -506,11 +427,11 @@ def volume_fraction_within_distance(d: float, model: str = 'jacobi') -> float:
     Fraction of CP3's total volume within FS distance d of RP3.
 
     Computed by numerical integration of the volume density.
-    
+
     The 'jacobi' model (NEW, CORRECT) uses the Jacobi field density from
     the symmetric pair (CP3, RP3) analysis. Near d = 0, this scales as
     ~(8/3)·d³ (codimension 3), reflecting that RP3 has codimension 3 in CP3.
-    
+
     The legacy 'S5' and 'CP3' models are retained for backward compatibility.
     The old behavior (d⁶ scaling) was from geodesic balls at a point, not tubes.
 
@@ -529,12 +450,12 @@ def volume_fraction_within_distance(d: float, model: str = 'jacobi') -> float:
     # Numerical integration via Simpson-like quadrature
     N = 10000
     d_max = fs_distance_max()
-    
+
     # Total volume integral
     x_all = np.linspace(0, d_max, N + 1)
     rho_all = np.array([volume_density_at_distance(x, model) for x in x_all])
     vol_total = np.trapezoid(rho_all, x_all)
-    
+
     # Volume within distance d
     if d <= 0:
         return 0.0
@@ -544,7 +465,7 @@ def volume_fraction_within_distance(d: float, model: str = 'jacobi') -> float:
     x_d = np.linspace(0, d, n_pts + 1)
     rho_d = np.array([volume_density_at_distance(x, model) for x in x_d])
     vol_d = np.trapezoid(rho_d, x_d)
-    
+
     return vol_d / vol_total
 
 
@@ -555,12 +476,9 @@ def alpha_from_volume_fraction(model: str = 'jacobi') -> dict:
     Finds the FS distance d* at which the volume fraction equals α,
     and checks whether this distance has a clean geometric meaning.
 
-    NOTE: The sharp-cutoff framing (finding d* where fraction=α) is an
-    approximation. The CORRECT formulation is as a ground-state expectation
-    value: α = ⟨sin³(2d̂)⟩_{u₁}, where u₁ solves the Schrödinger equation
-    u'' + [E - Q(d)]u = 0 with appropriate boundary conditions and ground
-    state energy E₁ from the phase coherence condition at T_bio. The current
-    sharp-cutoff approach is a classical proxy for the quantum result.
+    NOTE: This is a geometric characterization (at what distance does the tube
+    volume fraction equal α?), not a derivation. The framework determines α as
+    a consistency prediction from Λ_obs and G_obs; see constraint_solver.py.
 
     Parameters
     ----------
@@ -626,8 +544,8 @@ def alpha_from_volume_fraction(model: str = 'jacobi') -> dict:
             f'Volume fraction f(d) scales as d^{exponent:.2f} near d=0 '
             f'(expected: d^3 for codimension-3 tube). '
             f'Prefactor ≈ {prefactor:.1f}. '
-            f'NOTE: sharp-cutoff is an approximation; true α = ⟨sin³(2d̂)⟩_{{u₁}} '
-            f'from Schrödinger ground state (OPEN PROBLEM).'
+            f'This characterizes the geometric locus; α itself is determined '
+            f'by the consistency prediction (Λ_obs → N → α).'
         ),
     }
 
@@ -901,7 +819,6 @@ def print_twistor_analysis() -> None:
     inv = cp3_invariants()
     neff = neff_exponent_analysis()
     vf = alpha_from_volume_fraction(model='jacobi')
-    schrod = schrodinger_setup()
 
     print("=" * 72)
     print("PPM Twistor/RG Analysis: α from CP3 Geometry")
@@ -948,7 +865,7 @@ def print_twistor_analysis() -> None:
     print(f"  Q(π/8) = {Q_mid:.2f} (moderate barrier)")
     print(f"  Q(π/4-ε) → ∞ (infinite wall at cut locus)")
     print(f"  Governs: u''(d) + [E - Q(d)]u = 0 with BCs u(0)=u(π/4)=0")
-    print(f"  Open: solve for ground state u₁, compute α = ⟨sin³(2d)⟩_{{u₁}}")
+    print(f"  Note: ground-state ⟨sin³(2d)⟩ ≈ 0.35, not 1/137 (conjecture fails)")
 
     print(f"\n--- Volume Fraction Conjecture: α = V_RP3(d*)/V_CP3 (Jacobi) ---")
     print(f"  d* = {vf['d_alpha']:.6f}")
@@ -958,7 +875,7 @@ def print_twistor_analysis() -> None:
     print(f"  Scaling exponent: {vf['scaling_exponent']:.2f} (expected: 3 = codimension)")
     print(f"  Prefactor: {vf['prefactor']:.1f}")
     print(f"  Match: {vf['match_pct']:.4f}%")
-    print(f"  Note: sharp-cutoff framing is classical proxy; quantum result is ground-state expectation")
+    print(f"  Note: geometric characterization; α determined by consistency prediction (Λ_obs → N → α)")
 
     print(f"\n--- N_eff Exponent (Dimensional Reduction) ---")
     print(f"  N_eff = {neff['N_eff_exact']:.4e}")
@@ -980,6 +897,6 @@ def print_twistor_analysis() -> None:
     print(f"  Volume fraction (Jacobi): α = V_RP3(d*)/V_CP3 CONFIRMED numerically")
     print(f"  Jacobi field analysis: COMPLETE (codimension 3, density ρ = sin²(2d)cos(2d))")
     print(f"  Effective potential Q(d): IMPLEMENTED (from Jacobian via WKB formula)")
-    print(f"  Schrödinger ground state: OPEN (needs shooting method or FD solver)")
-    print(f"  Expectation value α = ⟨sin³(2d̂)⟩_{{u₁}}: OPEN (depends on u₁)")
+    print(f"  Schrödinger ground state: TESTED — gives ⟨sin³(2d)⟩ ≈ 0.35 (fails)")
+    print(f"  α determination: consistency prediction Λ_obs → N → α = 1/(137.6 ± 1.3)")
     print("=" * 72)

@@ -527,65 +527,6 @@ class TestJacobiFieldAnalysis(unittest.TestCase):
         # Q grows but approaches finite limit before hitting singularity
         self.assertGreater(Q_near, 10.0)
 
-    def test_schrodinger_setup_returns_dict(self):
-        from ppm.twistor import schrodinger_setup
-
-        setup = schrodinger_setup()
-        self.assertIsInstance(setup, dict)
-
-    def test_schrodinger_setup_has_required_keys(self):
-        from ppm.twistor import schrodinger_setup
-
-        setup = schrodinger_setup()
-        required_keys = [
-            "d_grid",
-            "d_max",
-            "n_grid",
-            "Q_values",
-            "observable",
-            "target_expectation_value",
-            "density",
-            "boundary_conditions",
-            "open_problem",
-        ]
-        for key in required_keys:
-            self.assertIn(key, setup)
-
-    def test_schrodinger_setup_grid_shape(self):
-        from ppm.twistor import schrodinger_setup
-
-        setup = schrodinger_setup()
-        n = setup["n_grid"]
-        self.assertEqual(len(setup["d_grid"]), n)
-        self.assertEqual(len(setup["Q_values"]), n)
-        self.assertEqual(len(setup["observable"]), n)
-
-    def test_schrodinger_setup_Q_at_zero_is_zero(self):
-        from ppm.twistor import schrodinger_setup
-
-        setup = schrodinger_setup()
-        Q_at_0 = setup["Q_values"][0]
-        self.assertAlmostEqual(Q_at_0, 0.0, places=10)
-
-    def test_schrodinger_setup_boundary_conditions_satisfied(self):
-        from ppm.twistor import schrodinger_setup, fs_distance_max
-
-        setup = schrodinger_setup()
-        d_grid = setup["d_grid"]
-        d_max = fs_distance_max()
-        # Grid should start at 0 and end at d_max
-        self.assertAlmostEqual(d_grid[0], 0.0, places=6)
-        self.assertAlmostEqual(d_grid[-1], d_max, places=6)
-
-    def test_schrodinger_setup_observable_consistent(self):
-        from ppm.twistor import schrodinger_setup
-
-        setup = schrodinger_setup()
-        d_grid = setup["d_grid"]
-        obs = setup["observable"]
-        expected_obs = np.sin(2 * d_grid) ** 3
-        np.testing.assert_array_almost_equal(obs, expected_obs, decimal=10)
-
     def test_volume_density_jacobi_model(self):
         from ppm.twistor import volume_density_at_distance
 
