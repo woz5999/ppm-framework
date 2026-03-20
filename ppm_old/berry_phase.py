@@ -36,12 +36,12 @@ def quark_positions() -> dict:
         Keyed by quark name, values are dicts with 'k', 'mass_MeV', 'z_abs'.
     """
     quarks = {
-        'up':      {'k': 53.8, 'mass_MeV': 2.16},
-        'down':    {'k': 53.3, 'mass_MeV': 4.67},
-        'strange': {'k': 51.8, 'mass_MeV': 93.4},
-        'charm':   {'k': 49.4, 'mass_MeV': 1270.0},
-        'bottom':  {'k': 48.0, 'mass_MeV': 4180.0},
-        'top':     {'k': 44.5, 'mass_MeV': 173000.0},
+        'up':      {'k': 55.54, 'mass_MeV': 2.16},      # Kähler; k from E⁻¹(observed)
+        'down':    {'k': 54.70, 'mass_MeV': 4.67},       # Kähler; k from E⁻¹(observed)
+        'strange': {'k': 51.44, 'mass_MeV': 93.4},       # Kähler; k from E⁻¹(observed)
+        'charm':   {'k': 47.5,  'mass_MeV': 1270.0},     # Framework prediction (§4)
+        'bottom':  {'k': 46.0,  'mass_MeV': 4180.0},     # Framework prediction (§4)
+        'top':     {'k': 44.5,  'mass_MeV': 173000.0},   # EWSB scale
     }
 
     # |z| in CP3 is proportional to mass ratio relative to confinement scale

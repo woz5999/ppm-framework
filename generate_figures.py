@@ -224,52 +224,80 @@ def fig_sin2_theta_w():
 # 5. Energy Hierarchy Table (§4.3)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 def fig_energy_hierarchy_table():
-    print("Fig 5: Energy hierarchy table")
-    table = H.k_level_table()
+    print("Fig 5: Energy hierarchy — k-scale vs mass")
 
-    fig, ax = plt.subplots(figsize=(10, 8))
-    ax.axis('off')
-    ax.set_title(r'PPM Energy Hierarchy: $E(k) = 140\;\mathrm{MeV} \times (2\pi)^{(51-k)/2}$',
-                 fontsize=14, pad=20)
+    particles = [
+        ('top',      44.5,  172.7,      'quark'),
+        ('Higgs',    44.5,  125.25,     'boson'),
+        ('Z',        44.5,  91.188,     'boson'),
+        ('W',        44.5,  80.377,     'boson'),
+        ('bottom',   46.0,  4.18,       'quark'),
+        ('charm',    47.5,  1.27,       'quark'),
+        (r'$\tau$',  48.0,  1.777,      'lepton'),
+        ('pion',     51.0,  0.140,      'meson'),
+        (r'$\mu$',   51.5,  0.10566,    'lepton'),
+        ('strange',  51.44, 0.0934,     'quark'),
+        ('down',     54.70, 0.00467,    'quark'),
+        ('up',       55.54, 0.00216,    'quark'),
+        ('e',        57.0,  0.000511,   'lepton'),
+    ]
 
-    col_labels = ['Particle', 'k-level', 'Predicted (GeV)', 'Observed (GeV)', 'Error %', 'Category']
-    cell_data = []
-    cell_colors = []
-
-    cat_colors = {
-        'gauge_boson': '#e8e0f0',
-        'quark': '#e0e8f0',
-        'lepton': '#f0e8e0',
-        'meson': '#e0f0e8',
-        'baryon': '#f0e0e0',
-        'scalar': '#f0f0e0',
-        'scale': '#f0f0f0',
-        'consciousness': '#fff0e0',
+    cat_markers = {
+        'quark':  ('s', BLUE),
+        'boson':  ('D', PURPLE),
+        'lepton': ('o', GOLD),
+        'meson':  ('^', GREEN),
     }
 
-    for r in table:
-        name = r['name']
-        k = f"{r['k']:.1f}" if isinstance(r['k'], float) else str(r['k'])
-        pred = f"{r['E_predicted_GeV']:.4g}" if r['E_predicted_GeV'] else '—'
-        obs = f"{r['mass_observed_GeV']:.4g}" if r.get('mass_observed_GeV') else '—'
-        err = f"{r['error_pct']:.1f}%" if r.get('error_pct') is not None else '—'
-        cat = r.get('category', '')
-        cell_data.append([name, k, pred, obs, err, cat])
-        bg = cat_colors.get(cat, '#ffffff')
-        cell_colors.append([bg]*6)
+    k_range = np.linspace(43, 58, 300)
+    E_line = np.array([H.energy_gev(k) for k in k_range])
 
-    tbl = ax.table(cellText=cell_data, colLabels=col_labels,
-                   cellColours=cell_colors,
-                   loc='center', cellLoc='center')
-    tbl.auto_set_font_size(False)
-    tbl.set_fontsize(8)
-    tbl.scale(1, 1.3)
+    fig, ax = plt.subplots(figsize=(10, 6.5))
 
-    for (row, col), cell in tbl.get_celld().items():
-        if row == 0:
-            cell.set_facecolor('#2d2d3d')
-            cell.set_text_props(color='white', fontweight='bold')
-        cell.set_edgecolor('#cccccc')
+    ax.plot(k_range, E_line, color=GRAY, linewidth=2.5, zorder=1,
+            label=r'$E(k) = 140\;\mathrm{MeV}\times(2\pi)^{(51-k)/2}$')
+
+    ax.fill_between(k_range, E_line / 10, E_line * 10,
+                    alpha=0.06, color=GRAY, zorder=0)
+
+    label_config = {
+        'top':     (-8, 10, 'right'),
+        'Higgs':   (-8, -2, 'right'),
+        'Z':       (8, 10, 'left'),
+        'W':       (8, -8, 'left'),
+        'bottom':  (8, 0, 'left'),
+        'charm':   (8, 0, 'left'),
+        r'$\tau$': (8, 0, 'left'),
+        'pion':    (-8, 0, 'right'),
+        r'$\mu$':  (8, 6, 'left'),
+        'strange': (8, -6, 'left'),
+        'down':    (8, 0, 'left'),
+        'up':      (8, 0, 'left'),
+        'e':       (8, 0, 'left'),
+    }
+
+    plotted_cats = set()
+    for name, k, m_obs, cat in particles:
+        marker, color = cat_markers[cat]
+        label = cat.capitalize() if cat not in plotted_cats else None
+        plotted_cats.add(cat)
+        ax.scatter(k, m_obs, marker=marker, s=80, color=color,
+                   edgecolors='#333', linewidths=0.6, zorder=3, label=label)
+
+        dx, dy, ha = label_config.get(name, (8, 0, 'left'))
+        ax.annotate(name, (k, m_obs), fontsize=7.5,
+                    ha=ha, va='center',
+                    xytext=(dx, dy), textcoords='offset points')
+
+    ax.set_yscale('log')
+    ax.set_xlabel(r'$k$-level', fontsize=12)
+    ax.set_ylabel(r'Mass / Energy  (GeV)', fontsize=12)
+    ax.set_title(r'PPM Energy Hierarchy: observed masses vs. $E(k)$', fontsize=13)
+    ax.set_xlim(43, 58.5)
+    ax.set_ylim(1e-4, 500)
+    ax.legend(loc='upper right', fontsize=9, framealpha=0.9)
+    ax.grid(True, which='major', alpha=0.25)
+    ax.grid(True, which='minor', alpha=0.1)
 
     save(fig, 'fig_energy_hierarchy_table.png')
 

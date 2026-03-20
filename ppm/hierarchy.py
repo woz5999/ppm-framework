@@ -8,7 +8,7 @@ The PPM energy hierarchy:
 Equivalently (adopting Planck UV anchor):
     E(k) ≈ E_Planck × (2π)^{(1-k)/2}
 
-The ladder is parameterized by integer or half-integer k ∈ [1, 51].
+The ladder is parameterized by integer or half-integer k ∈ [1, ~75] (Planck to consciousness).
 Each k-level corresponds to a characteristic energy scale of the PPM framework.
 
 Section references: §4 (Bootstrap & Hierarchy Scaling), §7 (SM Parameters)
@@ -202,22 +202,29 @@ def consciousness_level(T_kelvin=310.0):
 # Known particle k-levels and masses for the full hierarchy display
 PARTICLE_TABLE = [
     # (name, k-level, mass_GeV, category)
+    #
+    # k-values match the paper's stated predictions:
+    #   Leptons: Z₂ quantization k = 44.5 + n/2  (section5.tex, section4-new.tex)
+    #   Heavy quarks: framework-predicted k-levels (section4-new.tex)
+    #   Light quarks: Kähler suppression mechanism, k from inverting E(k) at observed mass
+    #   Bosons: EWSB cluster at k ≈ 44.5
+    #
     ("Planck",       1.0,    1.22e19,     "scale"),
     ("UV boundary",  10.0,   None,        "scale"),
     ("Pati-Salam",   16.25,  None,        "scale"),
-    ("top",          44.5,   172.7,       "quark"),
-    ("Higgs",        44.7,   125.25,      "boson"),
-    ("W",            44.85,  80.377,      "boson"),
-    ("Z",            44.75,  91.188,      "boson"),
-    ("bottom",       48.0,   4.18,        "quark"),
-    ("tau",          48.7,   1.777,       "lepton"),
-    ("charm",        49.4,   1.27,        "quark"),
-    ("strange",      51.8,   0.0934,      "quark"),
-    ("muon",         50.15,  0.10566,     "lepton"),
-    ("pion",         51.0,   0.140,       "meson"),
-    ("down",         53.3,   0.00467,     "quark"),
-    ("up",           53.8,   0.00216,     "quark"),
-    ("electron",     55.0,   0.000511,    "lepton"),
+    ("top",          44.5,   172.7,       "quark"),       # EWSB scale (section4-new.tex)
+    ("Higgs",        44.5,   125.25,      "boson"),       # EWSB cluster
+    ("W",            44.5,   80.377,      "boson"),       # EWSB cluster
+    ("Z",            44.5,   91.188,      "boson"),       # EWSB cluster
+    ("bottom",       46.0,   4.18,        "quark"),       # k_b = 46 (section4-new.tex)
+    ("charm",        47.5,   1.27,        "quark"),       # k_c = 47.5 (section4-new.tex)
+    ("tau",          48.0,   1.777,       "lepton"),      # n=7, k = 44.5 + 7/2
+    ("muon",         51.5,   0.10566,     "lepton"),      # n=14, k = 44.5 + 14/2
+    ("pion",         51.0,   0.140,       "meson"),       # reference point
+    ("strange",      51.44,  0.0934,      "quark"),       # Kähler; k from E⁻¹(93.4 MeV)
+    ("down",         54.70,  0.00467,     "quark"),       # Kähler; k from E⁻¹(4.67 MeV)
+    ("up",           55.54,  0.00216,     "quark"),       # Kähler; k from E⁻¹(2.16 MeV)
+    ("electron",     57.0,   0.000511,    "lepton"),      # n=25, k = 44.5 + 25/2
 ]
 
 
