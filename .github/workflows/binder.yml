@@ -2,7 +2,7 @@ name: Build and push Binder image
 
 on:
   # Disabled - uncomment the 'push' block below to re-enable
-  #   push:
+  # push:
   #     branches: [main]
   #     paths:
   #       - "binder/**"
@@ -11,6 +11,8 @@ on:
   #       - "pyproject.toml"
   #       - ".github/workflows/binder.yml"
   #       - "notebooks/*.ipynb"
+  #   tags:
+  #     - "v*" # Trigger only on tags starting with "v"
   workflow_dispatch: # Manual trigger only - workflow won't run automatically
 
 permissions:

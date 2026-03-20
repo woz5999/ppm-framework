@@ -677,6 +677,176 @@ def heat_kernel_ratio(t: float, L_max: int = 200) -> float:
 
 
 # -----------------------------------------------------------------------
+# Twisted Heat Trace (Equivariant Heat Kernel on CP3)
+# -----------------------------------------------------------------------
+
+def tau_trace(k: int) -> int:
+    """
+    Trace of complex conjugation τ on the k-th eigenspace V_k of CP3.
+
+    tr(τ|V_k) = C(k+3,3) - C(k+2,3)
+
+    Counts net self-conjugate harmonic polynomials of bidegree (k,k).
+    Verified by explicit construction for k = 0, 1, 2, 3.
+    """
+    from math import comb
+    return comb(k + 3, 3) - comb(k + 2, 3)
+
+
+def twisted_heat_trace(t: float, L_max: int = 500) -> float:
+    """
+    Twisted heat trace Θ^τ(t) = Σ_k tr(τ|V_k) exp(-λ_k t) on CP3.
+
+    This is the Lefschetz-type trace of τ·exp(-tΔ), measuring the net
+    spectral asymmetry between τ-even (RP3-compatible) and τ-odd modes.
+    """
+    total = 0.0
+    for k in range(L_max):
+        lam_k = k * (k + 3)
+        tr_k = tau_trace(k)
+        w = np.exp(-lam_k * t)
+        if w < 1e-100:
+            break
+        total += tr_k * w
+    return total
+
+
+def twisted_heat_trace_ratio(t: float, L_max: int = 500) -> float:
+    """
+    Twisted heat trace ratio Θ^τ(t) / Θ_{CP3}(t).
+
+    At t* = 1/32: ratio = 1/137.26 (0.16% accuracy).
+    At t  = 1/(10π): ratio = 1/133.5 (2.6% accuracy).
+
+    Among CP^n for n = 1..7, the formula t* = 1/(2(n+1)²) gives
+    1/α ≈ 137 ONLY for n = 3.  CP² gives 1/18; CP⁴ gives 1/1258.
+
+    The leading coefficient is exactly C = 3√π/4 (from equivariant heat
+    kernel asymptotics), giving Θ^τ/Θ ~ (3√π/4)·t^{3/2} + O(t^{5/2}).
+
+    Parameters
+    ----------
+    t : float
+        Diffusion depth parameter.
+    L_max : int
+        Number of eigenlevels to sum.
+
+    Returns
+    -------
+    float
+        Θ^τ(t) / Θ_{CP3}(t).
+    """
+    K_CP = heat_kernel_CP3(t, L_max)
+    theta_tw = twisted_heat_trace(t, L_max)
+    if K_CP == 0:
+        return float('inf')
+    return theta_tw / K_CP
+
+
+def twisted_trace_crossing(alpha_target: float = None, tol: float = 1e-10) -> dict:
+    """
+    Find the diffusion depth t* where the twisted trace ratio equals α.
+
+    Returns t*, the predicted 1/α, and comparison with both t* = 1/32
+    and t* = 1/(10π) candidates.
+
+    Parameters
+    ----------
+    alpha_target : float, optional
+        Target value (default: observed α = 1/137.036).
+    tol : float
+        Bisection tolerance.
+
+    Returns
+    -------
+    dict
+        t_star, inv_alpha_pred, error vs 1/32, error vs 10π, etc.
+    """
+    if alpha_target is None:
+        alpha_target = PHYSICAL['alpha']
+
+    # Bisection: ratio increases monotonically with t
+    t_lo, t_hi = 0.005, 0.1
+    for _ in range(200):
+        t_mid = (t_lo + t_hi) / 2
+        r = twisted_heat_trace_ratio(t_mid)
+        if r < alpha_target:
+            t_lo = t_mid
+        else:
+            t_hi = t_mid
+        if t_hi - t_lo < tol:
+            break
+
+    t_star = (t_lo + t_hi) / 2
+    r_star = twisted_heat_trace_ratio(t_star)
+
+    # Evaluate at the two candidate t* values
+    t_32 = 1.0 / 32
+    t_10pi = 1.0 / (10 * np.pi)
+    r_32 = twisted_heat_trace_ratio(t_32)
+    r_10pi = twisted_heat_trace_ratio(t_10pi)
+
+    # Evaluate the separate-manifold ratio at 10π
+    r_sep_10pi = heat_kernel_ratio(t_10pi)
+
+    return {
+        't_star': t_star,
+        'inv_alpha_pred': 1.0 / r_star,
+        'alpha_pred': r_star,
+        # At t = 1/32 (twisted trace)
+        't_32': t_32,
+        'inv_alpha_at_32': 1.0 / r_32,
+        'error_32_pct': abs(1.0/r_32 - 1.0/alpha_target) / (1.0/alpha_target) * 100,
+        # At t = 1/(10π) (twisted trace)
+        't_10pi': t_10pi,
+        'inv_alpha_twisted_10pi': 1.0 / r_10pi,
+        'error_twisted_10pi_pct': abs(1.0/r_10pi - 1.0/alpha_target) / (1.0/alpha_target) * 100,
+        # At t = 1/(10π) (separate-manifold ratio)
+        'inv_alpha_sep_10pi': 1.0 / r_sep_10pi,
+        'error_sep_10pi_pct': abs(1.0/r_sep_10pi - 1.0/alpha_target) / (1.0/alpha_target) * 100,
+        # Leading coefficient
+        'C_leading': 3 * np.sqrt(np.pi) / 4,
+        'C_leading_formula': '3√π/4 = (4π)^{3/2} · Vol(RP³)/Vol(CP³)',
+        # CP^n selectivity
+        'selectivity_note': 'Only n=3 gives 1/α ≈ 137 at t = 1/(2(n+1)²)',
+    }
+
+
+def twisted_trace_CPn_selectivity(n_max: int = 7) -> dict:
+    """
+    Evaluate twisted trace ratio at t = 1/(2(n+1)²) for CP^n, n = 1..n_max.
+
+    Demonstrates that only n = 3 produces 1/α ≈ 137.
+
+    Returns
+    -------
+    dict
+        n_values, t_values, inv_ratios.
+    """
+    from math import comb
+
+    results = {'n': [], 't': [], 'inv_ratio': []}
+    for n in range(1, n_max + 1):
+        t = 1.0 / (2 * (n + 1)**2)
+        theta_full = 0.0
+        theta_tw = 0.0
+        for k in range(1000):
+            lam_k = k * (k + n)
+            d_k = comb(k + n, n)**2 - comb(k + n - 1, n)**2
+            tr_k = comb(k + n, n) - comb(k + n - 1, n)
+            w = np.exp(-lam_k * t)
+            if w < 1e-100:
+                break
+            theta_full += d_k * w
+            theta_tw += tr_k * w
+        ratio = theta_tw / theta_full if theta_full > 0 else 0
+        results['n'].append(n)
+        results['t'].append(t)
+        results['inv_ratio'].append(1.0 / ratio if ratio > 0 else float('inf'))
+    return results
+
+
+# -----------------------------------------------------------------------
 # Spectral Zeta Functions
 # -----------------------------------------------------------------------
 

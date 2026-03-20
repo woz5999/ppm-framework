@@ -1,240 +1,189 @@
 """
-PPM Framework — Physical and Framework Constants
-=================================================
+ppm.constants — PPM fundamental constants and parameters
+=========================================================
 
-All physical and framework constants in one place. Every other module
-imports from here — no magic numbers anywhere else.
+All numerical constants used throughout the PPM framework.
+Each constant includes its LaTeX form, section reference, and status.
 
-k_conscious is DERIVED from the thermal matching condition E(k) = k_B*T_bio,
-not hardcoded. The consciousness boundary sits wherever thermal energy meets
-the hierarchy — its topological significance is as a critical point / phase
-transition, not at any particular k-value.
-
-Notes on parameter levels
---------------------------
-The framework operates at two levels:
-
-Level 1 — Fundamental constants (zero free parameters):
-    The 9-equation coupled constraint system has no free parameters.
-    Topology alone (Z2 → RP3) determines the unique solution.
-    Constants: g, K, T, alpha_EM, alpha_w, alpha_s, G, g_G, Lambda
-
-Level 2 — Standard Model structure (4-7 effective free parameters):
-    Built on the fundamental constants above. Reduces the SM's 26
-    inputs to approximately 4-7, with the remainder derived or
-    constrained by Z2 → RP3 topology.
-
-This distinction is critical for the zero-free-parameters claim.
-The claim applies strictly to Level 1.
+Status codes
+------------
+DERIVED   : follows from PPM geometry/topology alone
+EMPIRICAL : one empirical input required (explicitly noted)
+OBSERVED  : standard physics observed value (not predicted by PPM)
+VERIFIED  : computed and cross-checked in prior sessions
+OPEN      : derivation pending (FFS or holonomy)
 """
 
-import numpy as np
+import math
 
-# ---------------------------------------------------------------------------
-# PHYSICAL CONSTANTS (SI units)
-# ---------------------------------------------------------------------------
-PHYSICAL = {
-    'c':     2.998e8,       # m/s — speed of light
-    'hbar':  1.055e-34,     # J·s — reduced Planck constant
-    'G':     6.674e-11,     # m³/(kg·s²) — Newton's constant
-    'k_B':   1.381e-23,     # J/K — Boltzmann constant
-    'alpha': 1 / 137.036,   # dimensionless — fine-structure constant (observed)
-}
+# ─── Mathematical constants ───────────────────────────────────────────────────
 
-# ---------------------------------------------------------------------------
-# UNIT CONVERSIONS
-# ---------------------------------------------------------------------------
-CONVERSIONS = {
-    'MeV_to_J':  1.602e-13,   # 1 MeV in joules
-    'MeV_to_kg': 1.783e-30,   # 1 MeV/c² in kg
-    'eV_to_J':   1.602e-19,   # 1 eV in joules
-}
+PI   = math.pi          # π
+TAU  = 2.0 * math.pi    # 2π — appears throughout the ladder formula
+PHI  = (1.0 + math.sqrt(5.0)) / 2.0  # φ = golden ratio ≈ 1.61803
 
-# ---------------------------------------------------------------------------
-# FRAMEWORK CONSTANTS (derived from topology, not fitted)
-# ---------------------------------------------------------------------------
-# Hierarchy parameters (topological)
-_g       = 2 * np.pi       # Hierarchy scaling — exact from Z2→RP3 topology
-_m_pi    = 140.0            # Pion mass in MeV — reference energy scale
-_k_ref   = 51              # Confinement k-level — reference level
+# ─── PPM geometry ─────────────────────────────────────────────────────────────
 
-# Environmental / cosmological
-_T_bio   = 310.0            # K — biological temperature
-_N_cosmic = 1e82            # Total actualization count within cosmological event horizon
-                            # Consistent with holographic counting: N ≈ (R_dS / l_conf)²
-                            # where R_dS = √(3/Λ), l_conf = ħc/(m_πc²). See SESSION_EDITS §14.
+N_OUTCOMES = 4          # Number of measurement outcomes per micro-event
+                        # → state space is CP^{N-1} = CP³
+                        # Section §1 (axiom)
 
-# DERIVED: k_conscious from thermal matching E(k) = k_B * T_bio
-# E(k) = m_pi * g^((k_ref - k) / 2)  =>  k = k_ref - 2*ln(E/m_pi)/ln(g)
-# E_conscious = k_B * T_bio  (in MeV)
-_kBT_MeV = PHYSICAL['k_B'] * _T_bio / CONVERSIONS['MeV_to_J']
-_k_conscious = _k_ref - 2.0 * np.log(_kBT_MeV / _m_pi) / np.log(_g)
+CP3_DIM    = N_OUTCOMES - 1   # = 3 (complex dimension of CP³)
 
-FRAMEWORK = {
-    'g':           _g,
-    'm_pi_MeV':    _m_pi,
-    'k_ref':       _k_ref,
-    'k_conscious': _k_conscious,   # ~75.35 — derived, not hardcoded
-    'N_cosmic':    _N_cosmic,
-    'T_bio':       _T_bio,
-    'kBT_MeV':     _kBT_MeV,      # k_B * T_bio in MeV
-    'kBT_eV':      _kBT_MeV * 1e6, # k_B * T_bio in eV
-}
+R_SQUARED  = 2.0 * (N_OUTCOMES + 1)  # = 2(N+1) = 10 in 2D effective theory
+                                      # Fubini-Study radius squared
+                                      # LaTeX: r^2 = 2(N+1)
+                                      # Section §7 (instanton action)
+                                      # Status: DERIVED
+R          = math.sqrt(R_SQUARED)     # = √10 ≈ 3.162
 
-# ---------------------------------------------------------------------------
-# ENERGY SCALES — keyed by name
-#
-# k-values are PRIMARY: derived from topology or Z2 quantization (k = k_EWSB + n/2).
-# Predicted energies follow from E(k) = m_pi * g^((k_ref - k)/2).
-# Observed values are listed for cross-validation, NOT as inputs.
-#
-# Sources for geometric k-values:
-#   - Planck (k=0): topological requirement — CP3 fully accessible
-#   - EWSB (k=44.5): topological requirement — RP3 emerges for EW sector
-#   - Confinement (k=51): topological requirement — RP3 fully crystallized
-#   - Consciousness (k~75.35): derived from E(k) = k_BT thermal matching
-#   - Leptons: Z2 quantization k = k_EWSB + n/2 (Section 4.3.3–4.3.5, 6.3)
-#   - Top quark: k = k_EWSB (Section 4.2.6), m_t = pi * E(44.5)
-# ---------------------------------------------------------------------------
+# ─── Higgs quartic coupling ───────────────────────────────────────────────────
 
-def _E_from_k(k):
-    """Predict energy in MeV from geometric k-level."""
-    return _m_pi * _g ** ((_k_ref - k) / 2.0)
+LAMBDA_PPM = 1.0 / (4.0 * math.sqrt(PI))
+# LaTeX: \lambda_{\rm PPM} = \frac{1}{4\sqrt{\pi}} \approx 0.14105
+# RP³ normal bundle curvature → Higgs quartic (geometric value)
+# Applied at EW scale: m_H = v*sqrt(2*lambda_PPM) = 130.8 GeV (4.5% from obs)
+# NOTE: Cannot be interpreted as UV boundary condition at E_break.
+#   SM RG running from 10^16 GeV is an IR attractor (lambda -> ~0.41 at M_Z
+#   regardless of UV value). The observed lambda(M_Z) = 0.129 requires
+#   lambda ~ -0.08 at 10^16 (vacuum metastability). PPM's lambda = 0.141
+#   at E_break would give m_H ~ 223 GeV after running — much worse.
+#   The geometric value must be compared directly at the EW scale.
+# Section §2 (τ involution), §7 (SM parameters)
+# Status: DERIVED (VERIFIED)
 
-def _E_GeV_from_k(k):
-    """Predict energy in GeV from geometric k-level."""
-    return _E_from_k(k) / 1e3
+LAMBDA_TAU_CONJUGATE = -LAMBDA_PPM
+# LaTeX: \lambda_{\tau} = -\lambda_{\rm PPM}
+# τ-conjugate sector: anti-holomorphic involution flips sign
+# Status: DERIVED
 
-def _tau_from_k(k):
-    """Compute actualization timescale from k-level."""
-    E_J = _E_from_k(k) * CONVERSIONS['MeV_to_J']
-    return PHYSICAL['hbar'] / E_J
+DELTA_LAMBDA = LAMBDA_PPM - LAMBDA_TAU_CONJUGATE  # = 1/(2√π) ≈ 0.28209
+# LaTeX: \Delta\lambda = \frac{1}{2\sqrt{\pi}}
+# Both endpoints geometrically fixed by RP³; their separation is the identity
+# One-loop SM running gives 0.270 = 95.7% of this value (4.3% residual)
+# Status: DERIVED (VERIFIED)
 
-# Utility: compute k from observed mass (for diagnostics only, not primary data)
-def _k_from_E(E_MeV):
-    """Compute k-level from energy in MeV. Diagnostic use only."""
-    return _k_ref - 2.0 * np.log(E_MeV / _m_pi) / np.log(_g)
+LAMBDA_PPM_OBSERVED = 0.1292   # Observed Higgs quartic at M_Z (MSbar)
+                                # Status: OBSERVED
 
-ENERGY_SCALES = {
-    # NOTE: k=0 (Planck scale) is intentionally excluded from this table.
-    # E(0) = 3.16e19 GeV ≈ 2.59 × m_P (observed), but m_P = √(ħc/G) depends on G,
-    # which the framework is supposed to DERIVE — not use as input. Comparing E(0)
-    # to the observed m_P is circular in the framework's own logic. No valid
-    # comparison exists until the G derivation is complete.
-    # Use _E_GeV_from_k(0) or _tau_from_k(0) directly if k=0 timescale is needed.
+# ─── Top Yukawa ───────────────────────────────────────────────────────────────
 
-    # --- Topologically required levels ---
-    'EWSB': {
-        'k': 44.5,                          # topological: RP3 emerges for EW sector
-        # Higgs VEV: v = 2√2 × (2π)^(1/4) × E(44.5)  — SU(2)→U(1) geometric factor
-        # Bare E(44.5) = 54.98 GeV is NOT the prediction; the VEV formula gives 246.2 GeV
-        'E_GeV_predicted': 2*np.sqrt(2) * (2*np.pi)**0.25 * _E_GeV_from_k(44.5),
-        'E_GeV_observed': 246.2,            # Higgs VEV
-        'tau_s': _tau_from_k(44.5),
-        'source': 'topology',
-        'description': 'Electroweak symmetry breaking — Higgs VEV via SU(2)→U(1) geometry',
-        'notes': 'v = 2√2 × (2π)^(1/4) × E(44.5) = 246.2 GeV (predicted from full-precision E(44.5)=54.98 GeV), 246.2 (obs), 0.0%',
-    },
-    'Top': {
-        'k': 44.5,                          # tied to EWSB: m_t = π × E(44.5)
-        'E_GeV_predicted': np.pi * _E_GeV_from_k(44.5),  # 172.7 GeV
-        'E_GeV_observed': 173.0,
-        'tau_s': _tau_from_k(44.5),
-        'source': 'topology',
-        'description': 'Top quark — π × E(EWSB) from SU(2)→U(1) geometry',
-        'notes': 'm_t = π × E(44.5) = 172.7 GeV (predicted from full-precision E(44.5)=54.98 GeV), 173.0 (obs), 0.2%',
-    },
-    'Confinement': {
-        'k': 51,                            # topological: RP3 fully crystallized
-        'E_GeV_predicted': _E_GeV_from_k(51),
-        'E_GeV_observed': 0.140,
-        'tau_s': _tau_from_k(51),
-        'source': 'topology (reference level)',
-        'description': 'QCD confinement — pion mass, reference level',
-    },
-    # --- Z2 quantization levels: k = k_EWSB + n/2 ---
-    'Tau': {
-        'k': 48.0,                          # n=7: k = 44.5 + 3.5
-        'n_quantum': 7,
-        'E_GeV_predicted': _E_GeV_from_k(48.0),   # 2.21 GeV
-        'E_GeV_observed': 1.777,
-        'tau_s': _tau_from_k(48.0),
-        'source': 'Z2 quantization (n=7)',
-        'description': 'Tau lepton — n=7, bare Z2 error 24% (k_exact=48.24)',
-    },
-    'Muon': {
-        'k': 51.5,                          # n=14: k = 44.5 + 7.0
-        'n_quantum': 14,
-        'E_GeV_predicted': _E_GeV_from_k(51.5),   # 88.4 MeV (bare; radiative corrections pending)
-        'E_GeV_observed': 0.10566,
-        'tau_s': _tau_from_k(51.5),
-        'source': 'Z2 quantization (n=14)',
-        'description': 'Muon — n=14, bare topological prediction 88.4 MeV, 16.3% error (k_exact=51.31)',
-    },
-    'Electron': {
-        'k': 57.0,                          # n=25: k = 44.5 + 12.5
-        'n_quantum': 25,
-        'E_GeV_predicted': _E_GeV_from_k(57.0),   # 0.564 MeV (bare; radiative corrections pending)
-        'E_GeV_observed': 5.11e-4,
-        'tau_s': _tau_from_k(57.0),
-        'source': 'Z2 quantization (n=25)',
-        'description': 'Electron — n=25, bare topological prediction 0.564 MeV, 10.5% error (k_exact=57.11)',
-    },
-    # --- Derived levels ---
-    'Consciousness': {
-        'k': _k_conscious,                  # derived: E(k) = k_BT at T_bio
-        'E_GeV_predicted': _E_GeV_from_k(_k_conscious),
-        'E_GeV_observed': _kBT_MeV / 1e3,
-        'tau_s': _tau_from_k(_k_conscious),
-        'source': 'thermal matching',
-        'description': f'Consciousness critical point — k_BT at {_T_bio}K (derived)',
-    },
-    # --- Neutrino sector (topology-fixed k-levels near k_conscious) ---
-    # The hierarchy energies at these k-levels are in the keV range.
-    # Conversion to the observed sub-eV neutrino masses requires the seesaw
-    # mechanism — an open calculation listed in Section 9 Tier 2.
-    # The k-levels themselves ARE the topological prediction; the masses are not.
-    'Nu3': {
-        'k': 58,
-        'E_GeV_predicted': _E_GeV_from_k(58),     # ~0.225 MeV hierarchy energy
-        'E_GeV_observed': 50e-12,                  # ~50 meV (mass-squared splitting bound)
-        'tau_s': _tau_from_k(58),
-        'source': 'topology-fixed hierarchy level',
-        'description': 'ν₃ — k=58 topology-fixed (Kähler structure); hierarchy energy ~225 keV, physical mass requires seesaw',
-    },
-    'Nu2': {
-        'k': 60,
-        'E_GeV_predicted': _E_GeV_from_k(60),     # ~35.8 keV hierarchy energy
-        'E_GeV_observed': 8e-12,                   # ~8 meV (mass-squared splitting bound)
-        'tau_s': _tau_from_k(60),
-        'source': 'topology-fixed hierarchy level',
-        'description': 'ν₂ — k=60 topology-fixed (Kähler structure); hierarchy energy ~35.8 keV, physical mass requires seesaw',
-    },
-    'Nu1': {
-        'k': 61,
-        'E_GeV_predicted': _E_GeV_from_k(61),     # ~14.3 keV hierarchy energy
-        'E_GeV_observed': 2e-12,                   # ~2 meV (lightest neutrino, upper bound)
-        'tau_s': _tau_from_k(61),
-        'source': 'topology-fixed hierarchy level',
-        'description': 'ν₁ — k=61 topology-fixed (Kähler structure); note: coincidence with stale k_conscious=61 is not structural',
-    },
-    # --- Near-consciousness hierarchy levels (sterile neutrinos) ---
-    'SterileNu_k60': {
-        'k': 60,
-        # Hierarchy energy at k=60 is 35.8 keV. The proposed sterile neutrino mass
-        # (7 keV from 3.5 keV X-ray line) is a physical particle mass, NOT the
-        # hierarchy energy — same distinction as active neutrinos. Conversion factor
-        # between hierarchy energy and sterile neutrino mass is an open calculation.
-        # Marking as 'seesaw' for the same reason as Nu1/Nu2/Nu3.
-        'E_GeV_predicted': _E_GeV_from_k(60),     # hierarchy energy ~35.8 keV
-        'E_GeV_observed': 7e-6,                    # 3.5 keV X-ray → 7 keV mass (unconfirmed)
-        'tau_s': _tau_from_k(60),
-        'source': 'hierarchy (near consciousness boundary)',
-        'description': 'Sterile neutrino candidate at k=60; hierarchy energy ≠ mass (seesaw-type conversion open)',
-    },
-}
+Y_TOP_PPM = PI / (2.0 * (TAU ** 0.25))
+# LaTeX: y_t^{\rm PPM} = \frac{\pi}{2(2\pi)^{1/4}} \approx 0.992
+# PPM tree-level top Yukawa; y_t = √2 × m_t/v convention
+# Section §7 (SM parameters)
+# Status: DERIVED (VERIFIED session 27)
+# NOTE: NOT m_t/v = 0.701; that is the ratio, not the Yukawa coupling
 
-# ---------------------------------------------------------------------------
-# TIMESCALES dict (keyed same as ENERGY_SCALES, tau in seconds)
-# ---------------------------------------------------------------------------
-TIMESCALES = {name: entry['tau_s'] for name, entry in ENERGY_SCALES.items()}
+Y_TOP_OBSERVED = 0.992    # SM observed top Yukawa ≈ √2 × 172.7/246.2
+                          # Status: OBSERVED (consistent with PPM)
+
+# ─── Energy hierarchy ─────────────────────────────────────────────────────────
+
+M_PI_MEV   = 140.0        # Pion mass in MeV — the ladder reference point
+                          # k_ref = 51 gives E(51) = 140 MeV
+                          # Status: EMPIRICAL (one allowed input)
+
+K_REF      = 51.0         # k-level for pion mass reference
+K_PLANCK   = 1.0          # k=1 → Planck scale (UV anchor, DERIVED from R=l_P)
+K_UV_BOUNDARY = R_SQUARED # k=r²=10 → UV boundary of effective theory (topological)
+K_BREAK    = 16.25        # k_break → Pati-Salam breaking scale (empirical via sin²θ_W)
+K_EWSB     = 44.5         # k_EWSB → electroweak symmetry breaking (EMPIRICAL, equiv. to y_t)
+# k_EWSB is the single remaining empirical input once Planck anchor is adopted
+
+E_PLANCK_GEV = 1.22e19    # Observed Planck energy in GeV
+                          # Status: OBSERVED
+
+# ─── Instanton sector ─────────────────────────────────────────────────────────
+
+INSTANTON_DEGREE     = N_OUTCOMES - 1   # = 3 (degree of rational normal curve)
+INSTANTON_ACTION     = INSTANTON_DEGREE * R_SQUARED * PI  # = 3×10×π = 30π
+# LaTeX: S = (N-1) \times r^2 \times \pi = 30\pi \approx 94.248
+# Status: DERIVED (VERIFIED)
+
+N_ZERO_MODES_COMPLEX = 15   # = h⁰(f*T_{CP³}) for degree-3 Veronese
+N_ZERO_MODES_REAL    = 2 * N_ZERO_MODES_COMPLEX  # = 30 real
+# = dim_R(PGL(4,C)) = 2(N²-1) = 2×15 = 30 ✓
+# Status: DERIVED (VERIFIED)
+
+# φ^{-196} match: e^{-30π} ≈ φ^{-196}
+# 30π = 94.2478, 196×ln(φ) = 196×0.48121 = 94.317
+# Error in exponent: (94.317-94.248)/94.248 = 0.073%
+PHI_196_EXPONENT_MATCH_PERCENT = abs(INSTANTON_ACTION - 196.0 * math.log(PHI)) / INSTANTON_ACTION * 100
+# ≈ 0.073% — the core numerical coincidence of the framework
+
+# ─── Gauge sector ─────────────────────────────────────────────────────────────
+
+ALPHA_GUT        = 1.0 / R_SQUARED   # = 1/10 = 0.1 from Fubini-Study
+# LaTeX: \alpha_{\rm GUT} = 1/r^2 = 1/10
+# Status: DERIVED
+
+SIN2_THETA_W_PPM = 3.0 / 8.0         # = 0.375 at k_break (Pati-Salam group theory)
+# LaTeX: \sin^2\theta_W|_{k_{\rm break}} = 3/8
+# Status: DERIVED
+
+SIN2_THETA_W_MZ_OBSERVED = 0.2312    # MSbar at M_Z
+                                      # Status: OBSERVED
+
+ALPHA1_GUT = (5.0/3.0) * ALPHA_GUT  # GUT-normalized U(1), = 1/6 ≈ 0.1667
+ALPHA2_GUT = ALPHA_GUT               # SU(2), = 0.1
+ALPHA3_GUT = ALPHA_GUT               # SU(3), = 0.1
+
+N_GENERATIONS = 3  # From CP³ topology; Status: DERIVED
+
+# ─── Spectral geometry ────────────────────────────────────────────────────────
+
+# Heat kernel coefficients for CP³ (scalar Laplacian)
+# LaTeX: C_{a_j} \in \{1/48, 1/12, 1/6, 212/945\}
+HEAT_KERNEL_COEFFS = (1.0/48.0, 1.0/12.0, 1.0/6.0, 212.0/945.0)
+
+ZETA_DELTA_0 = -733.0 / 945.0   # ζ_Δ(0) = -733/945 ≈ -0.7757
+# Status: DERIVED (VERIFIED)
+
+LOG_DET_DELTA = 0.250           # log det(Δ) ≈ 0.250 (from spectral zeta)
+DET_DELTA     = math.exp(LOG_DET_DELTA)   # ≈ 1.284
+Z1_ONELOOP    = 0.88            # One-loop partition function Z₁ ≈ 0.88
+# Status: DERIVED (VERIFIED)
+
+# ─── T² zeta-regulated partition function ─────────────────────────────────────
+# Results from session 28 (node.js computation)
+
+TAU_IMAG     = 10.0 / (PI**2)   # Im(τ) = β/(πR) = (10/π)/π = 10/π² ≈ 1.013
+Q_NOME       = math.exp(-2.0 * PI * TAU_IMAG)  # q = exp(-20/π) ≈ 0.001719
+LOG_ETA_ABS  = -0.26698         # log|η(τ)|, τ = i×10/π²
+LOG_ZT2_PER_SCALAR = 0.5274     # log Z_T² per real scalar dof
+LOG_ZT2_6DOF       = 3.164      # log Z_T² for 6 real scalar dof
+# These are EXACT (modular form; no FFS needed)
+# Status: DERIVED (VERIFIED session 28)
+
+# ─── Observed SM values (for comparison) ──────────────────────────────────────
+
+M_Z_GEV      = 91.1876           # Z boson mass
+M_W_GEV      = 80.377            # W boson mass
+M_TOP_GEV    = 172.7             # Top quark pole mass
+M_HIGGS_GEV  = 125.25            # Higgs boson mass
+ALPHA_EM_INV = 137.036           # 1/α fine-structure constant
+ALPHA3_MZ    = 0.1179            # α_s(M_Z) strong coupling
+ALPHA1_MZ    = 0.01696           # α_1(M_Z) GUT-normalized
+ALPHA2_MZ    = 0.03377           # α_2(M_Z)
+
+G_NEWTON_SI  = 6.674e-11         # Newton's constant (m³ kg⁻¹ s⁻²)
+L_PLANCK_M   = 1.616e-35         # Planck length (meters)
+LAMBDA_CC    = 1.1e-52           # Cosmological constant (m⁻²)
+
+# ─── Quick sanity checks ──────────────────────────────────────────────────────
+
+def _verify():
+    """Print a quick sanity check of key constant values."""
+    print(f"LAMBDA_PPM     = {LAMBDA_PPM:.6f}  (expect 0.141047)")
+    print(f"DELTA_LAMBDA   = {DELTA_LAMBDA:.6f}  (expect 0.282095)")
+    print(f"Y_TOP_PPM      = {Y_TOP_PPM:.6f}  (expect 0.992)")
+    print(f"INSTANTON_ACTION = {INSTANTON_ACTION:.4f}  (expect 94.2478 = 30π)")
+    print(f"ALPHA_GUT      = {ALPHA_GUT:.4f}  (expect 0.1)")
+    print(f"SIN2_TW_PPM    = {SIN2_THETA_W_PPM:.4f}  (expect 0.375 = 3/8)")
+    print(f"PHI-196 match  = {PHI_196_EXPONENT_MATCH_PERCENT:.4f}%  (expect ~0.07%)")
+    print(f"Q_NOME         = {Q_NOME:.6f}  (expect 0.001719)")
+
+
+if __name__ == "__main__":
+    _verify()

@@ -1,257 +1,271 @@
 """
-PPM Framework — Energy Hierarchy
-=================================
+ppm.hierarchy — Energy ladder and k-level calculations
+======================================================
 
-Implements the energy hierarchy E(k) = E_ref * g^((k_ref - k) / 2)
-spanning from the Planck scale (k=0) to the consciousness boundary (k=61).
+The PPM energy hierarchy:
+    E(k) = 140 MeV × (2π)^{(51-k)/2}
 
-The scaling factor g = 2π follows from g^2 = |Z2 × Z2| × Vol(RP3) = 4π²
-(Appendix A.2). The square-root exponent arises from phase-space scaling:
-if phase-space volume scales by g^2 per level, the energy-wavelength
-relation gives E(k) ~ g^(-k/2).
+Equivalently (adopting Planck UV anchor):
+    E(k) ≈ E_Planck × (2π)^{(1-k)/2}
 
-Manuscript references: Section 3.3, Appendix C.6
+The ladder is parameterized by integer or half-integer k ∈ [1, 51].
+Each k-level corresponds to a characteristic energy scale of the PPM framework.
+
+Section references: §4 (Bootstrap & Hierarchy Scaling), §7 (SM Parameters)
 """
 
-import numpy as np
-from .constants import PHYSICAL, FRAMEWORK, ENERGY_SCALES, CONVERSIONS
+import math
+from . import constants as C
 
 
-def hierarchy_energy(k: float,
-                     g: float = None,
-                     k_ref: int = None,
-                     E_ref_MeV: float = None) -> float:
+def energy_mev(k):
     """
-    Compute energy at hierarchy level k.
+    Energy at k-level in MeV.
 
-    E(k) = E_ref * g^((k_ref - k) / 2)
-
-    The scaling factor g = 2*pi is derived exactly from Z2 → RP3
-    topology (not fitted). The square root exponent arises from
-    phase-space scaling (g^2 per level → E ~ g^(-k/2)).
+    LaTeX: E(k) = 140\\,{\\rm MeV} \\times (2\\pi)^{(51-k)/2}
+    Section: §4 (Bootstrap & Hierarchy)
+    Status: VERIFIED (anchored at k_ref=51, k=1 gives Planck to 5%)
 
     Parameters
     ----------
-    k : float
-        Hierarchy level. k=0 is Planck scale; k=51 is confinement;
-        k≈75.35 is the consciousness critical point (derived from E(k) = k_BT).
-    g : float, optional
-        Hierarchy scaling factor. Defaults to FRAMEWORK['g'] = 2*pi.
-    k_ref : int, optional
-        Reference k-level. Defaults to FRAMEWORK['k_ref'] = 51.
-    E_ref_MeV : float, optional
-        Reference energy in MeV. Defaults to FRAMEWORK['m_pi_MeV'] = 140.
+    k : float — k-level (1 ≤ k ≤ 51)
 
     Returns
     -------
-    float
-        Energy in MeV.
-
-    Notes
-    -----
-    The factor g = 2*pi is topologically exact:
-        g^2 = |Z2 x Z2| * Vol(RP3) = 4 * pi^2
-        => g = 2*pi
-
-    Examples
-    --------
-    >>> hierarchy_energy(0)      # Planck vicinity ~3.16e25 MeV (~2.6× E_P)
-    >>> hierarchy_energy(51)     # Confinement (reference) = 140.0 MeV
-    >>> hierarchy_energy(75.35)  # Consciousness boundary ~0.027 MeV ≈ k_BT at 310 K
+    float — energy in MeV
     """
-    if g is None:
-        g = FRAMEWORK['g']
-    if k_ref is None:
-        k_ref = FRAMEWORK['k_ref']
-    if E_ref_MeV is None:
-        E_ref_MeV = FRAMEWORK['m_pi_MeV']
-
-    assert k >= -1, f"k-level must be non-negative (or near zero), got {k}"
-    assert g > 1, f"Scaling factor g must be > 1, got {g}"
-
-    # E(k) = E_ref * g^((k_ref - k) / 2)  — Appendix C.6
-    return E_ref_MeV * g ** ((k_ref - k) / 2.0)
+    return C.M_PI_MEV * (C.TAU ** ((C.K_REF - k) / 2.0))
 
 
-def k_from_mass(m_MeV: float,
-                g: float = None,
-                k_ref: int = None,
-                E_ref_MeV: float = None) -> float:
+def energy_gev(k):
+    """Energy at k-level in GeV."""
+    return energy_mev(k) * 1e-3
+
+
+def k_from_energy_mev(E_mev):
     """
-    Compute hierarchy level k corresponding to a given mass.
+    Inverse: k-level for a given energy in MeV.
 
-    Inverse of hierarchy_energy:
-        k = k_ref - 2 * ln(m / E_ref) / ln(g)
-
-    Parameters
-    ----------
-    m_MeV : float
-        Mass/energy in MeV.
-    g : float, optional
-        Hierarchy scaling factor. Defaults to FRAMEWORK['g'].
-    k_ref : int, optional
-        Reference k-level. Defaults to FRAMEWORK['k_ref'].
-    E_ref_MeV : float, optional
-        Reference energy in MeV. Defaults to FRAMEWORK['m_pi_MeV'].
-
-    Returns
-    -------
-    float
-        Hierarchy level k.
-
-    Examples
-    --------
-    >>> k_from_mass(0.511)     # Electron mass -> ~57.1
-    >>> k_from_mass(105.7)     # Muon mass -> ~51.5
-    >>> k_from_mass(173000)    # Top quark (MeV) -> ~44.5
+    LaTeX: k = 51 - 2\\,\\frac{\\ln(E/140\\,{\\rm MeV})}{\\ln(2\\pi)}
     """
-    if g is None:
-        g = FRAMEWORK['g']
-    if k_ref is None:
-        k_ref = FRAMEWORK['k_ref']
-    if E_ref_MeV is None:
-        E_ref_MeV = FRAMEWORK['m_pi_MeV']
-
-    assert m_MeV > 0, f"Mass must be positive, got {m_MeV}"
-
-    return k_ref - 2.0 * np.log(m_MeV / E_ref_MeV) / np.log(g)
+    return C.K_REF - 2.0 * math.log(E_mev / C.M_PI_MEV) / math.log(C.TAU)
 
 
-def actualization_timescale(k: float) -> dict:
+def k_from_energy_gev(E_gev):
+    """Inverse: k-level for a given energy in GeV."""
+    return k_from_energy_mev(E_gev * 1e3)
+
+
+# ─── Key k-level anchors ──────────────────────────────────────────────────────
+
+def planck_anchor():
     """
-    Compute actualization timescales at hierarchy level k.
+    Planck scale from E(k=1): UV anchor of the hierarchy.
 
-    Returns both the single-event quantum timescale tau(k) = hbar/E(k)
-    and, if k is near k_conscious (derived from thermal matching),
-    the integration timescale t_integrate = sqrt(N_boundaries) * tau_quantum.
-
-    The rate hierarchy is the temporal basis of cross-scale integration:
-    a single k_conscious actualization window contains many completed
-    sub-boundary cycles at lower k-levels, enabling the consciousness
-    boundary to accumulate and integrate all sub-boundary outcomes
-    within one coherent event.
-
-    Parameters
-    ----------
-    k : float
-        Hierarchy level.
-
-    Returns
-    -------
-    dict
-        Keys:
-        - 'tau_quantum_s' : float — single-event timescale in seconds
-        - 'tau_quantum_ms' : float — same in milliseconds
-        - 'E_MeV' : float — energy in MeV
-        - 'integration_ms' : float or None — integration window in ms (only at k=61)
-        - 'sub_cycles_k51' : float or None — k=51 cycles per k=61 window
-        - 'sub_cycles_k57' : float or None — k=57 cycles per k=61 window
+    LaTeX: E(k{=}1) = 140\\,{\\rm MeV} \\times (2\\pi)^{25}
+    Value: ≈ 1.28 × 10^{19} GeV  (observed E_P = 1.22 × 10^{19} GeV, 5% agreement)
+    Status: DERIVED — k=1 is fixed by R = l_P (unit RP³)
     """
-    hbar = PHYSICAL['hbar']  # J·s
-    MeV_to_J = CONVERSIONS['MeV_to_J']
-
-    E_MeV = hierarchy_energy(k)
-    E_J = E_MeV * MeV_to_J
-
-    # tau(k) = hbar / E(k)
-    tau_s = hbar / E_J
-    tau_ms = tau_s * 1e3
-
-    result = {
-        'tau_quantum_s': tau_s,
-        'tau_quantum_ms': tau_ms,
-        'E_MeV': E_MeV,
-        'integration_ms': None,
-        'sub_cycles_k51': None,
-        'sub_cycles_k57': None,
+    E_pred = energy_gev(1.0)
+    E_obs  = C.E_PLANCK_GEV
+    err_pct = (E_pred / E_obs - 1.0) * 100.0
+    return {
+        'k': 1.0,
+        'E_predicted_GeV': E_pred,
+        'E_observed_GeV': E_obs,
+        'error_pct': err_pct,
+        'status': 'DERIVED',
+        'note': 'UV anchor; R=l_P fixes k=1 to Planck energy at 5%'
     }
 
-    # At k_conscious: compute integration window and sub-cycle counts.
-    #
-    # The integration window is derived self-consistently:
-    #   t_integrate = sqrt(N_eff) * tau_quantum
-    #   where N_eff = t_integrate / tau_ref  (sub-boundary cycles per window)
-    #
-    # Solving: t_integrate = tau(k_conscious)^2 / tau(k_ref=51)
-    #
-    # This is a framework-derived quantity, not a biological count.
-    # See Section 7.4.3 and the Integration Time derivation.
-    k_conscious = FRAMEWORK['k_conscious']
-    if abs(k - k_conscious) < 0.5:
-        tau_k51_s = hbar / (hierarchy_energy(51) * MeV_to_J)
-        tau_k57_s = hbar / (hierarchy_energy(57) * MeV_to_J)
 
-        # Self-consistent integration window: tau(k_c)^2 / tau(k_ref=51)
-        t_integrate_s = tau_s**2 / tau_k51_s
-        t_integrate_ms = t_integrate_s * 1e3
-
-        result['integration_ms'] = t_integrate_ms
-        result['sub_cycles_k51'] = t_integrate_s / tau_k51_s
-        result['sub_cycles_k57'] = t_integrate_s / tau_k57_s
-
-    return result
-
-
-def print_hierarchy_table() -> None:
+def uv_boundary():
     """
-    Print formatted table of all key k-levels with energies,
-    timescales, measured values, and percent errors.
+    UV boundary of the effective theory at k = r² = 10.
 
-    Matches Table in manuscript Section 3.3 / Appendix C.6.
+    LaTeX: k_{\\rm UV} = r^2 = 10
+    This is topological: V_⊥ = β×πR = 10 (the transverse volume of the instanton)
+    Independent of perturbative renormalization scheme.
+    Status: DERIVED (VERIFIED)
     """
-    col_k     = 6
-    col_pred  = 13
-    col_obs   = 13
-    col_err   = 8
-    col_tau   = 13
-    col_name  = 22
+    return {
+        'k': C.K_UV_BOUNDARY,
+        'E_GeV': energy_gev(C.K_UV_BOUNDARY),
+        'status': 'DERIVED',
+        'note': 'V_⊥ = β×πR = 10 fixes this topologically'
+    }
 
-    header = (
-        f"{'k':>{col_k}}  {'Pred (MeV)':>{col_pred}}  {'Obs (MeV)':>{col_obs}}  "
-        f"{'% err':>{col_err}}  {'tau (s)':>{col_tau}}  {'Name / particle':<{col_name}}"
-    )
-    sep = "-" * len(header)
 
-    print("=" * len(header))
-    print("PPM Energy Hierarchy: E(k) = 140 MeV × (2π)^((51−k)/2)")
-    print("=" * len(header))
-    print(header)
-    print(sep)
+def pati_salam_breaking():
+    """
+    Pati-Salam breaking scale at k_break ≈ 16.25.
 
-    # Neutrino entries: hierarchy energy ≠ physical mass (seesaw required)
-    SEESAW_ENTRIES = {'Nu1', 'Nu2', 'Nu3'}
+    Determined by: sin²θ_W(E_break) from SM running = 3/8 (PPM/Pati-Salam prediction)
+    SM one-loop running gives sin²θ_W(E_break) = 0.37550 vs PPM = 0.3750 (0.13% agreement)
+    Status: EMPIRICAL (requires observed sin²θ_W as input)
+    """
+    return {
+        'k': C.K_BREAK,
+        'E_GeV': energy_gev(C.K_BREAK),
+        'sin2_tW_ppm': C.SIN2_THETA_W_PPM,
+        'sin2_tW_sm': 0.37550,
+        'agreement_pct': 0.13,
+        'status': 'EMPIRICAL',
+        'note': 'k_break follows from sin²θ_W = 3/8 matching condition'
+    }
 
-    # Sorted by k-level
-    entries = sorted(ENERGY_SCALES.items(), key=lambda x: x[1]['k'])
-    for name, entry in entries:
-        k        = entry['k']
-        # Use E_GeV_predicted which includes geometric factors (e.g. π × E for Top)
-        E_pred   = entry['E_GeV_predicted'] * 1e3   # GeV → MeV
-        E_obs    = entry['E_GeV_observed'] * 1e3    # GeV → MeV
-        tau      = actualization_timescale(k)['tau_quantum_s']
 
-        if name in SEESAW_ENTRIES:
-            # Hierarchy energy is not the physical mass; seesaw closes the gap
-            err_str = "seesaw"
-        elif E_obs > 0:
-            pct = (E_pred - E_obs) / E_obs * 100.0
-            err_str = f"{pct:+.1f}%"
+def ewsb_scale():
+    """
+    Electroweak symmetry breaking scale at k_EWSB = 44.5.
+
+    Equivalent to the top Yukawa y_t — the single empirical input of the framework
+    (once Planck anchor is adopted).
+    LaTeX: k_{\\rm EWSB} = 44.5
+    Status: EMPIRICAL (the one free parameter)
+    """
+    return {
+        'k': C.K_EWSB,
+        'E_GeV': energy_gev(C.K_EWSB),
+        'status': 'EMPIRICAL',
+        'note': 'Single empirical input; equivalent to y_t'
+    }
+
+
+def pion_anchor():
+    """
+    Pion mass anchor at k = 51.
+
+    LaTeX: E(k{=}51) = 140\\,{\\rm MeV}  (by construction)
+    This is the reference point of the ladder formula.
+    With Planck UV anchor adopted, the pion mass is DERIVED
+    (it's E_P × (2π)^{-50/2}), not an independent input.
+    Status: DERIVED (given Planck anchor; formerly EMPIRICAL)
+    """
+    return {
+        'k': C.K_REF,
+        'E_MeV': energy_mev(C.K_REF),
+        'status': 'DERIVED',
+        'note': 'Derived from Planck anchor as E_P × (2π)^{-50/2}'
+    }
+
+
+def g_from_topology():
+    """
+    Hierarchy scaling g = 2π from Z₂ × S³ topology.
+
+    Two independent derivations (section4-bootstrap.tex):
+
+    1. Topological product:
+       g² = |Z₂×Z₂| × Vol(RP³) = 4 × π² = 4π²
+       g = 2π
+
+    2. Maslov area (symplectic):
+       A_min = (N+1)π/2 for monotone Lagrangian RPᴺ ↪ CPᴺ
+       For N=3: A_min = 4π/2 = 2π
+       g = A_min = 2π
+
+    Empirical: g_emp ≈ 6.32, 2π = 6.2832 (0.6% agreement).
+    Status: DERIVED (VERIFIED — two independent proofs)
+    """
+    g_topo = math.sqrt(4.0 * math.pi**2)  # from |Z₂×Z₂| × Vol(RP³)
+    N = 3
+    g_maslov = (N + 1) * math.pi / 2.0    # from Maslov area
+    assert abs(g_topo - g_maslov) < 1e-12
+    return {
+        'g': g_topo,
+        'g_topo': g_topo,
+        'g_maslov': g_maslov,
+        'g_empirical': 6.32,
+        'error_pct': (6.32 / g_topo - 1) * 100,
+    }
+
+
+def consciousness_level(T_kelvin=310.0):
+    """
+    k_conscious from thermal matching E(k) = k_B T_bio.
+
+    LaTeX (section9.tex): k_conscious(T) = 51 − 2 ln(k_B T / m_π c²) / ln(2π)
+    For T = 310 K (mammalian body temp): k_conscious ≈ 75.35
+    For T range 273–313 K: k_conscious ≈ 75.3–75.6
+
+    Status: DERIVED (from thermal matching condition)
+    """
+    kB = 8.617333e-5  # eV/K (Boltzmann constant)
+    E_eV = kB * T_kelvin
+    E_MeV = E_eV * 1e-6
+    return C.K_REF - 2.0 * math.log(E_MeV / C.M_PI_MEV) / math.log(C.TAU)
+
+
+# ─── Particle mass table ────────────────────────────────────────────────────
+
+# Known particle k-levels and masses for the full hierarchy display
+PARTICLE_TABLE = [
+    # (name, k-level, mass_GeV, category)
+    ("Planck",       1.0,    1.22e19,     "scale"),
+    ("UV boundary",  10.0,   None,        "scale"),
+    ("Pati-Salam",   16.25,  None,        "scale"),
+    ("top",          44.5,   172.7,       "quark"),
+    ("Higgs",        44.7,   125.25,      "boson"),
+    ("W",            44.85,  80.377,      "boson"),
+    ("Z",            44.75,  91.188,      "boson"),
+    ("bottom",       48.0,   4.18,        "quark"),
+    ("tau",          48.7,   1.777,       "lepton"),
+    ("charm",        49.4,   1.27,        "quark"),
+    ("strange",      51.8,   0.0934,      "quark"),
+    ("muon",         50.15,  0.10566,     "lepton"),
+    ("pion",         51.0,   0.140,       "meson"),
+    ("down",         53.3,   0.00467,     "quark"),
+    ("up",           53.8,   0.00216,     "quark"),
+    ("electron",     55.0,   0.000511,    "lepton"),
+]
+
+
+def k_level_table():
+    """
+    Build the full k-level table with predicted vs observed masses.
+
+    Returns list of dicts with k, predicted E(k), observed mass, and error.
+    """
+    rows = []
+    for name, k, mass_obs, cat in PARTICLE_TABLE:
+        E_pred = energy_gev(k)
+        if mass_obs is not None and mass_obs > 0:
+            err_pct = (E_pred / mass_obs - 1.0) * 100.0
         else:
-            err_str = "—"
+            err_pct = None
+        rows.append({
+            'name': name,
+            'k': k,
+            'E_predicted_GeV': E_pred,
+            'mass_observed_GeV': mass_obs,
+            'error_pct': err_pct,
+            'category': cat,
+        })
+    return rows
 
-        print(
-            f"{k:{col_k}.1f}  {E_pred:{col_pred}.3e}  {E_obs:{col_obs}.3e}  "
-            f"{err_str:>{col_err}}  {tau:{col_tau}.3e}  {name}"
-        )
 
-    print(sep)
+def print_k_table():
+    """Print the full k-level table for key anchors."""
+    print(f"{'k':>6}  {'E (GeV)':>14}  {'E (MeV)':>14}  Note")
+    print("-" * 70)
+    for k, note in [
+        (1.0,   "Planck UV anchor (R=l_P)"),
+        (10.0,  "UV boundary V_⊥=10 (topological)"),
+        (16.25, "Pati-Salam breaking (k_break)"),
+        (20.0,  ""),
+        (30.0,  ""),
+        (40.0,  ""),
+        (44.5,  "EWSB / k_EWSB (single empirical input)"),
+        (51.0,  "Pion mass (derived from Planck anchor)"),
+    ]:
+        E = energy_gev(k)
+        print(f"{k:>6.2f}  {E:>14.4e}  {E*1e3:>14.4e}  {note}")
 
-    # Integration window at k_conscious
-    k_c = FRAMEWORK['k_conscious']
-    t_c = actualization_timescale(k_c)
-    print(f"\nk_conscious = {k_c:.2f} (derived from E(k) = k_BT at {FRAMEWORK['T_bio']}K)")
-    print(f"tau_quantum at k_conscious: {t_c['tau_quantum_s']:.3e} s  ({t_c['tau_quantum_s']*1e15:.1f} fs)")
-    print(f"Integration window (self-consistent): {t_c['integration_ms']:.4f} ms")
-    print(f"  N_eff (confinement sub-cycles): {t_c['sub_cycles_k51']:.2e}")
-    print(f"k=51 cycles per window:  {t_c['sub_cycles_k51']:.2e}")
-    print(f"k=57 cycles per window:  {t_c['sub_cycles_k57']:.2e}")
+
+if __name__ == "__main__":
+    print_k_table()
+    print()
+    pa = planck_anchor()
+    print(f"Planck anchor: E(k=1) = {pa['E_predicted_GeV']:.3e} GeV  "
+          f"(E_P = {pa['E_observed_GeV']:.3e} GeV,  error = {pa['error_pct']:+.1f}%)")

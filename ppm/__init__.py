@@ -1,47 +1,45 @@
 """
-PPM Framework — Process-Phenomenology Mapping
-===============================================
+ppm — Projective Process Monism computational framework
+========================================================
 
-Deriving physical constants from Z2 → RP3 topology.
+Computes all framework predictions from first principles.
+No free parameters: every physical constant is derived from
+the geometry of (CP³, τ, g_FS).
 
-Public API
-----------
-hierarchy_energy, k_from_mass, actualization_timescale
-    Energy hierarchy computations (hierarchy module)
+Modules
+-------
+constants    : Mathematical and physical constants
+hierarchy    : Energy ladder E(k), k-level assignments
+alpha        : Fine-structure constant (three independent routes)
+gauge        : Gauge group, sin²θ_W, generation count, coupling running
+higgs        : Higgs quartic, top Yukawa from τ-involution
+instanton    : Instanton action S=30π, zero modes, prefactor budget
+spectral     : Heat kernel, zeta functions, functional determinant
+cosmology    : G, Λ, H₀, G(z) evolution, dark energy
+golden_ratio : Pyramidal numbers, A₅ decomposition, φ origin
+neutrino     : PMNS matrix, θ_strong, neutrino mass brackets
+berry_phase  : CKM matrix, δ_CP from Berry phase on CP³
+predictions  : Master prediction table
+verify       : Run-all checker
 
-constraint_solver, predict_independent, direct_solve
-    Constraint system solver and independent prediction evaluator
-
-thermal_phase, quantum_phase, solve_alpha_from_coherence,
-N_eff_from_alpha, critical_point_check
-    Phase coherence and critical point analysis
-
-cp3_invariants, neff_exponent_analysis, print_twistor_analysis
-    Twistor/RG analysis of α from CP3 topology (twistor module)
-
-PHYSICAL, FRAMEWORK, ENERGY_SCALES, TIMESCALES
-    All constants (constants module)
+Usage
+-----
+    >>> import ppm
+    >>> ppm.verify.run_all()
 """
 
-from .hierarchy import hierarchy_energy, k_from_mass, actualization_timescale
-from .constraint_solver import constraint_solver, predict_independent, direct_solve
-from .phase_coherence import (thermal_phase, quantum_phase, solve_alpha_from_coherence,
-                              N_eff_from_alpha, critical_point_check)
-from .twistor import (cp3_invariants, neff_exponent_analysis, print_twistor_analysis,
-                      k_to_fs_distance, fs_distance_to_k, fs_distance_max,
-                      volume_fraction_within_distance, alpha_from_volume_fraction,
-                      alpha_geometric_summary)
-from .constants import PHYSICAL, FRAMEWORK, ENERGY_SCALES, TIMESCALES
-from .predictions import (lepton_masses, neutrino_k_levels,
-                          k_conscious_temperatures, brain_power_budget,
-                          gravitational_decoherence_rate,
-                          self_referential_consistency,
-                          ckm_cp_phase, pmns_tribimaximal,
-                          hubble_constant_prediction, weak_coupling_prediction,
-                          g_cosmic_evolution,
-                          print_predictions_summary)
-from .cosmology import (G_newton, G_evolution, lambda_cosmological,
-                        lambda_evolution, hubble_parameter, dark_energy_eos,
-                        print_cosmology_table)
+__version__ = "2.0.0"
 
-__version__ = "0.1.0"
+from . import constants
+from . import hierarchy
+from . import alpha
+from . import gauge
+from . import higgs
+from . import instanton
+from . import spectral
+from . import cosmology
+from . import golden_ratio
+from . import neutrino
+from . import berry_phase
+from . import predictions
+from . import verify

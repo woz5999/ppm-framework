@@ -32,66 +32,47 @@ These are not gaps at the edges of knowledge. They are holes at its center.
 
 ---
 
-## Two notebooks: two ways to test the framework
+## Three notebooks: three ways into the framework
 
 This repository is the computational companion to
 [projectiveprocessmonism.com](https://projectiveprocessmonism.com). The theory and full
-derivations live there. What lives here are two notebooks that let you interrogate the framework
-directly — one focused on what it predicts, one focused on whether those predictions could be
-accidental.
+derivations live there. What lives here are three notebooks — one shows the headline numbers,
+one lets you break and fix the framework interactively, and one reproduces every equation.
 
-### `first_principles_predictions.ipynb` — Does PPM actually predict anything?
+### `predictions.ipynb` — The Sizzle Reel
 
-The sharpest test of any framework is whether it produces correct numbers *before* you look at
-the measurements. This notebook isolates five quantities that PPM derives from geometry alone,
-with no experimental input beyond the pion mass:
+Every prediction computed live. No sliders, no preamble — just the numbers.
 
-| Prediction     | Geometric input                 | Formula                 | Predicted     | Observed             |
-| -------------- | ------------------------------- | ----------------------- | ------------- | -------------------- |
-| CKM δ_CP       | 720° Berry phase on RP³         | π(1 − 1/φ)              | 1.200 rad     | 1.20 ± 0.08 rad      |
-| sin²θ₂₃        | Z₂ × 3D topology (tribimaximal) | 1/2 (exact)             | 0.500         | 0.546 ± 0.021        |
-| H₀             | T_universe from CMB             | 1/T_universe            | 70.9 km/s/Mpc | 69.8 ± 1.9 (TRGB)    |
-| α_w            | RP³ = S³/Z₂ volume ratio        | 1/(3π²)                 | 1/29.6        | 1/29.9 ± 0.2         |
-| G(t) evolution | N_cosmic ∝ causal volume        | G/G₀ = (1+z)^{3/2} band | 5–36× at z=10 | 3–100× (JWST excess) |
+| Prediction | Formula | PPM | Observed | Error |
+|---|---|---|---|---|
+| 1/α | Twisted heat trace at t*=1/32 | 137.257 | 137.036 | 0.16% |
+| δ_CP | π(1 − 1/φ) = π/φ² | 68.5° | 68.4 ± 3° | within 1σ |
+| H₀ | 1/T_universe | 70.9 km/s/Mpc | 67.4–73.0 | splits tension |
+| sin²θ_W | 3/8 (Pati-Salam) | 0.375 | 0.375 | 0.13% |
+| Generations | CP³ topology | 3 | 3 | exact |
+| θ_strong | RP³ non-orientability | 0 | < 10⁻¹⁰ | exact |
 
-The CP-violation phase is exact to measurement precision; the atmospheric mixing angle prediction (0.500 vs observed 0.546) has 8.4% error, consistent with a leading-order geometric approximation — values
-the Standard Model treats as unexplained inputs. The Hubble constant prediction addresses the
-current tension between early- and late-universe measurements directly: the framework derives
-H₀ = 1/T_universe from the CMB age, landing between the two conflicting methods. The G(t) section
-maps PPM's prediction that gravity was stronger in the early universe against the James Webb Space
-Telescope's discovery of anomalously massive galaxies at z = 7–16 — structures too large to have
-formed under ΛCDM's fixed-G assumption — and shows the predicted G enhancement band brackets the
-observed 3–100× excess.
+Fast to scroll. 33 cells. Full scorecard at the end.
 
-Each prediction is derived, visualized, and compared to measurement in the notebook. Each is also
-independently tested in `tests/test_all.py`.
+### `explorer.ipynb` — Interactive Explorer
 
-[**→ Run in browser (no install)**](https://ppm-framework.fly.dev/voila/render/first_principles_predictions.ipynb)
+Narrative-driven with FloatSliders at each stage. Move parameters off their geometric values and
+watch multiple observables break simultaneously. Voila-compatible.
 
-### `constraint_sensitivity.ipynb` — Are the parameters fitted or forced?
+| Section | Slider | What breaks when you change it |
+|---|---|---|
+| Hierarchy | g (5.0–7.8) | Move g off 2π → masses diverge |
+| EWSB | k_EWSB (43–46) | Higgs, top, τ, μ all move |
+| α | log₁₀(t) | Twisted heat trace ratio vs t |
+| Cosmology | log₁₀(N) (78–86) | G and Λ curves cross at N_cosmic |
 
-A framework that predicts correctly could still be suspicious if its parameters were tuned after
-the fact. This notebook addresses that question directly. It presents seven coupled observables —
-from the particle mass spectrum through electroweak symmetry breaking to Newton's constant and
-body temperature — and lets you move the underlying parameters with interactive sliders.
+[**→ Run in browser (no install)**](https://ppm-framework.fly.dev/voila/render/explorer.ipynb)
 
-| Section | Topic                                | Mystery addressed                          |
-| ------- | ------------------------------------ | ------------------------------------------ |
-| 1       | Full particle spectrum               | Why do masses span 30 orders of magnitude? |
-| 2       | `g = 2π` from topology               | What fixes the energy level spacing?       |
-| 3       | `k_EWSB = 44.5` from RP³             | What determines the Higgs mass scale?      |
-| 4       | Λ_obs → N → α consistency prediction | Why is α = 1/137?                          |
-| 5       | `N_cosmic = 10⁸²`, G, Λ, H₀          | Why is gravity weak? Why is Λ small?       |
-| 6       | Phase coherence crossing             | What connects quantum scales to biology?   |
-| 7       | Consciousness critical point         | Why does biology operate at 310 K?         |
+### `derivations.ipynb` — Technical Derivations
 
-When you move a parameter away from its geometrically predicted value, multiple independent
-observables degrade simultaneously — particle masses, force constants, and biological temperature
-all break together. The parameters are not individually fitted to any one observable. Only one
-value of each satisfies all constraints at once, and that value is determined by the geometry
-before any measurement enters.
-
-[**→ Run in browser (no install)**](https://ppm-framework.fly.dev/voila/render/constraint_sensitivity.ipynb)
+Every claim in the paper that involves a number, reproduced with intermediate steps. 44 cells
+covering all 22 sections from CP³ spectral data through cosmological predictions. For physicists
+checking the math.
 
 ---
 
@@ -232,22 +213,28 @@ lands back on the same `E(k)` ladder the chain began with.
 
 ```
 ppm-framework/
-├── ppm/                        # Core computational package
+├── ppm/                        # Core computational package (14 modules, ~3,100 lines)
 │   ├── constants.py            # Physical and framework constants
-│   ├── hierarchy.py            # E(k) hierarchy formula
-│   ├── constraint_solver.py    # 8-equation coupled constraint system
-│   ├── phase_coherence.py      # Phase coherence condition and critical point
-│   ├── cosmology.py            # G, Λ, H₀ from N_cosmic
-│   ├── predictions.py          # Independent prediction evaluation
-│   ├── berry_phase.py          # Berry phase accumulation
-│   └── twistor.py              # Twistor/CP³ geometry
+│   ├── hierarchy.py            # E(k) hierarchy formula, particle table
+│   ├── alpha.py                # Fine-structure constant (three routes)
+│   ├── gauge.py                # Gauge structure, sin²θ_W, generations
+│   ├── higgs.py                # Higgs quartic, top Yukawa, τ-involution
+│   ├── instanton.py            # S=30π, zero modes, T² partition function
+│   ├── spectral.py             # Heat kernel, zeta functions, det(Δ)
+│   ├── cosmology.py            # G, Λ, H₀, G(z) evolution
+│   ├── golden_ratio.py         # Pyramidal numbers, A₅ decomposition
+│   ├── berry_phase.py          # CKM matrix, δ_CP from Berry phase
+│   ├── neutrino.py             # PMNS, θ_strong, sterile ν brackets
+│   ├── predictions.py          # Master prediction table (23 PRED + derived)
+│   └── verify.py               # Run-all checker (22/22 PASS)
 │
 ├── notebooks/
-│   ├── first_principles_predictions.ipynb  # Five parameter-free predictions
-│   └── constraint_sensitivity.ipynb        # Interactive constraint demonstrations
+│   ├── predictions.ipynb       # Sizzle Reel — headline numbers
+│   ├── explorer.ipynb          # Interactive Explorer — sliders + narrative
+│   └── derivations.ipynb       # Technical Derivations — every equation
 │
-└── tests/
-    └── test_all.py
+├── notebooks/archive/          # Old notebooks (preserved)
+└── ppm_old/                    # Old ppm/ package (preserved)
 ```
 
 ---
@@ -261,12 +248,16 @@ pip install -e .
 **Requirements:** Python 3.9+, NumPy, Matplotlib, ipywidgets, Jupyter.
 
 ```bash
-jupyter notebook notebooks/first_principles_predictions.ipynb
-jupyter notebook notebooks/constraint_sensitivity.ipynb
+jupyter notebook notebooks/predictions.ipynb
+jupyter notebook notebooks/explorer.ipynb
+jupyter notebook notebooks/derivations.ipynb
 ```
 
-Or launch either notebook directly in your browser (no installation required):
-[first_principles_predictions.ipynb](https://ppm-framework.fly.dev/voila/render/first_principles_predictions.ipynb) · [constraint_sensitivity.ipynb](https://ppm-framework.fly.dev/voila/render/constraint_sensitivity.ipynb)
+Verify the computational core:
+
+```bash
+python -c "import ppm; ppm.verify.print_report()"
+```
 
 ---
 

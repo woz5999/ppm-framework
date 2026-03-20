@@ -2,14 +2,16 @@ name: Deploy to Fly.io
 
 on:
   push:
-    branches: [main]
-    paths:
-      - "fly/**"
-      - "ppm/**"
-      - "notebooks/**"
-      - "pyproject.toml"
-      - "fly.toml"
-      - ".github/workflows/fly.yml"
+    # branches: [main]
+    # paths:
+    #   - "fly/**"
+    #   - "ppm/**"
+    #   - "notebooks/**"
+    #   - "pyproject.toml"
+    #   - "fly.toml"
+    #   - ".github/workflows/fly.yml"
+    tags:
+      - "v*" # Trigger only on tags starting with "v"
   workflow_dispatch:
 
 concurrency:
