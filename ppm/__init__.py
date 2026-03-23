@@ -16,6 +16,7 @@ higgs        : Higgs quartic, top Yukawa from τ-involution
 instanton    : Instanton action S=30π, zero modes, prefactor budget
 spectral     : Heat kernel, zeta functions, functional determinant
 cosmology    : G, Λ, H₀, G(z) evolution, dark energy
+consciousness: Φ, Ψ, firing rates, consciousness-scale predictions
 golden_ratio : Pyramidal numbers, A₅ decomposition, φ origin
 neutrino     : PMNS matrix, θ_strong, neutrino mass brackets
 berry_phase  : CKM matrix, δ_CP from Berry phase on CP³
@@ -32,6 +33,7 @@ __version__ = "2.0.0"
 
 from . import constants
 from . import hierarchy
+from . import bridges
 from . import alpha
 from . import gauge
 from . import higgs
@@ -41,5 +43,7 @@ from . import cosmology
 from . import golden_ratio
 from . import neutrino
 from . import berry_phase
+from . import consciousness
+from . import stability
 from . import predictions
 from . import verify

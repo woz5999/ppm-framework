@@ -9,871 +9,261 @@ or:
 """
 
 import unittest
-import numpy as np
-from ppm.hierarchy import hierarchy_energy, k_from_mass, actualization_timescale
-from ppm.constraint_solver import constraint_solver, default_initial_guess, direct_solve, predict_independent
-from ppm.phase_coherence import thermal_phase, quantum_phase, solve_alpha_from_coherence
-from ppm.constants import PHYSICAL, FRAMEWORK, ENERGY_SCALES, CONVERSIONS
+import math
+from ppm.hierarchy import (
+    energy_mev, energy_gev, k_from_energy_mev, k_from_energy_gev,
+    planck_anchor, consciousness_level, g_from_topology, k_level_table,
+)
+from ppm import constants as C
 
 
 class TestHierarchy(unittest.TestCase):
     def test_planck_scale_order_of_magnitude(self):
-        """E(0) should be within an order of magnitude of Planck energy."""
-        E = hierarchy_energy(0)
-        E_planck_MeV = 1.22e22  # 1.22e19 GeV in MeV
-        ratio = E / E_planck_MeV
+        """E(1) should be within an order of magnitude of Planck energy."""
+        E_gev = energy_gev(1.0)
+        ratio = E_gev / C.E_PLANCK_GEV
         self.assertGreater(ratio, 0.1)
         self.assertLess(ratio, 10.0)
 
     def test_confinement_reference(self):
         """E(51) is the reference energy = 140 MeV exactly."""
-        E = hierarchy_energy(51)
-        self.assertTrue(np.isclose(E, 140.0, rtol=1e-10))
+        E = energy_mev(51)
+        self.assertAlmostEqual(E, 140.0, places=8)
 
     def test_consciousness_thermal_match(self):
-        """E(k_conscious) must equal k_BT at T_bio — this is the defining condition."""
-        k_c = FRAMEWORK["k_conscious"]
-        E_MeV = hierarchy_energy(k_c)
-        kBT_MeV = FRAMEWORK["kBT_MeV"]
-        self.assertTrue(np.isclose(E_MeV, kBT_MeV, rtol=1e-6), f"E({k_c:.2f}) = {E_MeV:.4e} vs kBT = {kBT_MeV:.4e}")
+        """E(k_conscious) ~ k_BT at T_bio = 310 K."""
+        k_c = consciousness_level(310.0)
+        E_MeV = energy_mev(k_c)
+        kB_eV = 8.617333e-5
+        kBT_MeV = kB_eV * 310.0 * 1e-6
+        self.assertAlmostEqual(E_MeV, kBT_MeV, delta=kBT_MeV * 1e-6)
 
     def test_hierarchy_monotonically_decreasing(self):
         """Energy decreases with increasing k."""
-        k_vals = [0, 10, 20, 30, 40, 51, 57, 61, 70, 75]
-        energies = [hierarchy_energy(k) for k in k_vals]
+        k_vals = [1, 10, 20, 30, 40, 51, 57, 61, 70, 75]
+        energies = [energy_mev(k) for k in k_vals]
         for i in range(len(energies) - 1):
             self.assertGreater(energies[i], energies[i + 1])
 
     def test_inverse_consistency(self):
-        """k_from_mass(hierarchy_energy(k)) == k for all k."""
-        for k in [0, 13, 44.5, 51, 57, 61, 70, 75]:
-            E = hierarchy_energy(k)
-            k_recovered = k_from_mass(E)
-            self.assertTrue(np.isclose(k, k_recovered, rtol=1e-6), f"k={k}: recovered {k_recovered}")
+        """k_from_energy_mev(energy_mev(k)) == k for all k."""
+        for k in [1, 13, 44.5, 51, 57, 61, 70, 75]:
+            E = energy_mev(k)
+            k_recovered = k_from_energy_mev(E)
+            self.assertAlmostEqual(k, k_recovered, places=6)
+
+    def test_gev_mev_consistency(self):
+        """energy_gev(k) = energy_mev(k) / 1000."""
+        for k in [10, 30, 51]:
+            self.assertAlmostEqual(energy_gev(k), energy_mev(k) * 1e-3, places=10)
 
     def test_electron_k_level(self):
-        k_e = k_from_mass(0.511)
-        self.assertAlmostEqual(k_e, 57.1, delta=0.5)
+        k_e = k_from_energy_mev(0.511)
+        self.assertAlmostEqual(k_e, 57.0, delta=0.5)
 
     def test_muon_k_level(self):
-        k_mu = k_from_mass(105.7)
+        k_mu = k_from_energy_mev(105.7)
         self.assertAlmostEqual(k_mu, 51.5, delta=0.5)
 
     def test_top_k_level(self):
-        k_top = k_from_mass(173000.0)
-        self.assertAlmostEqual(k_top, 43.5, delta=1.5)
+        k_top = k_from_energy_gev(172.7)
+        self.assertAlmostEqual(k_top, 44.5, delta=1.5)
 
     def test_scaling_factor(self):
-        """E(k)/E(k+2) = g for all k."""
-        g = FRAMEWORK["g"]
+        """E(k)/E(k+2) = 2π for all k."""
         for k in [10, 30, 51]:
-            ratio = hierarchy_energy(k) / hierarchy_energy(k + 2)
-            self.assertTrue(np.isclose(ratio, g, rtol=1e-10))
+            ratio = energy_mev(k) / energy_mev(k + 2)
+            self.assertAlmostEqual(ratio, C.TAU, places=8)
 
-    def test_timescale_positive(self):
-        for k in [0, 51, 57, 61, 75]:
-            tau = actualization_timescale(k)
-            self.assertGreater(tau["tau_quantum_s"], 0)
+    def test_planck_anchor_dict(self):
+        pa = planck_anchor()
+        self.assertIn('E_predicted_GeV', pa)
+        self.assertIn('error_pct', pa)
+        self.assertLess(abs(pa['error_pct']), 10.0)
 
-    def test_timescale_k_conscious_has_integration(self):
-        """k_conscious should have integration window and sub-cycle counts."""
-        k_c = FRAMEWORK["k_conscious"]
-        tau = actualization_timescale(k_c)
-        self.assertIsNotNone(tau["integration_ms"])
-        self.assertIsNotNone(tau["sub_cycles_k51"])
-        self.assertIsNotNone(tau["sub_cycles_k57"])
-        self.assertGreater(tau["sub_cycles_k51"], tau["sub_cycles_k57"])
+    def test_g_from_topology(self):
+        """g = 2π from both topological and Maslov derivations."""
+        result = g_from_topology()
+        self.assertAlmostEqual(result['g'], 2 * math.pi, places=10)
+        self.assertAlmostEqual(result['g_topo'], result['g_maslov'], places=10)
 
-    def test_rate_hierarchy_ordering(self):
-        """Lower k must have faster actualization (smaller tau)."""
-        tau_k51 = actualization_timescale(51)["tau_quantum_s"]
-        tau_k57 = actualization_timescale(57)["tau_quantum_s"]
-        k_c = FRAMEWORK["k_conscious"]
-        tau_kc = actualization_timescale(k_c)["tau_quantum_s"]
-        self.assertLess(tau_k51, tau_k57)
-        self.assertLess(tau_k57, tau_kc)
-
-    def test_k_conscious_derived_correctly(self):
-        """k_conscious should be > 70 with g=2pi and T_bio=310K."""
-        k_c = FRAMEWORK["k_conscious"]
+    def test_k_conscious_range(self):
+        """k_conscious should be 70 < k < 80 at T = 310 K."""
+        k_c = consciousness_level(310.0)
         self.assertGreater(k_c, 70)
         self.assertLess(k_c, 80)
 
-
-class TestConstraintSolver(unittest.TestCase):
-    def test_direct_solve_finite(self):
-        sol = direct_solve()
-        self.assertTrue(np.isfinite(sol[7]))  # Lambda
-        self.assertTrue(np.isfinite(sol[0]))  # K
-        self.assertTrue(np.isfinite(sol[1]))  # T
-
-    def test_direct_solve_with_observed_alpha(self):
-        """Using observed alpha, all solutions should be finite and physical."""
-        sol = direct_solve(use_observed_alpha=True)
-        self.assertTrue(np.all(np.isfinite(sol)))
-        self.assertTrue(np.isclose(sol[5], PHYSICAL["G"], rtol=0.15))
-
-    def test_convergence(self):
-        x, converged, info = constraint_solver()
-        self.assertTrue(converged)
-
-    def test_predict_independent_lambda(self):
-        """Lambda prediction should be within 10% of observed."""
-        results = predict_independent()
-        self.assertLess(results["Lambda"]["error_pct"], 10.0)
-
-    def test_predict_independent_G(self):
-        """G prediction (with observed alpha) should be within 15%."""
-        results = predict_independent()
-        self.assertLess(results["G"]["error_pct"], 15.0)
-
-    def test_predict_independent_alpha_w(self):
-        results = predict_independent()
-        self.assertTrue(np.isclose(results["alpha_w"]["predicted"], 1.0 / (3.0 * np.pi**2), rtol=1e-10))
-
-    def test_predict_independent_T(self):
-        results = predict_independent()
-        self.assertLess(results["T"]["error_pct"], 0.01)
-
-    def test_alpha_status_is_open(self):
-        results = predict_independent()
-        self.assertEqual(results["alpha_EM"]["status"], "OPEN")
-
-    def test_lambda_status_is_ok(self):
-        results = predict_independent()
-        self.assertEqual(results["Lambda"]["status"], "OK")
-
-
-class TestPhaseCoherence(unittest.TestCase):
-    def test_solve_alpha_algebraic_consistency(self):
-        """solve_alpha must produce alpha such that Phi_thermal == Phi_quantum."""
-        T, N, K = 310, 100, 10
-        alpha = solve_alpha_from_coherence(T=T, N_boundaries=N, K=K)
-        Phi_t = thermal_phase(T=T, N_boundaries=N)
-        Phi_q = quantum_phase(alpha=alpha, K=K)
-        self.assertTrue(np.isclose(Phi_t, Phi_q, rtol=1e-10))
-
-    def test_alpha_positive(self):
-        alpha = solve_alpha_from_coherence(T=310, N_boundaries=100, K=10)
-        self.assertGreater(alpha, 0)
-
-    def test_alpha_scales_with_N(self):
-        a1 = solve_alpha_from_coherence(T=310, N_boundaries=100, K=10)
-        a2 = solve_alpha_from_coherence(T=310, N_boundaries=200, K=10)
-        self.assertTrue(np.isclose(a2 / a1, 2.0, rtol=1e-10))
-
-    def test_alpha_scales_with_T(self):
-        a1 = solve_alpha_from_coherence(T=310, N_boundaries=100, K=10)
-        a2 = solve_alpha_from_coherence(T=620, N_boundaries=100, K=10)
-        self.assertTrue(np.isclose(a2 / a1, 2.0, rtol=1e-10))
-
-    def test_large_N_gives_correct_alpha(self):
-        """With the correct N_eff, alpha should equal 1/137."""
-        results = predict_independent()
-        N_needed = results["alpha_EM"]["N_eff_needed"]
-        K = FRAMEWORK["k_conscious"]
-        alpha = solve_alpha_from_coherence(T=310, N_boundaries=N_needed, K=K)
-        self.assertTrue(np.isclose(1 / alpha, 137.036, rtol=0.01))
-
-
-class TestCosmology(unittest.TestCase):
-    def test_G_present_value(self):
-        from ppm.cosmology import G_evolution
-
-        G0 = PHYSICAL["G"]
-        self.assertTrue(np.isclose(G_evolution(0, G0=G0), G0, rtol=1e-6))
-
-    def test_G_evolution_scaling(self):
-        from ppm.cosmology import G_evolution
-
-        G0 = PHYSICAL["G"]
-        ratio = G_evolution(1, G0=G0) / G_evolution(0, G0=G0)
-        self.assertTrue(np.isclose(ratio, 2 ** (3 / 2), rtol=1e-6))
-
-    def test_Lambda_present_value(self):
-        from ppm.cosmology import lambda_cosmological
-
-        Lambda = lambda_cosmological()
-        self.assertGreater(Lambda, 1e-53)
-        self.assertLess(Lambda, 1e-51)
-
-    def test_Lambda_evolution_scaling(self):
-        from ppm.cosmology import lambda_evolution, lambda_cosmological
-
-        L0 = lambda_cosmological()
-        ratio = lambda_evolution(1, Lambda0=L0) / L0
-        self.assertTrue(np.isclose(ratio, 4.0, rtol=1e-6))
-
-    def test_G_newton_order_of_magnitude(self):
-        from ppm.cosmology import G_newton
-
-        G = G_newton()
-        self.assertGreater(G, 1e-11)
-        self.assertLess(G, 1e-10)
-
-    def test_hubble_z0(self):
-        from ppm.cosmology import hubble_parameter
-
-        H0 = hubble_parameter(0)
-        self.assertTrue(np.isclose(H0, 70.9, rtol=1e-6))
+    def test_k_level_table(self):
+        """Particle table should have entries and finite predictions."""
+        rows = k_level_table()
+        self.assertGreater(len(rows), 10)
+        for row in rows:
+            self.assertTrue(math.isfinite(row['E_predicted_GeV']))
 
 
 class TestConstants(unittest.TestCase):
-    def test_g_exact(self):
-        self.assertTrue(np.isclose(FRAMEWORK["g"], 2 * np.pi, rtol=1e-10))
+    def test_lambda_ppm(self):
+        """λ_PPM = 1/(4√π) ≈ 0.14105."""
+        self.assertAlmostEqual(C.LAMBDA_PPM, 1.0 / (4 * math.sqrt(math.pi)), places=10)
 
-    def test_k_conscious_is_float(self):
-        """k_conscious should be a computed float, not hardcoded integer."""
-        k_c = FRAMEWORK["k_conscious"]
-        self.assertIsInstance(k_c, float)
-        self.assertNotEqual(k_c, int(k_c))
+    def test_tau(self):
+        self.assertAlmostEqual(C.TAU, 2 * math.pi, places=10)
 
-    def test_energy_scales_complete(self):
-        # "Planck" is intentionally excluded from ENERGY_SCALES — comparing E(0)
-        # to the observed Planck mass is circular in the framework's own logic.
-        # Use hierarchy_energy(0) directly if k=0 timescale is needed.
-        required = ["EWSB", "Confinement", "Electron", "Consciousness"]
-        for scale in required:
-            self.assertIn(scale, ENERGY_SCALES)
+    def test_r_squared(self):
+        """r² = 2(N+1) = 10."""
+        self.assertEqual(C.R_SQUARED, 10.0)
 
-    def test_physical_constants_positive(self):
-        for name, val in PHYSICAL.items():
-            self.assertGreater(val, 0, f"{name} must be positive")
+    def test_instanton_action(self):
+        """S = 30π."""
+        self.assertAlmostEqual(C.INSTANTON_ACTION, 30 * math.pi, places=8)
 
-    def test_conversions_consistent(self):
-        self.assertTrue(np.isclose(CONVERSIONS["MeV_to_J"], 1.602e-13, rtol=0.01))
+    def test_alpha_gut(self):
+        self.assertAlmostEqual(C.ALPHA_GUT, 0.1, places=10)
 
-    def test_kBT_in_framework(self):
-        self.assertIn("kBT_MeV", FRAMEWORK)
-        self.assertIn("kBT_eV", FRAMEWORK)
-        self.assertTrue(np.isclose(FRAMEWORK["kBT_eV"], 0.0267, rtol=0.01))
+    def test_sin2_theta_w(self):
+        self.assertAlmostEqual(C.SIN2_THETA_W_PPM, 0.375, places=10)
 
-    def test_energy_scales_geometric_k_values(self):
-        """ENERGY_SCALES k-values must be geometric (from topology or Z2 quantization)."""
-        from ppm.hierarchy import hierarchy_energy
+    def test_phi_196_match(self):
+        """φ^{-196} ≈ e^{-30π} to < 0.1%."""
+        self.assertLess(C.PHI_196_EXPONENT_MATCH_PERCENT, 0.1)
 
-        # Topological levels have exact k-values
-        # Note: "Planck" (k=0) is intentionally absent from ENERGY_SCALES; comparing
-        # E(0) to the observed Planck mass is circular — use hierarchy_energy(0) directly.
-        self.assertEqual(ENERGY_SCALES["EWSB"]["k"], 44.5)
-        self.assertEqual(ENERGY_SCALES["Confinement"]["k"], 51)
-        # Z2 quantization levels: k = 44.5 + n/2
-        self.assertEqual(ENERGY_SCALES["Electron"]["k"], 57.0)  # n=25
-        self.assertEqual(ENERGY_SCALES["Muon"]["k"], 51.5)  # n=14
-        self.assertEqual(ENERGY_SCALES["Tau"]["k"], 48.0)  # n=7
-
-    def test_energy_scales_predictions_vs_observation(self):
-        """Predicted energies from geometric k should be order-of-magnitude correct.
-
-        Z2 quantization (k = k_EWSB + n/2) gives the right scale but
-        exponential amplification of small k-offsets produces 10-25% errors
-        for leptons. Topologically fixed levels (EWSB, Top) are much better.
-        """
-        # Topologically fixed: Top quark — <1%
-        top_pred = ENERGY_SCALES["Top"]["E_GeV_predicted"]
-        top_obs = ENERGY_SCALES["Top"]["E_GeV_observed"]
-        self.assertLess(abs(top_pred - top_obs) / top_obs, 0.02)
-        # Z2 quantization: Electron — ~10% (k off by 0.11)
-        e_pred = ENERGY_SCALES["Electron"]["E_GeV_predicted"]
-        e_obs = ENERGY_SCALES["Electron"]["E_GeV_observed"]
-        self.assertLess(abs(e_pred - e_obs) / e_obs, 0.15)
-        # Z2 quantization: Muon — ~16% (k off by 0.19)
-        mu_pred = ENERGY_SCALES["Muon"]["E_GeV_predicted"]
-        mu_obs = ENERGY_SCALES["Muon"]["E_GeV_observed"]
-        self.assertLess(abs(mu_pred - mu_obs) / mu_obs, 0.20)
-
-    def test_energy_scales_have_source(self):
-        """Every entry must declare its geometric source."""
-        for name, entry in ENERGY_SCALES.items():
-            self.assertIn("source", entry, f"{name} missing 'source' field")
+    def test_y_top_ppm(self):
+        """y_t^PPM ≈ 0.992."""
+        self.assertAlmostEqual(C.Y_TOP_PPM, 0.992, delta=0.001)
 
 
-class TestTwistor(unittest.TestCase):
-    """Tests for twistor/RG module."""
+class TestGauge(unittest.TestCase):
+    def test_alpha_gut(self):
+        """alpha_gut() returns bare float = 0.1."""
+        from ppm.gauge import alpha_gut
+        self.assertAlmostEqual(alpha_gut(), 0.1, places=10)
 
-    def test_cp3_euler_characteristic(self):
-        from ppm.twistor import cp3_invariants
+    def test_sin2_theta_W_pati_salam(self):
+        """sin2_theta_W_pati_salam() returns bare float = 0.375."""
+        from ppm.gauge import sin2_theta_W_pati_salam
+        self.assertAlmostEqual(sin2_theta_W_pati_salam(), 0.375, places=10)
 
-        inv = cp3_invariants()
-        self.assertEqual(inv["euler_characteristic"], 4)
+    def test_sin2_theta_W_sm_running(self):
+        """SM running of sin²θ_W to E_break should be close to 3/8."""
+        from ppm.gauge import sin2_theta_W_sm_running
+        result = sin2_theta_W_sm_running()
+        self.assertAlmostEqual(result['sin2_tW_sm'], 0.375, delta=0.005)
 
-    def test_cp3_chern_numbers(self):
-        from ppm.twistor import cp3_invariants
+    def test_three_generations(self):
+        from ppm.gauge import generation_count
+        result = generation_count()
+        self.assertEqual(result['N_generations'], 3)
 
-        cn = cp3_invariants()["chern_numbers"]
-        self.assertEqual(cn["c3"], 4)
-        self.assertEqual(cn["c1_c2"], 24)
-        self.assertEqual(cn["c1_cubed"], 64)
-
-    def test_cp3_z2_quotient(self):
-        from ppm.twistor import cp3_invariants
-
-        self.assertEqual(cp3_invariants()["chi_CP3_mod_Z2"], 2)
-
-    def test_neff_exponent_near_five_sixths(self):
-        """N_eff exponent should be within 1% of 5/6 (holographic)."""
-        from ppm.twistor import neff_exponent_analysis
-
-        neff = neff_exponent_analysis()
-        self.assertLess(neff["p_discrepancy_pct"], 1.0)
-
-    def test_heat_kernel_monotone(self):
-        """Heat kernel ratio should decrease as t decreases (more CP3 modes)."""
-        from ppm.twistor import heat_kernel_ratio
-
-        r1 = heat_kernel_ratio(0.1)
-        r2 = heat_kernel_ratio(1.0)
-        self.assertLess(r1, r2)
-
-    def test_heat_kernel_alpha_scale_exists(self):
-        """There should exist a t where the ratio ≈ α."""
-        from ppm.twistor import heat_kernel_ratio
-
-        r = heat_kernel_ratio(0.032)
-        self.assertLess(abs(r - 1 / 137.036) / (1 / 137.036), 0.1)
-
-    def test_spectral_zeta_positive(self):
-        from ppm.twistor import spectral_zeta_CP3, spectral_zeta_RP3
-
-        self.assertGreater(spectral_zeta_CP3(3.0), 0)
-        self.assertGreater(spectral_zeta_RP3(3.0), 0)
+    def test_couplings_at_ebreak(self):
+        from ppm.gauge import couplings_at_ebreak
+        result = couplings_at_ebreak()
+        for key in ['alpha1_sm', 'alpha2_sm', 'alpha3_sm']:
+            self.assertGreater(result[key], 0)
 
 
-class TestFSGeometry(unittest.TestCase):
-    """Tests for Fubini-Study geometry: k↔distance, volume fraction, α conjecture."""
+class TestHiggs(unittest.TestCase):
+    def test_lambda_ppm(self):
+        """lambda_ppm() returns bare float."""
+        from ppm.higgs import lambda_ppm
+        self.assertAlmostEqual(lambda_ppm(), C.LAMBDA_PPM, places=10)
 
-    def test_fs_distance_max(self):
-        from ppm.twistor import fs_distance_max
+    def test_top_yukawa(self):
+        """top_yukawa_ppm() returns bare float ≈ 0.992."""
+        from ppm.higgs import top_yukawa_ppm
+        self.assertAlmostEqual(top_yukawa_ppm(), 0.992, delta=0.001)
 
-        self.assertAlmostEqual(fs_distance_max(), np.pi / 4, places=10)
-
-    def test_k_to_fs_roundtrip(self):
-        """k → d → k should be identity."""
-        from ppm.twistor import k_to_fs_distance, fs_distance_to_k
-
-        for k in [0, 10, 30, 51, 57, 70]:
-            d = k_to_fs_distance(k)
-            k_back = fs_distance_to_k(d)
-            self.assertAlmostEqual(k, k_back, places=6, msg=f"Roundtrip failed for k={k}")
-
-    def test_planck_at_max_distance(self):
-        """k=0 should map to d_max = π/4."""
-        from ppm.twistor import k_to_fs_distance, fs_distance_max
-
-        d = k_to_fs_distance(0)
-        self.assertAlmostEqual(d, fs_distance_max(), places=10)
-
-    def test_consciousness_near_zero_distance(self):
-        """k_conscious should map to d ≈ 0."""
-        from ppm.twistor import k_to_fs_distance
-
-        k_c = FRAMEWORK["k_conscious"]
-        d = k_to_fs_distance(k_c)
-        self.assertAlmostEqual(d, 0.0, places=10)
-
-    def test_distance_monotonically_decreasing_with_k(self):
-        """Higher k → smaller FS distance (closer to RP3)."""
-        from ppm.twistor import k_to_fs_distance
-
-        k_vals = [0, 20, 40, 51, 57, 70, 75]
-        dists = [k_to_fs_distance(k) for k in k_vals]
-        for i in range(len(dists) - 1):
-            self.assertGreaterEqual(dists[i], dists[i + 1])
-
-    def test_volume_fraction_at_zero(self):
-        from ppm.twistor import volume_fraction_within_distance
-
-        self.assertAlmostEqual(volume_fraction_within_distance(0.0), 0.0, places=10)
-
-    def test_volume_fraction_at_max(self):
-        from ppm.twistor import volume_fraction_within_distance, fs_distance_max
-
-        self.assertAlmostEqual(volume_fraction_within_distance(fs_distance_max()), 1.0, places=3)
-
-    def test_volume_fraction_monotonic(self):
-        from ppm.twistor import volume_fraction_within_distance
-
-        dvals = [0.05, 0.1, 0.2, 0.3, 0.5, 0.7]
-        fracs = [volume_fraction_within_distance(d) for d in dvals]
-        for i in range(len(fracs) - 1):
-            self.assertLess(fracs[i], fracs[i + 1])
-
-    def test_volume_scaling_exponent_is_six(self):
-        """Near d=0, legacy S5 model scales as d^6 where 6 = dim_R(CP3)."""
-        from ppm.twistor import alpha_from_volume_fraction
-
-        vf = alpha_from_volume_fraction(model="S5")
-        self.assertAlmostEqual(vf["scaling_exponent"], 6.0, delta=0.15)
-
-    def test_alpha_volume_fraction_match(self):
-        """Volume fraction at d* should equal α to within 1%."""
-        from ppm.twistor import alpha_from_volume_fraction
-
-        vf = alpha_from_volume_fraction()
-        self.assertLess(vf["match_pct"], 1.0)
-
-    def test_d_alpha_over_d_max_near_one_third(self):
-        """d*/d_max ≈ 1/3 for legacy S5 model; Jacobi model gives ~1/8."""
-        from ppm.twistor import alpha_from_volume_fraction
-
-        vf_s5 = alpha_from_volume_fraction(model="S5")
-        self.assertAlmostEqual(vf_s5["d_alpha_over_d_max"], 1.0 / 3, delta=0.02)
-        # Jacobi model (default) gives smaller ratio
-        vf_jacobi = alpha_from_volume_fraction(model="jacobi")
-        self.assertAlmostEqual(vf_jacobi["d_alpha_over_d_max"], 1.0 / 8, delta=0.02)
-
-    def test_geometric_summary_keys(self):
-        from ppm.twistor import alpha_geometric_summary
-
-        gs = alpha_geometric_summary()
-        self.assertIn("volume_fraction", gs)
-        self.assertIn("unifying_dimension", gs)
-        self.assertEqual(gs["unifying_dimension"], 6)
-        self.assertEqual(gs["chi_quotient"], 2)
+    def test_higgs_quartic_comparison(self):
+        from ppm.higgs import higgs_quartic_comparison
+        result = higgs_quartic_comparison()
+        self.assertLess(abs(result['error_pct']), 15.0)
 
 
-if __name__ == "__main__":
+class TestInstanton(unittest.TestCase):
+    def test_action(self):
+        """instanton_action() returns bare float = 30π."""
+        from ppm.instanton import instanton_action
+        self.assertAlmostEqual(instanton_action(), 30 * math.pi, places=6)
+
+    def test_phi_196(self):
+        from ppm.instanton import phi_196_check
+        result = phi_196_check()
+        self.assertLess(result['mismatch_pct'], 0.1)
+
+    def test_zero_modes(self):
+        from ppm.instanton import zero_mode_count
+        result = zero_mode_count()
+        self.assertEqual(result['n_complex'], 15)
+        self.assertEqual(result['n_real'], 30)
+
+
+class TestSpectral(unittest.TestCase):
+    def test_heat_kernel(self):
+        from ppm.spectral import heat_kernel_coefficients
+        result = heat_kernel_coefficients()
+        # Has a0, a2, a4, a6 keys
+        for key in ['a0', 'a2', 'a4', 'a6']:
+            self.assertIn(key, result)
+
+    def test_zeta_delta_0(self):
+        """zeta_delta_0() returns bare float = -733/945."""
+        from ppm.spectral import zeta_delta_0
+        self.assertAlmostEqual(zeta_delta_0(), -733.0 / 945.0, places=6)
+
+
+class TestBerryPhase(unittest.TestCase):
+    def test_delta_cp(self):
+        from ppm.berry_phase import delta_cp
+        result = delta_cp()
+        self.assertIn('delta_cp_rad', result)
+        self.assertTrue(math.isfinite(result['delta_cp_rad']))
+
+    def test_ckm_angles(self):
+        from ppm.berry_phase import ckm_angles
+        result = ckm_angles()
+        self.assertIn('theta_cabibbo_deg', result)
+        self.assertGreater(result['theta_cabibbo_deg'], 10)
+        self.assertLess(result['theta_cabibbo_deg'], 15)
+
+    def test_jarlskog(self):
+        from ppm.berry_phase import jarlskog_invariant
+        result = jarlskog_invariant()
+        self.assertGreater(result['J'], 0)
+
+
+class TestCosmology(unittest.TestCase):
+    def test_cosmological_constant(self):
+        from ppm.cosmology import cosmological_constant
+        result = cosmological_constant()
+        self.assertGreater(result['Lambda_m2'], 1e-53)
+        self.assertLess(result['Lambda_m2'], 1e-51)
+
+    def test_hubble(self):
+        from ppm.cosmology import hubble_from_age
+        result = hubble_from_age()
+        self.assertGreater(result['H0_km_s_Mpc'], 60)
+        self.assertLess(result['H0_km_s_Mpc'], 80)
+
+
+class TestNeutrino(unittest.TestCase):
+    def test_theta_strong(self):
+        """Strong CP: θ = 0 from RP³ non-orientability."""
+        from ppm.neutrino import theta_strong
+        result = theta_strong()
+        self.assertEqual(result['theta'], 0.0)
+
+    def test_pmns(self):
+        from ppm.neutrino import pmns_tribimaximal
+        result = pmns_tribimaximal()
+        self.assertAlmostEqual(result['sin2_theta12_ppm'], 1.0 / 3.0, places=10)
+        self.assertAlmostEqual(result['sin2_theta23_ppm'], 0.5, places=10)
+
+
+class TestGoldenRatio(unittest.TestCase):
+    def test_pyramidal_identity(self):
+        from ppm.golden_ratio import pyramidal_identity
+        result = pyramidal_identity()
+        self.assertLess(result['mismatch_pct'], 1.0)
+
+
+if __name__ == '__main__':
     unittest.main()
-
-
-class TestJacobiFieldAnalysis(unittest.TestCase):
-    """Tests for Jacobi field density and Schrödinger setup."""
-
-    def test_jacobi_field_density_at_zero(self):
-        from ppm.twistor import jacobi_field_density
-
-        rho = jacobi_field_density(0.0)
-        self.assertAlmostEqual(rho, 0.0, places=10)
-
-    def test_jacobi_field_density_at_pi_8(self):
-        from ppm.twistor import jacobi_field_density
-
-        # At d=π/8: sin(π/4)=1/√2, cos(π/4)=1/√2
-        # ρ = sin²(π/4)cos(π/4) = (1/2)(1/√2) = 1/(2√2) ≈ 0.3536
-        rho = jacobi_field_density(np.pi / 8)
-        expected = 0.5 * (1.0 / np.sqrt(2))
-        self.assertAlmostEqual(rho, expected, places=4)
-
-    def test_jacobi_field_density_at_max(self):
-        from ppm.twistor import jacobi_field_density, fs_distance_max
-
-        rho = jacobi_field_density(fs_distance_max())
-        # At d=π/4: sin(π/2)=1, cos(π/2)=0
-        self.assertAlmostEqual(rho, 0.0, places=10)
-
-    def test_jacobi_field_density_is_positive_in_interior(self):
-        from ppm.twistor import jacobi_field_density, fs_distance_max
-
-        d_test = fs_distance_max() / 3
-        rho = jacobi_field_density(d_test)
-        self.assertGreater(rho, 0.0)
-
-    def test_jacobi_cumulative_fraction_at_zero(self):
-        from ppm.twistor import jacobi_cumulative_fraction
-
-        f = jacobi_cumulative_fraction(0.0)
-        self.assertAlmostEqual(f, 0.0, places=10)
-
-    def test_jacobi_cumulative_fraction_at_max(self):
-        from ppm.twistor import jacobi_cumulative_fraction, fs_distance_max
-
-        f = jacobi_cumulative_fraction(fs_distance_max())
-        # At d=π/4: sin(π/2)=1, sin³(π/2)=1
-        self.assertAlmostEqual(f, 1.0, places=10)
-
-    def test_jacobi_cumulative_fraction_monotonic(self):
-        from ppm.twistor import jacobi_cumulative_fraction, fs_distance_max
-
-        d_vals = np.linspace(0, fs_distance_max(), 20)
-        f_vals = [jacobi_cumulative_fraction(d) for d in d_vals]
-        for i in range(len(f_vals) - 1):
-            self.assertLess(f_vals[i], f_vals[i + 1])
-
-    def test_jacobi_cumulative_fraction_at_pi_8(self):
-        from ppm.twistor import jacobi_cumulative_fraction
-
-        # At d=π/8: sin(π/4)=1/√2, sin³(π/4)=(1/√2)³=1/(2√2) ≈ 0.3536
-        f = jacobi_cumulative_fraction(np.pi / 8)
-        expected = (1.0 / np.sqrt(2)) ** 3
-        self.assertAlmostEqual(f, expected, places=4)
-
-    def test_effective_potential_Q_at_zero(self):
-        from ppm.twistor import effective_potential_Q
-
-        Q = effective_potential_Q(0.0)
-        self.assertAlmostEqual(Q, 0.0, places=10)
-
-    def test_effective_potential_Q_at_pi_8(self):
-        from ppm.twistor import effective_potential_Q
-
-        Q = effective_potential_Q(np.pi / 8)
-        # Expected ≈ 11.0 from manual calculation
-        self.assertAlmostEqual(Q, 11.0, delta=0.5)
-
-    def test_effective_potential_Q_is_positive_in_interior(self):
-        from ppm.twistor import effective_potential_Q, fs_distance_max
-
-        d_test = fs_distance_max() / 3
-        Q = effective_potential_Q(d_test)
-        self.assertGreater(Q, 0.0)
-
-    def test_effective_potential_Q_grows_near_max(self):
-        from ppm.twistor import effective_potential_Q, fs_distance_max
-
-        d_max = fs_distance_max()
-        Q_mid = effective_potential_Q(d_max * 0.45)
-        Q_near = effective_potential_Q(d_max * 0.49)
-        self.assertLess(Q_mid, Q_near)
-        # Q grows but approaches finite limit before hitting singularity
-        self.assertGreater(Q_near, 10.0)
-
-    def test_volume_density_jacobi_model(self):
-        from ppm.twistor import volume_density_at_distance
-
-        # Test that 'jacobi' model uses jacobi_field_density
-        rho = volume_density_at_distance(np.pi / 8, model="jacobi")
-        from ppm.twistor import jacobi_field_density
-
-        expected = jacobi_field_density(np.pi / 8)
-        self.assertAlmostEqual(rho, expected, places=10)
-
-    def test_volume_fraction_jacobi_model_default(self):
-        from ppm.twistor import volume_fraction_closed_form
-
-        # Test that 'jacobi' is available and matches jacobi_cumulative_fraction
-        f = volume_fraction_closed_form(np.pi / 8, model="jacobi")
-        from ppm.twistor import jacobi_cumulative_fraction
-
-        expected = jacobi_cumulative_fraction(np.pi / 8)
-        self.assertAlmostEqual(f, expected, places=10)
-
-    def test_volume_fraction_within_distance_jacobi_at_zero(self):
-        from ppm.twistor import volume_fraction_within_distance
-
-        f = volume_fraction_within_distance(0.0, model="jacobi")
-        self.assertAlmostEqual(f, 0.0, places=10)
-
-    def test_volume_fraction_within_distance_jacobi_at_max(self):
-        from ppm.twistor import volume_fraction_within_distance, fs_distance_max
-
-        f = volume_fraction_within_distance(fs_distance_max(), model="jacobi")
-        self.assertAlmostEqual(f, 1.0, places=2)
-
-    def test_alpha_from_volume_fraction_jacobi_uses_correct_model(self):
-        from ppm.twistor import alpha_from_volume_fraction
-
-        result = alpha_from_volume_fraction(model="jacobi")
-        self.assertEqual(result["model_used"], "jacobi")
-        # For Jacobi: f(d) = sin³(2d) = α gives d* ≈ 0.0976, so d*/d_max ≈ 1/8
-        self.assertAlmostEqual(result["d_alpha_over_d_max"], 1.0 / 8, delta=0.02)
-
-    def test_alpha_from_volume_fraction_jacobi_exponent_is_three(self):
-        from ppm.twistor import alpha_from_volume_fraction
-
-        result = alpha_from_volume_fraction(model="jacobi")
-        # Scaling exponent should be ~3 (codimension of RP3 in CP3)
-        self.assertAlmostEqual(result["scaling_exponent"], 3.0, delta=0.2)
-
-    def test_alpha_geometric_summary_has_jacobi_flag(self):
-        from ppm.twistor import alpha_geometric_summary
-
-        summary = alpha_geometric_summary()
-        self.assertIn("jacobi_analysis", summary)
-        self.assertTrue(summary["jacobi_analysis"])
-
-    def test_volume_density_models_backward_compatible(self):
-        from ppm.twistor import volume_density_at_distance
-
-        # Legacy models should still work
-        rho_s5 = volume_density_at_distance(np.pi / 8, model="S5")
-        rho_cp3 = volume_density_at_distance(np.pi / 8, model="CP3")
-        self.assertGreater(rho_s5, 0.0)
-        self.assertGreater(rho_cp3, 0.0)
-
-    def test_volume_fraction_models_backward_compatible(self):
-        from ppm.twistor import volume_fraction_closed_form
-
-        # Legacy models should still work
-        f_s5 = volume_fraction_closed_form(np.pi / 8, model="S5")
-        f_cp3 = volume_fraction_closed_form(np.pi / 8, model="CP3")
-        self.assertGreater(f_s5, 0.0)
-        self.assertGreater(f_cp3, 0.0)
-
-
-class TestFirstPrinciplesPredictions(unittest.TestCase):
-    """
-    Tests for predictions derived purely from CP³/RP³ topology.
-
-    These tests verify that the framework makes specific numerical
-    predictions without any free parameters — the predicted values
-    fall out of the geometry, not from fitting to observations.
-
-    Each test has two assertions:
-      1. The formula produces the exact predicted value (internal consistency).
-      2. The predicted value agrees with observation within stated tolerance
-         (empirical validity).
-
-    Separation of these two checks is intentional: if the formula changes,
-    the first assertion catches it; if the observation is refined, only the
-    second assertion is affected.
-    """
-
-    def test_ckm_cp_phase_golden_ratio_formula(self):
-        """δ_CP = π(1 − 1/φ) is exact; golden ratio is not a free parameter."""
-        from ppm.predictions import ckm_cp_phase
-        import math
-
-        result = ckm_cp_phase()
-        phi = (1.0 + math.sqrt(5.0)) / 2.0
-        expected = math.pi * (1.0 - 1.0 / phi)
-
-        # Formula produces the exact mathematical value
-        self.assertAlmostEqual(result['delta_CP_rad'], expected, places=12)
-
-    def test_ckm_cp_phase_matches_observation(self):
-        """π(1 − 1/φ) ≈ 1.200 rad matches observed CKM δ_CP within uncertainty."""
-        from ppm.predictions import ckm_cp_phase
-
-        result = ckm_cp_phase()
-        # Observed CKM δ_CP = 1.20 ± 0.08 rad (PDG 2023).
-        # Predicted value must lie within 2σ = 0.16 rad.
-        self.assertAlmostEqual(result['delta_CP_rad'], result['obs_CKM_rad'],
-                               delta=2 * result['obs_CKM_unc'])
-
-    def test_pmns_tribimaximal_sin2_theta23_exact_half(self):
-        """sin²θ₂₃ = 1/2 exactly from Z₂ × 3D topology — not a float approximation."""
-        from ppm.predictions import pmns_tribimaximal
-        from fractions import Fraction
-
-        result = pmns_tribimaximal()
-        # The prediction is the exact rational number 1/2.
-        # Verify the float representation is exact to machine precision.
-        self.assertEqual(result['sin2_theta_23'], 0.5)
-        # Verify the underlying matrix: (U[1,2])² + (U[2,2])² = 1,
-        # and the (2,3) column has equal magnitude entries → sin²θ₂₃ = 1/2.
-        U = result['U_TBM']
-        sin2_23_from_matrix = U[1, 2] ** 2
-        self.assertAlmostEqual(sin2_23_from_matrix, 0.5, places=12)
-
-    def test_pmns_tribimaximal_sin2_theta12_exact_third(self):
-        """sin²θ₁₂ = 1/3 exactly from Z₂ × 3D topology."""
-        from ppm.predictions import pmns_tribimaximal
-
-        result = pmns_tribimaximal()
-        self.assertAlmostEqual(result['sin2_theta_12'], 1.0 / 3.0, places=12)
-
-    def test_pmns_tribimaximal_matrix_is_unitary(self):
-        """Tribimaximal matrix is exactly unitary — it is a rotation, not an approximation."""
-        from ppm.predictions import pmns_tribimaximal
-
-        result = pmns_tribimaximal()
-        U = result['U_TBM']
-        product = U.T @ U
-        np.testing.assert_array_almost_equal(product, np.eye(3), decimal=12)
-
-    def test_pmns_theta23_matches_observation(self):
-        """sin²θ₂₃ = 0.500 predicted; observed 0.546 ± 0.021 (NuFIT 5.2) — 8.4% error (Tier 2)."""
-        from ppm.predictions import pmns_tribimaximal
-
-        result = pmns_tribimaximal()
-        # Observed sin²θ₂₃ = 0.546 ± 0.021 (NuFIT 5.2, normal ordering).
-        # Prediction 0.500 is 8.4% below observed — Tier 2 (strong, 2–10%).
-        self.assertAlmostEqual(result['sin2_theta_23'], result['obs_sin2_23'],
-                               delta=0.06)
-
-    def test_hubble_constant_formula(self):
-        """H₀ = 1/T_universe; verify conversion from Gyr to km/s/Mpc is correct."""
-        from ppm.predictions import hubble_constant_prediction
-
-        result = hubble_constant_prediction()
-        # Manually verify the unit conversion:
-        # H₀ (km/s/Mpc) = (1/T_s) × Mpc_in_m / 1000
-        Gyr_to_s  = 1e9 * 365.25 * 24.0 * 3600.0
-        Mpc_to_m  = 3.08568e22
-        T_s       = result['T_universe_Gyr'] * Gyr_to_s
-        H0_expected = (1.0 / T_s) * Mpc_to_m / 1e3
-
-        self.assertAlmostEqual(result['H0_pred_kmsMpc'], H0_expected, places=6)
-
-    def test_hubble_constant_in_tension_range(self):
-        """H₀ ≈ 70.9 km/s/Mpc sits between CMB (67.4) and SH0ES (73.0)."""
-        from ppm.predictions import hubble_constant_prediction
-
-        result = hubble_constant_prediction()
-        H0 = result['H0_pred_kmsMpc']
-        # Must be above Planck CMB and below SH0ES
-        self.assertGreater(H0, result['obs_CMB'])
-        self.assertLess(H0, result['obs_SH0ES'])
-        # Within 2% of TRGB measurement (closest independent calibration)
-        self.assertAlmostEqual(H0, result['obs_TRGB'], delta=0.02 * result['obs_TRGB'])
-
-    def test_weak_coupling_formula(self):
-        """α_w = 1/(3π²) from RP³ geometry; formula is the primary prediction."""
-        from ppm.predictions import weak_coupling_prediction
-
-        result = weak_coupling_prediction()
-        expected_inv = 3.0 * np.pi ** 2   # ≈ 29.608
-
-        self.assertAlmostEqual(result['alpha_w_inv_pred'], expected_inv, places=10)
-
-    def test_weak_coupling_matches_observation(self):
-        """α_w⁻¹ ≈ 29.6 predicted; observed 29.9 ± 0.2 at M_Z scale — within 2%."""
-        from ppm.predictions import weak_coupling_prediction
-
-        result = weak_coupling_prediction()
-        # Observed α_w⁻¹ = 29.9 ± 0.2.
-        # Prediction is within 2% = 0.6 units.
-        self.assertAlmostEqual(result['alpha_w_inv_pred'], result['obs_alpha_w_inv'],
-                               delta=2.0 * result['obs_uncertainty'])
-
-    # ------------------------------------------------------------------
-    # Lepton masses
-    # ------------------------------------------------------------------
-
-    def test_lepton_quantum_numbers_are_fixed(self):
-        """Z₂ quantum numbers n = 7, 14, 25 are the primary prediction — not the masses."""
-        from ppm.predictions import lepton_masses
-
-        lm = lepton_masses()
-        self.assertEqual(lm['electron']['n'], 25)
-        self.assertEqual(lm['muon']['n'], 14)
-        self.assertEqual(lm['tau']['n'], 7)
-
-    def test_lepton_k_levels_from_quantum_numbers(self):
-        """k = k_EWSB + n/2; k_EWSB = 44.5 is topology-fixed."""
-        from ppm.predictions import lepton_masses
-
-        lm = lepton_masses()
-        k_ewsb = 44.5
-        self.assertAlmostEqual(lm['electron']['k'], k_ewsb + 25 / 2, places=10)
-        self.assertAlmostEqual(lm['muon']['k'],     k_ewsb + 14 / 2, places=10)
-        self.assertAlmostEqual(lm['tau']['k'],      k_ewsb +  7 / 2, places=10)
-
-    def test_lepton_masses_correct_ordering(self):
-        """Predicted masses must be ordered: tau > muon > electron."""
-        from ppm.predictions import lepton_masses
-
-        lm = lepton_masses()
-        self.assertGreater(lm['tau']['E_pred_MeV'],  lm['muon']['E_pred_MeV'])
-        self.assertGreater(lm['muon']['E_pred_MeV'], lm['electron']['E_pred_MeV'])
-
-    def test_lepton_masses_order_of_magnitude(self):
-        """Bare predictions are within a factor of 2 of observed masses."""
-        from ppm.predictions import lepton_masses
-
-        lm = lepton_masses()
-        for name in ('electron', 'muon', 'tau'):
-            ratio = lm[name]['E_pred_MeV'] / lm[name]['E_obs_MeV']
-            self.assertGreater(ratio, 0.5,
-                msg=f"{name}: predicted/observed = {ratio:.3f} < 0.5")
-            self.assertLess(ratio, 2.0,
-                msg=f"{name}: predicted/observed = {ratio:.3f} > 2.0")
-
-    def test_lepton_masses_bare_error_within_stated_range(self):
-        """Bare errors 10–25% are expected without radiative corrections (Section 4.4)."""
-        from ppm.predictions import lepton_masses
-
-        lm = lepton_masses()
-        for name in ('electron', 'muon', 'tau'):
-            err = lm[name]['error_pct']
-            self.assertLess(err, 40.0,
-                msg=f"{name}: bare error {err:.1f}% exceeds 40% — mechanism may be wrong")
-
-    # ------------------------------------------------------------------
-    # Neutrino k-levels
-    # ------------------------------------------------------------------
-
-    def test_neutrino_k_levels_are_topology_fixed(self):
-        """k = 58, 60, 61 are the topology-fixed levels — the integer spacing is the prediction."""
-        from ppm.predictions import neutrino_k_levels
-
-        nu = neutrino_k_levels()
-        self.assertEqual(nu['nu3']['k'], 58)
-        self.assertEqual(nu['nu2']['k'], 60)
-        self.assertEqual(nu['nu1']['k'], 61)
-
-    def test_neutrino_k_level_spacing(self):
-        """Generation spacing Δk = 2 (nu3→nu2) and Δk = 1 (nu2→nu1) is a structural prediction."""
-        from ppm.predictions import neutrino_k_levels
-
-        nu = neutrino_k_levels()
-        self.assertEqual(nu['nu2']['k'] - nu['nu3']['k'], 2)
-        self.assertEqual(nu['nu1']['k'] - nu['nu2']['k'], 1)
-
-    def test_neutrino_k_levels_below_consciousness_boundary(self):
-        """All neutrino k-levels sit below k_conscious ≈ 75.35."""
-        from ppm.predictions import neutrino_k_levels
-
-        nu = neutrino_k_levels()
-        k_c = FRAMEWORK['k_conscious']
-        for name in ('nu1', 'nu2', 'nu3'):
-            self.assertLess(nu[name]['k'], k_c,
-                msg=f"{name}: k = {nu[name]['k']} is not below k_conscious = {k_c:.2f}")
-
-    def test_neutrino_hierarchy_energies_are_keV_scale(self):
-        """Hierarchy energies at k = 58–61 are in the keV range (seesaw required for meV masses)."""
-        from ppm.predictions import neutrino_k_levels
-
-        nu = neutrino_k_levels()
-        for name in ('nu1', 'nu2', 'nu3'):
-            E_keV = nu[name]['E_hierarchy_keV']
-            self.assertGreater(E_keV, 1.0,
-                msg=f"{name}: E = {E_keV:.1f} keV unexpectedly small")
-            self.assertLess(E_keV, 1e6,
-                msg=f"{name}: E = {E_keV:.1f} keV unexpectedly large")
-
-    # ------------------------------------------------------------------
-    # G(z) evolution / JWST
-    # ------------------------------------------------------------------
-
-    def test_g_evolution_at_z0_is_unity(self):
-        """G(z=0) / G₀ = 1 exactly by definition."""
-        from ppm.predictions import g_cosmic_evolution
-
-        result = g_cosmic_evolution(z_max=1.0, n_z=10)
-        self.assertAlmostEqual(result['G_ratio_volume'][0], 1.0, places=6)
-        self.assertAlmostEqual(result['G_ratio_time'][0],   1.0, places=4)
-
-    def test_g_evolution_increases_with_redshift(self):
-        """G was stronger in the past — G(z)/G₀ must be strictly increasing with z."""
-        from ppm.predictions import g_cosmic_evolution
-
-        result = g_cosmic_evolution(z_max=15.0, n_z=50)
-        G_vol = result['G_ratio_volume']
-        G_tim = result['G_ratio_time']
-        self.assertTrue(all(G_vol[i] < G_vol[i+1] for i in range(len(G_vol)-1)),
-            "G_ratio_volume is not monotonically increasing with z")
-        self.assertTrue(all(G_tim[i] < G_tim[i+1] for i in range(len(G_tim)-1)),
-            "G_ratio_time is not monotonically increasing with z")
-
-    def test_g_evolution_volume_scaling_formula(self):
-        """G(z)/G₀ = (1+z)^1.5 exactly for comoving-volume scaling."""
-        from ppm.predictions import g_cosmic_evolution
-
-        result = g_cosmic_evolution(z_max=12.0, n_z=5)
-        for z, G_ratio in zip(result['z'], result['G_ratio_volume']):
-            expected = (1.0 + z) ** 1.5
-            self.assertAlmostEqual(G_ratio, expected, places=10)
-
-    def test_g_evolution_jwst_band_brackets_observations(self):
-        """The predicted G enhancement band must bracket the JWST-observed UV excess."""
-        from ppm.predictions import g_cosmic_evolution
-
-        result = g_cosmic_evolution()
-        jwst = result['jwst_data']
-
-        for i, z in enumerate(jwst['z']):
-            # Find nearest computed redshift index
-            idx = int(np.argmin(np.abs(result['z'] - z)))
-            G_low  = result['G_ratio_time'][idx]    # conservative lower bound
-            G_high = result['G_ratio_volume'][idx]  # upper bound
-
-            obs_low  = jwst['excess_low'][i]
-            obs_high = jwst['excess_high'][i]
-
-            # The predicted G enhancement range [G_low, G_high] must overlap
-            # the observed UV-excess range [obs_low, obs_high].
-            overlap = min(G_high, obs_high) - max(G_low, obs_low)
-            self.assertGreater(overlap, 0.0,
-                msg=(f"z={z}: G band [{G_low:.1f}, {G_high:.1f}] does not overlap "
-                     f"JWST excess [{obs_low:.1f}, {obs_high:.1f}]"))

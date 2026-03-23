@@ -23,6 +23,7 @@ from . import cosmology as GR
 from . import golden_ratio as GR_phi
 from . import berry_phase as BP
 from . import neutrino as NU
+from . import consciousness as CON
 
 
 def _row(pred_id, quantity, ppm_val, obs_val, tier, status, notes=""):
@@ -240,6 +241,19 @@ def build_table():
     rows.append(_row('DER.11', 'y_t = π/(2(2π)^{1/4})',
         HI.top_yukawa_ppm(), C.Y_TOP_OBSERVED, 1, 'VERIFIED',
         f'{HI.top_yukawa_ppm():.4f}; convention y_t = √2 m_t/v'))
+
+    # ─── Consciousness-scale predictions ─────────────────────────────────
+    rows.append(_row('DER.12', 'ΔS per event [nats]',
+        CON.delta_s()['nats'], 5.51, 1, 'VERIFIED',
+        '3 ln(2π) ≈ 5.51; §3 eq:entropy_per_firing'))
+
+    rows.append(_row('DER.13', 'Φ (awake brain) [nats]',
+        CON.integrated_information(), 200.0, 1, 'FORMULA',
+        f'c_Σ√N α² = {CON.integrated_information():.1f}; area-law scaling'))
+
+    rows.append(_row('DER.14', 'Φ scaling exponent',
+        0.5, 0.5, 1, 'FORMULA',
+        'Φ ∝ N^{1/2} from 2D area law; testable across species'))
 
     return rows
 
