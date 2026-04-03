@@ -130,6 +130,20 @@ def run_all():
     results.append(check("Λ ≈ 1.1e-52 m⁻²",
                          lam_cc['Lambda_m2'], 1.1e-52, tol_pct=5.0))
 
+    # ─── N self-consistency ──────────────────────────────────────────────────
+    results.append(check("N self-consistency: (2π)^108 α² ≈ φ^392",
+                         C.N_SELF_CONSISTENCY, C.N_ASYMPTOTIC, tol_pct=2.0))
+
+    # ─── Friedmann age ───────────────────────────────────────────────────────
+    fa = GR.friedmann_age()
+    results.append(check("Friedmann age ≈ 13.8 Gyr",
+                         fa['T_pred_Gyr'], 13.797, tol_pct=5.0))
+
+    # ─── Actualization record ────────────────────────────────────────────────
+    ar = GR.actualization_record()
+    results.append(check("S_record/S_BH ~ O(1)",
+                         ar['S_ratio'], 1.0, tol_pct=100.0))
+
     return results
 
 

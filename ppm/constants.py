@@ -112,6 +112,28 @@ N_ZERO_MODES_REAL    = 2 * N_ZERO_MODES_COMPLEX  # = 30 real
 PHI_196_EXPONENT_MATCH_PERCENT = abs(INSTANTON_ACTION - 196.0 * math.log(PHI)) / INSTANTON_ACTION * 100
 # ≈ 0.073% — the core numerical coincidence of the framework
 
+# ─── Cosmic boundary capacity ─────────────────────────────────────────────
+
+N_ASYMPTOTIC      = PHI**392       # Asymptotic topological capacity of RP³ boundary
+                                    # = φ^392 ≈ 8.38 × 10^81
+                                    # Maximum number of independent tile positions (fiber sections)
+                                    # LaTeX: N_\infty = \varphi^{392}
+                                    # Status: DERIVED (topological)
+
+N_ASYMPTOTIC_SQRT = PHI**196       # √N_∞ = φ^196 ≈ 9.15 × 10^40
+                                    # Appears in G formula denominator and Sidharth relations
+                                    # LaTeX: \sqrt{N_\infty} = \varphi^{196}
+                                    # Status: DERIVED
+
+# Self-consistency: (2π)^108 × α² ≈ N_∞  (1.5% match)
+# This is NOT an independent derivation — it ties N to the spectral geometry
+# that produces α. The three routes to N (packing, instanton, self-consistency)
+# constrain the same topological quantity.
+# Uses α = 1/137.036 (observed); computed after ALPHA_EM_INV is defined below.
+# Placeholder — actual value set at module bottom via _init_self_consistency().
+N_SELF_CONSISTENCY = None
+N_SELF_CONSISTENCY_ERR_PCT = None
+
 # ─── Gauge sector ─────────────────────────────────────────────────────────────
 
 ALPHA_GUT        = 1.0 / R_SQUARED   # = 1/10 = 0.1 from Fubini-Study
@@ -170,6 +192,13 @@ ALPHA2_MZ    = 0.03377           # α_2(M_Z)
 G_NEWTON_SI  = 6.674e-11         # Newton's constant (m³ kg⁻¹ s⁻²)
 L_PLANCK_M   = 1.616e-35         # Planck length (meters)
 LAMBDA_CC    = 1.1e-52           # Cosmological constant (m⁻²)
+
+# ─── Deferred initialization (needs ALPHA_EM_INV defined above) ──────────────
+
+N_SELF_CONSISTENCY = TAU**108 * (1.0 / ALPHA_EM_INV)**2
+N_SELF_CONSISTENCY_ERR_PCT = (N_SELF_CONSISTENCY / N_ASYMPTOTIC - 1.0) * 100.0
+# ≈ 1.5% match to φ^392
+# Status: DERIVED (VERIFIED)
 
 # ─── Quick sanity checks ──────────────────────────────────────────────────────
 
