@@ -145,7 +145,7 @@ def build_table():
     lam_cc = GR.cosmological_constant()
     rows.append(_row('PRED.15', 'G_N [from PPM formula]',
         None, C.G_NEWTON_SI, 2, 'VERIFIED',
-        f'16π⁴ℏcα/(m_π²√N); err +0.4% (neutral pion)'))
+        f'16π⁴ℏcα/(m_π²√N); err +1.7% (neutral pion, 135.0 MeV)'))
 
     # ─── PRED.16: Λ = 1.12e-52 m⁻² ─────────────────────────────────────
     rows.append(_row('PRED.16', 'Λ [m⁻²]',
@@ -187,12 +187,13 @@ def build_table():
         E_break, None, 3, 'VERIFIED',
         f'Pati-Salam scale E(k_break={C.K_BREAK}) = {E_break:.2e} GeV'))
 
-    # ─── PRED.23: GW dispersion (pion scale) ────────────────────────────
+    # ─── PRED.23: GW dispersion (Planck scale, from a₄ heat kernel) ─────
     gw_ligo = GR.gw_dispersion(100)
     gw_uhe = GR.gw_dispersion(1e15)
     rows.append(_row('PRED.23', 'GW dispersion Δv/c',
         None, None, 3, 'VERIFIED',
-        f'LIGO: {gw_ligo["delta_v_over_c"]:.1e}; UHE: {gw_uhe["delta_v_over_c"]:.1e}'))
+        f'α_GW={GR.ALPHA_GW:.3f}; LIGO: {gw_ligo["delta_v_over_c"]:.1e}; '
+        f'UHE: {gw_uhe["delta_v_over_c"]:.1e}'))
 
     # ─── Derived quantities (verified but not numbered PREDs) ────────────
 

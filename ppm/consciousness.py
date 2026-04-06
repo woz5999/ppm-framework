@@ -48,6 +48,7 @@ T_BODY_K = 310.0             # Mammalian body temperature (K)
 # Physical constants
 HBAR_JS = 1.0546e-34         # ℏ in J·s
 K_B_JK = 1.3806e-23          # k_B in J/K
+C_MS = 2.9979e8              # c in m/s
 
 # ─── Core predictions ────────────────────────────────────────────────────────
 
@@ -334,21 +335,21 @@ def cp3_spectral_data(k_max=20):
 # Section: §2 (Lindblad master equation for actualization)
 #
 # The actualization dissipator D[ρ] = Σ_b Γ_b (Â ρ Â − ½{Â, ρ}) drives
-# τ-odd components to zero with rate Γ_b = Gm²/ℏ (Penrose-Diósi).
-# The decoherence time for τ-odd suppression: τ_dec = 2ℏ/(Gm²).
+# τ-odd components to zero with rate Γ_b = Gm³c/ℏ² (Penrose-Diósi with
+# r = λ_C = ℏ/(mc), the Compton wavelength at each k-level).
+# The decoherence time for τ-odd suppression: τ_dec = 2ℏ²/(Gm³c).
 
 
 def decoherence_time(m_kg):
     """
     Lindblad decoherence time for τ-odd suppression.
 
-    LaTeX: τ_{\\rm dec} = \\frac{2\\hbar}{G m^2}
+    LaTeX: τ_{\\rm dec} = \\frac{2\\hbar^2}{G m^3 c}
     Section: §2 (Lindblad dynamics)
     Status: DERIVED
 
-    This is the Penrose-Diósi gravitational decoherence time,
-    recovered here as the Lindblad dissipation timescale for the
-    actualization operator Â on CP³.
+    Uses r = λ_C = ℏ/(mc) as the characteristic length scale, giving
+    Γ = Gm³c/ℏ². At Planck mass, τ_dec = 2 t_Planck exactly.
 
     Parameters
     ----------
@@ -359,12 +360,16 @@ def decoherence_time(m_kg):
     -------
     float : decoherence time in seconds.
     """
-    return 2.0 * HBAR_JS / (C.G_NEWTON_SI * m_kg ** 2)
+    return 2.0 * HBAR_JS ** 2 / (C.G_NEWTON_SI * m_kg ** 3 * C_MS)
 
 
 def decoherence_rate(m_kg):
     """
-    Lindblad dissipation rate Γ = Gm²/ℏ.
+    Lindblad dissipation rate Γ = Gm³c/ℏ² for fundamental particles.
+
+    Uses r = λ_C = ℏ/(mc) from the energy hierarchy. For composite/
+    mesoscopic systems where the spatial extent differs from λ_C, use
+    decoherence_rate_composite() instead.
 
     Section: §2 (Lindblad dynamics)
     Status: DERIVED
@@ -378,7 +383,31 @@ def decoherence_rate(m_kg):
     -------
     float : rate in Hz.
     """
-    return C.G_NEWTON_SI * m_kg ** 2 / HBAR_JS
+    return C.G_NEWTON_SI * m_kg ** 3 * C_MS / HBAR_JS ** 2
+
+
+def decoherence_rate_composite(m_kg, r_m):
+    """
+    Penrose-Diósi decoherence rate for composite/mesoscopic systems.
+
+    Γ = Gm²/(ℏr) where r is the characteristic spatial extent of the
+    mass distribution (a measurable physical parameter).
+
+    For neural boundaries: r ~ 1 μm (ion-channel cluster diameter).
+    For optomechanical tests: r = superposition extent (set by experiment).
+
+    Parameters
+    ----------
+    m_kg : float
+        Mass of the boundary system in kg.
+    r_m : float
+        Characteristic spatial extent of the mass distribution in meters.
+
+    Returns
+    -------
+    float : rate in Hz.
+    """
+    return C.G_NEWTON_SI * m_kg ** 2 / (HBAR_JS * r_m)
 
 
 def decoherence_table():
@@ -576,7 +605,7 @@ def _verify():
               f"{d['d_plus']:6d} {d['d_minus']:6d} {ratio:8.4f}")
 
     # Decoherence table
-    print(f"\nLindblad decoherence times τ_dec = 2ℏ/(Gm²):")
+    print(f"\nLindblad decoherence times τ_dec = 2ℏ²/(Gm³c)  [r = λ_C]:")
     for row in decoherence_table():
         print(f"  {row['label']:>20s}: Γ = {row['gamma_hz']:.2e} Hz, "
               f"τ_dec = {row['tau_dec_s']:.2e} s")

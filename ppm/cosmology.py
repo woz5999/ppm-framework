@@ -147,22 +147,47 @@ def delta_c_ppm(z):
 
 # ─── GW dispersion ──────────────────────────────────────────────────────────
 
+# Leading-order coefficient from a₄ Seeley-DeWitt (Weyl² projection),
+# N_s = 6 real scalars (CP³ sigma model), UV cutoff Λ = √(2π) M_P:
+#
+#   α_GW = ln(√(2π) M_P / m_π) / (15π)
+#
+# Derivation: The C² coefficient in a₄ for N_s scalars is N_s/180.
+# Matching the Einstein term (a₂) to 1/(16πG) gives Λ² = 2π M_P².
+# The ratio c_{C²}/c_{EH} = ln(Λ/μ) / (15 Λ²), and converting to
+# Planck-length units: α_GW = ln(Λ/m_π) / (15π).
+
+_L_PLANCK = math.sqrt(_HBAR * _G_OBS / _C**3)   # Planck length (m)
+_M_PLANCK = math.sqrt(_HBAR * _C / _G_OBS)       # Planck mass (kg)
+_M_PI_KG  = 134.977e6 * 1.602176634e-19 / _C**2  # neutral pion mass (kg)
+
+ALPHA_GW = math.log(math.sqrt(2 * math.pi) * _M_PLANCK / _M_PI_KG) / (15 * math.pi)
+# ALPHA_GW ≈ 0.995
+
+
 def gw_dispersion(f_hz):
     """
     PPM gravitational wave dispersion: Δv/c at frequency f.
 
-    LaTeX: \\frac{v_{\\rm ph}}{c} = 1 - \\left(\\frac{\\hbar k}{m_\\pi c}\\right)^2
-    where k = 2πf/c.
-    Section: §10.8, section-gravity.tex eq:gw_dispersion
+    LaTeX: \\omega^2 = c^2 k^2 [1 + \\alpha_{GW} (\\ell_P k)^2]
+    where α_GW = ln(√(2π) M_P/m_π)/(15π) ≈ 1, k = 2πf/c.
+
+    Correction scale is the Planck length, set by the a₄ heat kernel
+    coefficient of the CP³ sigma model.
+
+    Section: app-A §A.10, ch15 §T15.3
     Status: VERIFIED
 
-    At LIGO (100 Hz): Δv/c ~ 10⁻⁴².
-    At UHE (10¹⁵ Hz): Δv/c ~ 10⁻¹⁶.
+    At LIGO (100 Hz): Δv/c ~ 6×10⁻⁸².
+    At UHE (10¹⁵ Hz): Δv/c ~ 6×10⁻⁵⁶.
     """
-    m_pi_kg = 134.977e6 * 1.602176634e-19 / _C**2
-    ratio_sq = (2.0 * math.pi * f_hz * _HBAR / (m_pi_kg * _C**2))**2
+    k = 2.0 * math.pi * f_hz / _C
+    lk_sq = (_L_PLANCK * k)**2
+    delta_v = 0.5 * ALPHA_GW * lk_sq
     return {
-        'delta_v_over_c': ratio_sq,
+        'alpha_GW': ALPHA_GW,
+        'delta_v_over_c': delta_v,
+        'l_P_k': _L_PLANCK * k,
         'f_hz': f_hz,
         'status': 'VERIFIED'
     }
@@ -173,7 +198,7 @@ def gw_phase_shift(f_hz, d_Mpc):
     Accumulated GW phase shift at frequency f over distance d.
 
     Δφ = (Δv/c) × 2πf × d/c
-    Section: §10.8
+    Section: app-A §A.10
     Status: VERIFIED
     """
     dv = gw_dispersion(f_hz)['delta_v_over_c']
