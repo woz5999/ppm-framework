@@ -620,5 +620,119 @@ def _verify():
     print(f"  Universal margin = {w['margin']:.4f}")
 
 
+# ─── Aliases for LaTeX Code: references ─────────────────────────────────────
+# ch13 references these function names; map to existing implementations.
+
+def threshold():
+    """Consciousness threshold — k-window boundaries.
+
+    LaTeX: \\textit{Code: ppm.consciousness.threshold()}  [ch13]
+    Returns: consciousness_window() dict with k_min, k_max, width.
+    """
+    return consciousness_window()
+
+
+def qualia():
+    """Qualia structure from spectral Z₂ decomposition.
+
+    LaTeX: \\textit{Code: ppm.consciousness.qualia()}  [ch13]
+    Counts τ-odd eigenspace dimensions (quale dimensions) from CP³ spectral data.
+    """
+    spec = cp3_spectral_data(10)
+    return {
+        'spectral_levels': spec,
+        'n_quale_dimensions_k10': sum(d['d_minus'] for d in spec),
+    }
+
+
+def phi():
+    """Integrated information Φ for the human brain.
+
+    LaTeX: \\textit{Code: ppm.consciousness.phi()}  [ch13]
+    Φ = c_Σ √N α² with area-law scaling from 2D cortical boundary.
+    """
+    Phi = integrated_information()
+    return {
+        'Phi_nats': Phi,
+        'c_Sigma': C_SIGMA,
+        'N_synapses': N_SYNAPSES_HUMAN,
+        'alpha': ALPHA_EM,
+        'scaling_exponent': 0.5,
+    }
+
+
+def active_inference():
+    """Active inference parameters from PPM framework.
+
+    LaTeX: \\textit{Code: ppm.consciousness.active_inference()}  [ch13]
+    Computes integration timescale, channel capacity, and τ-firing rate
+    at consciousness scale. Biology exploits these conditions for
+    Bayesian updating.
+    """
+    from . import cosmology as GR
+    ti = GR.integration_time(T_BODY_K)
+    cc = channel_capacity(GR.k_conscious(T_BODY_K))
+    return {
+        't_integrate_ms': ti['t_integrate_ms'],
+        'channel_capacity_bits': cc,
+        'nu_tau_hz': tau_firing_rate(),
+    }
+
+
+def state_equation():
+    """Consciousness state equation: Φ, Ψ, ΔS, ν_τ.
+
+    LaTeX: \\textit{Code: ppm.consciousness.state_equation()}  [ch13]
+    Ψ = Φ × ν_τ × ΔS (phenomenal flux from integrated information).
+    """
+    Phi = integrated_information()
+    Psi = phenomenal_flux()
+    dS = delta_s()
+    nu = tau_firing_rate()
+    return {
+        'Phi_nats': Phi,
+        'Psi_nats_per_s': Psi,
+        'delta_S_nats': dS['nats'],
+        'nu_tau_hz': nu,
+        'T_K': T_BODY_K,
+    }
+
+
+def bkt_transition():
+    """BKT transition parameters for consciousness onset.
+
+    LaTeX: \\textit{Code: ppm.consciousness.bkt_transition()}  [ch13]
+    Returns k_critical and margin from the consciousness window.
+    """
+    w = consciousness_window()
+    return {
+        'k_critical': w['k_min'],
+        'T_critical_K': T_BODY_K,
+        'margin': w['margin'],
+    }
+
+
+def integration_time():
+    """Neural integration time from decoherence hierarchy.
+
+    LaTeX: \\textit{Code: ppm.consciousness.integration_time()}  [ch13]
+    """
+    from . import cosmology as GR
+    return GR.integration_time(T_BODY_K)
+
+
+def motor_reliability():
+    """Motor output reliability from channel capacity.
+
+    LaTeX: \\textit{Code: ppm.consciousness.motor_reliability()}  [ch13]
+    """
+    from . import cosmology as GR
+    nr = GR.n_reliable()
+    return {
+        'n_reliable': nr['n_reliable'],
+        'k_conscious': nr.get('k_conscious', GR.k_conscious(T_BODY_K)),
+    }
+
+
 if __name__ == '__main__':
     _verify()

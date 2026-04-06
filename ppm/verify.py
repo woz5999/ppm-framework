@@ -180,5 +180,21 @@ def print_report():
     return results
 
 
+# ─── Aliases for LaTeX Code: references ─────────────────────────────────────
+
+def self_consistency():
+    """Self-consistency verification subset.
+
+    LaTeX: \\textit{Code: ppm.verify.self_consistency()}  [ch14]
+    """
+    results = run_all()
+    return {
+        'all_checks': results,
+        'n_pass': sum(1 for r in results if r['status'] == 'PASS'),
+        'n_total': len(results),
+        'status': 'PASS' if all(r['status'] != 'FAIL' for r in results) else 'FAIL'
+    }
+
+
 if __name__ == "__main__":
     print_report()

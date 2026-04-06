@@ -47,3 +47,10 @@ from . import consciousness
 from . import stability
 from . import predictions
 from . import verify
+
+from . import gravity
+from . import mixing
+from . import ewsb
+from . import topology
+from . import information
+from . import spectrum

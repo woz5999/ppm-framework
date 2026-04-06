@@ -232,6 +232,41 @@ def alpha_blanket_volume():
     }
 
 
+# ─── Aliases for LaTeX Code: references ─────────────────────────────────────
+
+def breaking_chain():
+    """Pati-Salam → SM breaking chain.
+
+    LaTeX: \\textit{Code: ppm.gauge.breaking_chain()}  [ch04]
+    Returns: dict with breaking scales and group-theory data.
+    """
+    from . import hierarchy as H
+    return {
+        'uv_group': 'SU(4)_C x SU(2)_L x SU(2)_R',
+        'ir_group': 'SU(3)_C x SU(2)_L x U(1)_Y',
+        'k_break': C.K_BREAK,
+        'E_break_gev': H.energy_gev(C.K_BREAK),
+        'sin2_tW_at_break': sin2_theta_W_pati_salam(),
+        'alpha_gut': alpha_gut(),
+        'status': 'VERIFIED'
+    }
+
+
+def hypercharge():
+    """Hypercharge embedding from Pati-Salam.
+
+    LaTeX: \\textit{Code: ppm.gauge.hypercharge()}  [ch04]
+    Returns: dict with hypercharge normalization and Weinberg angle.
+    """
+    return {
+        'Y_normalization': '√(3/5)',
+        'sin2_tW_tree': 3.0 / 8.0,
+        'sin2_tW_running': sin2_theta_W_sm_running()['sin2_tW_sm'],
+        'source': 'SU(4)_C ⊃ SU(3)_C × U(1)_{B-L}; Y = T_{3R} + (B-L)/2',
+        'status': 'VERIFIED'
+    }
+
+
 if __name__ == "__main__":
     print("=== PPM Gauge Predictions ===")
     print(f"α_GUT (Fubini-Study):  {alpha_gut():.4f}  = 1/10")

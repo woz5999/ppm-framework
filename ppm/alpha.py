@@ -230,3 +230,5 @@ if __name__ == "__main__":
     fam = alpha_cpn_family()
     for n, d in fam.items():
         print(f"  CP^{n}: 1/α = {d['alpha_inv']:.1f}  (t* = {d['t_star']:.6f})")
+
+

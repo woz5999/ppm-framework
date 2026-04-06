@@ -189,6 +189,9 @@ ALPHA3_MZ    = 0.1179            # α_s(M_Z) strong coupling
 ALPHA1_MZ    = 0.01696           # α_1(M_Z) GUT-normalized
 ALPHA2_MZ    = 0.03377           # α_2(M_Z)
 
+HBAR_SI      = 1.054571817e-34    # ℏ (J·s)
+C_LIGHT_SI   = 2.99792458e8      # c (m/s)
+M_PI_KG      = M_PI_MEV * 1e6 * 1.602176634e-19 / C_LIGHT_SI**2  # pion mass (kg)
 G_NEWTON_SI  = 6.674e-11         # Newton's constant (m³ kg⁻¹ s⁻²)
 L_PLANCK_M   = 1.616e-35         # Planck length (meters)
 LAMBDA_CC    = 1.1e-52           # Cosmological constant (m⁻²)
