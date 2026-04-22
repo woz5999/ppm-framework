@@ -108,7 +108,7 @@ ax.text((k_conscious_min + k_conscious_max) / 2, delta_s_nats + 2.5,
         zorder=4)
 
 # Regime labels — quantum on left, classical smaller on right
-midpoint_q = (k_min_plot + k_cross) / 2
+midpoint_q = (k_min_plot + k_conscious_min) / 2
 ax.text(midpoint_q, max(info_vals) * 0.55, 'QUANTUM', color=VIOLET,
         fontsize=15, fontweight='bold', ha='center', alpha=0.35, zorder=1)
 ax.text(77, delta_s_nats * 0.35, 'CLASSICAL', color=GOLD,
