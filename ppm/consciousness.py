@@ -729,7 +729,7 @@ def motor_reliability():
     from . import cosmology as GR
     nr = GR.n_reliable()
     return {
-        'n_reliable': nr['n_reliable'],
+        'n_reliable': nr['N_reliable'],
         'k_conscious': nr.get('k_conscious', GR.k_conscious(T_BODY_K)),
     }
 

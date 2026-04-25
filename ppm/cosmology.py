@@ -378,29 +378,68 @@ def k_conscious(T_K=310.0):
     return k
 
 
-def integration_time(T_K=310.0):
+def integration_time(T_K=310.0, N_sites=1e14):
     """
-    Quantum Zeno integration time t_integrate = τ_sys² / τ_bath.
+    Collective-coherence integration time (binding window of the conscious moment).
 
-    τ_sys = ℏ/(k_BT) ≈ 25 fs (single actualization at k_conscious)
-    τ_bath = ℏ/(m_πc²) ≈ 4.7×10⁻²⁴ s (confinement bath)
-    t_integrate ≈ 0.13 ms
+    Canonical derivation: ch13 §T13.9 eq:integration_time (eq 1045).
 
-    Section: §12.3 (section7-new.tex)
-    Status: VERIFIED
+        τ_sys,eff = √N × ℏ/(k_B T)       (collective across N synaptic sites)
+        τ_bath    ≈ 10⁻¹² s              (thermal-photon relaxation at body T)
+        t_integrate = τ_sys,eff² / τ_bath
+
+    At T = 310 K with N = 10¹⁴:
+        τ_sys (single-site)   = ℏ/(k_BT)         ≈ 2.46×10⁻¹⁴ s  (25 fs)
+        τ_sys,eff (collective)= √N × τ_sys        ≈ 2.5×10⁻⁷ s
+        t_integrate           = (2.5×10⁻⁷)² /10⁻¹² ≈ 60 ms
+
+    This matches the 50–100 ms psychophysical binding window.
+
+    Earlier revisions of this function used the single-site τ_sys and
+    τ_bath = ℏ/(m_π c²) ≈ 5×10⁻²⁴ s (pion-confinement timescale),
+    producing t_integrate ≈ 0.13 ms — inconsistent with ch13. Retained
+    here only as `t_integrate_singlesite_ms` for diagnostic comparison.
+
+    Parameters
+    ----------
+    T_K : float
+        Temperature in kelvin. Default 310 K (body temperature).
+    N_sites : float
+        Number of coherently coupled synaptic sites. Default 10¹⁴.
+
+    Section: §T13.9 (ch13-consciousness.tex eq:integration_time)
+    Status: canonical (collective-coherence, 60 ms)
     """
-    m_pi_c2 = 134.977e6 * 1.602176634e-19  # J
-    tau_sys = _HBAR / (_K_B * T_K)
-    tau_bath = _HBAR / m_pi_c2
-    t_int = tau_sys**2 / tau_bath
+    # Bath timescales
+    tau_bath_thermal     = 1.0e-12                                  # thermal-photon relaxation (ch13)
+    m_pi_c2              = 134.977e6 * 1.602176634e-19              # J  (neutral pion rest energy)
+    tau_bath_confinement = _HBAR / m_pi_c2                          # ≈ 4.9×10⁻²⁴ s
+
+    # Single-site (diagnostic only — not canonical)
+    tau_sys_single = _HBAR / (_K_B * T_K)
+    t_int_single   = tau_sys_single**2 / tau_bath_confinement
+
+    # Collective-coherence (canonical)
+    tau_sys_eff = math.sqrt(N_sites) * tau_sys_single
+    t_int       = tau_sys_eff**2 / tau_bath_thermal
+
     return {
-        'tau_sys_s': tau_sys,
-        'tau_bath_s': tau_bath,
-        't_integrate_s': t_int,
-        't_integrate_ms': t_int * 1e3,
-        'ratio_sys_bath': tau_sys / tau_bath,
-        'N_eff_sub': t_int / tau_bath,
-        'status': 'VERIFIED'
+        # canonical (collective) fields
+        'tau_sys_eff_s':      tau_sys_eff,
+        'tau_bath_thermal_s': tau_bath_thermal,
+        't_integrate_s':      t_int,
+        't_integrate_ms':     t_int * 1e3,
+        'N_sites':            N_sites,
+        # N_eff_sub: number of confinement-bath cycles per integration window
+        'tau_bath_confinement_s': tau_bath_confinement,
+        'N_eff_sub':              t_int / tau_bath_confinement,
+        # diagnostic single-site fields (not canonical — kept for comparison)
+        'tau_sys_singlesite_s':   tau_sys_single,
+        't_integrate_singlesite_s':  t_int_single,
+        't_integrate_singlesite_ms': t_int_single * 1e3,
+        'N_eff_sub_singlesite':      t_int_single / tau_bath_confinement,
+        'ratio_sys_bath':            tau_sys_eff / tau_bath_thermal,
+        'status': 'canonical (collective, ch13 eq:integration_time)'
     }
 
 
@@ -411,11 +450,18 @@ def n_reliable(Delta_m=1e-14, t_motor=0.150, T_K=310.0):
     LaTeX: N_{\\rm reliable} = \\frac{\\ln 100}{\\Gamma_{\\rm PD} t_{\\rm integrate} M}
     Γ_PD = G(Δm)²/ℏ, M = t_motor/t_integrate.
 
-    Section: §12.4 (section7-new.tex eq:N_reliable)
-    Status: VERIFIED
+    Uses the collective-coherence binding window t_integrate ≈ 60 ms
+    (ch13 eq:integration_time) — this is the relevant timescale for
+    counting integration windows per motor command. M = t_motor/t_integrate
+    ≈ 2.5 windows per 150 ms motor command.
 
-    With Δm = 10⁻¹⁴ kg, t_motor = 150 ms: N_reliable ≈ 4.9×10⁵.
-    Matches corticospinal tract anatomy (10⁵–10⁶ fibers).
+    Algebraically N_reliable = ln(100) / (Γ_PD t_motor), independent of
+    t_integrate, so this switch does not change N_reliable itself
+    (≈ 4.9×10⁵, matching corticospinal tract anatomy 10⁵–10⁶ fibers).
+    Only M_windows is affected by the canonical t_integrate.
+
+    Section: §T13.10 (ch13-consciousness.tex eq:motor_reliability)
+    Status: VERIFIED
     """
     Gamma_PD = _G_OBS * Delta_m**2 / _HBAR
     t_int = integration_time(T_K)['t_integrate_s']
