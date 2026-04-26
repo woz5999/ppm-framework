@@ -37,6 +37,7 @@ THEMES = {
         'CYAN_DK': '#00BBBB',
         'CYAN_LT': '#40E8E0',
         'RED_DIM': '#DD6666',
+        'SM_RING': '#FFD27F',
         'output':  'v2_gauge_breaking.png',
     },
     'technical': {
@@ -52,6 +53,7 @@ THEMES = {
         'CYAN_DK': '#00BBBB',
         'CYAN_LT': '#40E8E0',
         'RED_DIM': '#DD6666',
+        'SM_RING': '#FFD27F',
         'output':  'v2_gauge_breaking_tech.png',
     },
 }
@@ -79,6 +81,7 @@ def main():
     CYAN_DK = T['CYAN_DK']
     CYAN_LT = T['CYAN_LT']
     RED_DIM = T['RED_DIM']
+    SM_RING = T['SM_RING']
 
     LABEL_BG = dict(boxstyle='round,pad=0.08', facecolor=BG, edgecolor='none',
                     alpha=0.85)
@@ -93,7 +96,7 @@ def main():
     BOX_FS = 20
 
     def box(x, y, text, color, w=4.5, h=BOX_H, fs=BOX_FS, alpha=0.2,
-            tc=WHITE, lw=2.0, dim=None, glow=False):
+            tc=WHITE, lw=2.0, dim=None, glow=False, sm=False):
         # Glow effect
         if glow:
             for i in range(3):
@@ -113,6 +116,15 @@ def main():
                                  facecolor='none', edgecolor=color,
                                  alpha=0.7, lw=lw, zorder=3)
         ax.add_patch(border)
+        # SM gauge-factor outer ring
+        if sm:
+            pad_sm = 0.13
+            sm_outer = FancyBboxPatch((x-w/2-pad_sm, y-h/2-pad_sm),
+                                       w + 2*pad_sm, h + 2*pad_sm,
+                                       boxstyle="round,pad=0.12",
+                                       facecolor='none', edgecolor=SM_RING,
+                                       alpha=0.95, lw=3.2, zorder=3.5)
+            ax.add_patch(sm_outer)
         if dim:
             ax.text(x, y + 0.14, text, ha='center', va='center', fontsize=fs,
                     color=tc, fontfamily='serif', zorder=4,
@@ -177,6 +189,47 @@ def main():
         c = plt.Circle((ps_cx, 7), r, facecolor='none',
                         edgecolor=VIOLET, alpha=0.006, lw=0.8, zorder=0)
         ax.add_patch(c)
+
+    # ════════════════════════════════════════════
+    # PPM-derived vs Standard Model zone demarcation
+    # ════════════════════════════════════════════
+    DIVIDER_Y = 7.05
+    zone_x0 = -7.0
+    zone_x1 = 10.2
+
+    ppm_zone = FancyBboxPatch((zone_x0, DIVIDER_Y + 0.05),
+                                zone_x1 - zone_x0,
+                                14.0 - DIVIDER_Y - 0.05,
+                                boxstyle="round,pad=0.05",
+                                facecolor=VIOLET, edgecolor='none',
+                                alpha=0.05, lw=0, zorder=0.15)
+    ax.add_patch(ppm_zone)
+
+    sm_zone = FancyBboxPatch((zone_x0, -0.4),
+                              zone_x1 - zone_x0,
+                              (DIVIDER_Y - 0.05) - (-0.4),
+                              boxstyle="round,pad=0.05",
+                              facecolor=GOLD, edgecolor='none',
+                              alpha=0.05, lw=0, zorder=0.15)
+    ax.add_patch(sm_zone)
+
+    ax.plot([zone_x0 + 0.4, zone_x1 - 0.4], [DIVIDER_Y, DIVIDER_Y],
+            color=DIM_LT, lw=1.2, alpha=0.5, linestyle='--', zorder=0.25)
+
+    # Zone labels — placed in the left-margin whitespace between the k-scale
+    # and the leftmost boxes, aligned to the divider
+    ax.text(zone_x0 + 0.35, DIVIDER_Y + 0.32,
+            'PPM-derived', ha='left', va='bottom',
+            fontsize=15, color=VIO_LT, fontweight='bold', alpha=0.95,
+            fontstyle='italic',
+            bbox=dict(boxstyle='round,pad=0.22', facecolor=BG,
+                      edgecolor=VIO_LT, alpha=0.95, lw=1.0), zorder=4)
+    ax.text(zone_x0 + 0.35, DIVIDER_Y - 0.32,
+            'Standard Model', ha='left', va='top',
+            fontsize=15, color=GOLD_LT, fontweight='bold', alpha=0.95,
+            fontstyle='italic',
+            bbox=dict(boxstyle='round,pad=0.22', facecolor=BG,
+                      edgecolor=GOLD_LT, alpha=0.95, lw=1.0), zorder=4)
 
     # ════════════════════════════════════════════
     # LEVEL 1: PSU(4)
@@ -269,7 +322,7 @@ def main():
     # SU(2)_L passes through
     arrow(x_su2l, y2 - 0.55, x_su2l_3, y3 + 0.55, CYAN, lw=1.8)
     box(x_su2l_3, y3, r'SU(2)$_L$', CYAN, w=2.8, h=BOX_H, fs=BOX_FS,
-        alpha=0.18, dim='dim 3', glow=True)
+        alpha=0.18, dim='dim 3', glow=True, sm=True)
     label(x_su2l_3, y3 - 0.72, 'survives intact', CYAN_DK, fs=14)
 
     # SU(2)_R → U(1)_R
@@ -285,7 +338,7 @@ def main():
     box(x_u1bl, y3, r'U(1)$_{B\text{-}L}$', VIOLET, w=2.6, h=BOX_H,
         fs=BOX_FS, alpha=0.12, dim='dim 1', glow=True)
     box(x_su3c, y3, r'SU(3)$_C$', VIOLET, w=2.8, h=BOX_H, fs=BOX_FS,
-        alpha=0.18, dim='dim 8', glow=True)
+        alpha=0.18, dim='dim 8', glow=True, sm=True)
     label((x_u1bl + x_su3c) / 2, y3 - 0.72, r'6 gen. broken', RED_DIM, fs=14)
 
     # ════════════════════════════════════════════
@@ -298,7 +351,7 @@ def main():
     arrow(x_u1bl, y3 - 0.55, x_u1y + 0.15, y_u1y + 0.5, VIOLET, lw=1.5)
 
     box(x_u1y, y_u1y, r'U(1)$_Y$', CYAN, w=2.2, h=BOX_H, fs=BOX_FS,
-        alpha=0.18, dim='dim 1', glow=True)
+        alpha=0.18, dim='dim 1', glow=True, sm=True)
     label(x_u1y, y_u1y - 0.65,
           r'$Y = \frac{B\text{-}L}{2} + T_{3R}$',
           WHITE, fs=16, style='normal')
@@ -313,7 +366,7 @@ def main():
     arrow(x_u1y, y_u1y - 0.6, x_u1em + 0.3, y_u1em + 0.5, CYAN, lw=1.8)
 
     box(x_u1em, y_u1em, r'U(1)$_{\rm em}$', GOLD, w=2.2, h=BOX_H,
-        fs=BOX_FS, alpha=0.18, dim='dim 1', glow=True)
+        fs=BOX_FS, alpha=0.18, dim='dim 1', glow=True, sm=True)
     label(x_u1em, y_u1em - 0.65, r'$Q = T_{3L} + Y/2$',
           WHITE, fs=16, style='normal')
 
@@ -335,7 +388,7 @@ def main():
     arrow(x_u1em, y_u1em - 0.6, x_sm - 0.5, y4 + 0.55, GOLD, lw=1.8)
 
     box(x_sm, y4, r'SU(3)$_C$ × U(1)$_{\rm em}$', CYAN, w=5.0, h=1.0,
-        fs=21, alpha=0.22, dim='dim 9', glow=True)
+        fs=21, alpha=0.22, dim='dim 9', glow=True, sm=True)
 
     # ════════════════════════════════════════════
     # Confinement → U(1)_em
@@ -347,7 +400,7 @@ def main():
           DIM_LT, fs=14, ha='left')
 
     box(x_sm, y6, r'U(1)$_{\rm em}$  —  classical EM', GOLD,
-        w=5.0, h=1.0, fs=20, alpha=0.15, dim='dim 1', glow=True)
+        w=5.0, h=1.0, fs=20, alpha=0.15, dim='dim 1', glow=True, sm=True)
 
     plt.tight_layout()
     plt.savefig(OUTPUT_PATH, dpi=200, facecolor=BG, bbox_inches='tight',

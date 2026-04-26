@@ -27,6 +27,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch
 from _style import apply_style, new_figure, save, WHITE, GOLD, VIOLET, GRAY, CYAN, BG
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes, mark_inset
+from matplotlib.ticker import FixedLocator, NullLocator, FixedFormatter
 from ppm import alpha as alpha_module
 
 apply_style()
@@ -93,7 +95,8 @@ ax.text(label_x, label_y,
         zorder=9)
 
 # In-band labels for the two fractions
-ax.text(0.0015, 0.55, r'$\mathbb{CP}^{3}$  (projected away)',
+# Move CP³ label below the inset's footprint
+ax.text(0.0015, 0.32, r'$\mathbb{CP}^{3}$  (projected away)',
         color=WHITE, fontsize=12, fontweight='bold',
         ha='left', va='center', alpha=0.95)
 ax.text(1.4, 0.7, r'$\mathbb{RP}^{3}$',
@@ -130,6 +133,55 @@ ax.set_yticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1', r'$\mathbf{\alpha}$'])
 # Light grid only on x to keep the bands clean
 ax.grid(True, which='major', axis='x', alpha=0.18, linestyle=':')
 ax.grid(True, which='major', axis='y', alpha=0.10, linestyle=':')
+
+# ─── Inset: zoom on the t* crossing at expanded y-scale ─────────────────────
+# Linear axes here so the value α reads directly as a strip height.
+axins = inset_axes(ax, width='32%', height='32%',
+                   loc='upper left',
+                   bbox_to_anchor=(0.07, -0.02, 1, 1),
+                   bbox_transform=ax.transAxes,
+                   borderpad=0)
+
+# Zoom window
+t_lo, t_hi = t_star * 0.4, t_star * 2.6
+y_lo, y_hi = 0, 0.022
+
+mask = (t_values >= t_lo) & (t_values <= t_hi)
+t_in = t_values[mask]
+rp3_in = rp3_frac[mask]
+
+axins.fill_between(t_in, 0, rp3_in, color=GOLD, alpha=0.92, linewidth=0)
+axins.fill_between(t_in, rp3_in, y_hi, color=VIOLET, alpha=0.78, linewidth=0)
+axins.plot(t_in, rp3_in, color=WHITE, linewidth=1.2, alpha=0.6)
+
+# Crossing markers and lines
+axins.axvline(t_star, color=WHITE, linestyle='--', linewidth=1.2, alpha=0.85)
+axins.plot([t_lo, t_star], [alpha_at_tstar, alpha_at_tstar],
+           color=WHITE, linestyle='--', linewidth=1.2, alpha=0.85)
+axins.scatter([t_star], [alpha_at_tstar], s=90, color=GOLD, edgecolor=WHITE,
+              linewidth=1.6, zorder=8, marker='o')
+
+axins.set_xlim(t_lo, t_hi)
+axins.set_ylim(y_lo, y_hi)
+axins.set_xscale('log')
+
+# Compact ticks — only the t* tick on x; suppress all minor ticks/labels
+axins.xaxis.set_major_locator(FixedLocator([t_star]))
+axins.xaxis.set_major_formatter(FixedFormatter([r'$t^{*}$']))
+axins.xaxis.set_minor_locator(NullLocator())
+axins.tick_params(axis='x', which='major', labelsize=10)
+axins.set_yticks([0, alpha_at_tstar, 0.02])
+axins.set_yticklabels(['0', r'$\alpha$', '0.02'], fontsize=9)
+
+# Subtle styling on inset axes
+for spine in axins.spines.values():
+    spine.set_edgecolor(GRAY)
+    spine.set_linewidth(1.0)
+axins.tick_params(colors=WHITE, length=3)
+axins.set_facecolor('#0a0a1a')
+
+# Connect inset to the main-plot region it magnifies
+mark_inset(ax, axins, loc1=2, loc2=4, fc='none', ec=GRAY, lw=0.8, alpha=0.6)
 
 # Legend top center, off the bands
 ax.legend(fontsize=10.5, loc='upper center', framealpha=0.92,
