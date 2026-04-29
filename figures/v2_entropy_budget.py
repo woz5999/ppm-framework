@@ -21,19 +21,19 @@ from ppm.consciousness import (DELTA_S_PER_EVENT, K_B_JK, T_BODY_K,
                                 consciousness_window)
 from ppm.hierarchy import energy_mev
 
-# ── PPM Colors ──
-BG      = '#0d1117'
-GOLD    = '#D4A843'
-VIOLET  = '#7B68EE'
-CYAN    = '#00CED1'
-WHITE   = '#f0f0f0'
-GRAY    = '#808080'
-RED     = '#E74C3C'
-VIO_LT  = '#C4B8FF'
-GOLD_LT = '#F0D880'
-CYAN_LT = '#40E8E0'
-DIM     = '#aaaaaa'
-SILVER  = '#C0C0C0'   # neutral, no theoretical concept
+# ── PPM Colors (light-theme variant) ──
+BG      = '#F2F2F6'
+GOLD    = '#A8841F'
+VIOLET  = '#5547A8'
+CYAN    = '#1A6A75'
+WHITE   = '#1A1A2E'   # text-dark; named WHITE for body-code continuity
+GRAY    = '#666677'
+RED     = '#B83020'
+VIO_LT  = '#7868C8'   # secondary violet accent (slightly lighter than VIOLET)
+GOLD_LT = '#B89638'   # secondary gold accent
+CYAN_LT = '#3A8A95'   # secondary cyan accent
+DIM     = '#888899'
+SILVER  = '#444454'   # neutral dark gray, readable on light bg
 
 # --- Data ---
 k_min_plot, k_max_plot = 40, 80
@@ -148,10 +148,10 @@ ax.text(k_conscious_min + 3, delta_s_nats + 5.5,
 
 # ── Regime labels — large watermark style ──
 midpoint_q = (k_min_plot + k_conscious_min) / 2
-ax.text(midpoint_q, max(info_vals) * 0.50, 'QUANTUM', color=VIO_LT,
-        fontsize=32, fontweight='bold', ha='center', alpha=0.15, zorder=1)
-ax.text(77.5, delta_s_nats * 1.8, 'CLASSICAL', color=GOLD_LT,
-        fontsize=22, fontweight='bold', ha='center', alpha=0.25, zorder=1,
+ax.text(midpoint_q, max(info_vals) * 0.50, 'QUANTUM', color=VIOLET,
+        fontsize=32, fontweight='bold', ha='center', alpha=0.45, zorder=1)
+ax.text(77.5, delta_s_nats * 1.8, 'CLASSICAL', color=GOLD,
+        fontsize=22, fontweight='bold', ha='center', alpha=0.55, zorder=1,
         rotation=90)
 
 # ── Key k-levels along bottom — neutral color, no EWSB ──
@@ -162,10 +162,10 @@ key_levels = [
 ]
 for k_lev, name in key_levels:
     if k_lev >= k_min_plot:
-        ax.axvline(k_lev, color=SILVER, alpha=0.12, linewidth=1.0, linestyle=':',
+        ax.axvline(k_lev, color=GRAY, alpha=0.4, linewidth=1.0, linestyle=':',
                    zorder=1)
-        ax.text(k_lev, -1.5, name, color=SILVER, fontsize=14, ha='center',
-                alpha=0.8, fontweight='bold')
+        ax.text(k_lev, -1.5, name, color=GRAY, fontsize=14, ha='center',
+                alpha=1.0, fontweight='bold')
 
 # ── Axes — y=0 at bottom of plot ──
 ax.set_xlabel('$k$-level (energy hierarchy)', fontsize=20, color=WHITE)
@@ -175,7 +175,7 @@ ax.set_ylim(0, max(info_vals) * 1.05)
 
 ax.tick_params(axis='both', labelsize=16, colors=WHITE)
 ax.legend(loc='upper right', fontsize=17, framealpha=0.85,
-          facecolor='#0a0a1a', edgecolor=GRAY, labelcolor=WHITE)
+          facecolor='#FAFAFC', edgecolor=GRAY, labelcolor=WHITE)
 
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)

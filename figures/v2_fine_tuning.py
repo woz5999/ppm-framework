@@ -23,19 +23,24 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
-from figures._style import apply_style, BG, GOLD, VIOLET, CYAN, WHITE, GRAY, RED
+from figures._style import (
+    apply_light_style as apply_style,
+    BG_LIGHT as BG, GOLD_DARK as GOLD, VIOLET_DARK as VIOLET,
+    CYAN_DARK as CYAN, TEXT_DARK as WHITE, GRAY_DARK as GRAY,
+    RED_DARK as RED,
+)
 
 apply_style()
 
 plt.rcParams.update({
-    'font.size': 16,
-    'axes.titlesize': 22,
-    'axes.labelsize': 18,
+    'font.size': 26,
+    'axes.titlesize': 36,
+    'axes.labelsize': 30,
 })
 
-# ── Colors ──
-SILVER  = '#C0C0C0'
-GOLD_LT = '#F0D880'
+# ── Colors (light-theme variants of the original light/silver shades) ──
+SILVER  = '#666677'   # muted dark gray — readable on light bg
+GOLD_LT = '#B89638'   # slightly darker gold accent
 BAR_COL = '#5A7FA0'   # neutral steel-blue — no theoretical meaning
 
 # ═══════════════════════════════════════════════════════════════
@@ -147,11 +152,11 @@ for i, entry in enumerate(entries):
     # ── Threat labels at bar edges ──
     if entry['threat_lo']:
         ax.text(lo - 0.06, y, entry['threat_lo'],
-                ha='right', va='center', fontsize=13, color=RED,
+                ha='right', va='center', fontsize=22, color=RED,
                 alpha=0.75, style='italic', zorder=5)
     if entry['threat_hi']:
         ax.text(hi + 0.06, y, entry['threat_hi'],
-                ha='left', va='center', fontsize=13, color=RED,
+                ha='left', va='center', fontsize=22, color=RED,
                 alpha=0.75, style='italic', zorder=5)
 
     # ── PPM prediction marker ──
@@ -172,28 +177,28 @@ for i, entry in enumerate(entries):
         err_str = f'{entry["ppm_err"]:.1f}%' if entry['ppm_err'] >= 0.1 else f'{entry["ppm_err"]:.2f}%'
         ax.text(ppm_pos, y + bar_height/2 + 0.13,
                 err_str,
-                ha='center', va='bottom', fontsize=13, color=GOLD_LT,
+                ha='center', va='bottom', fontsize=22, color=GOLD_LT,
                 alpha=0.85, fontweight='bold', zorder=7)
 
     # ── Labels (left side) ──
     ax.text(-2.65, y + 0.15, entry['name'], ha='left', va='center',
-            fontsize=24, color=WHITE, fontweight='bold', zorder=5)
+            fontsize=38, color=WHITE, fontweight='bold', zorder=5)
     ax.text(-2.65, y - 0.25, entry['sub'], ha='left', va='center',
-            fontsize=13, color=SILVER, alpha=0.7, zorder=5)
+            fontsize=21, color=SILVER, alpha=0.7, zorder=5)
 
 # ── Central reference line (observed) ──
 ax.axvline(X_OFF, color=WHITE, lw=1.2, alpha=0.35, linestyle=':', zorder=1)
 ax.text(X_OFF, y_positions[0] + bar_height/2 + 0.6, 'observed',
-        ha='center', va='bottom', fontsize=15, color=WHITE, alpha=0.5, zorder=5)
+        ha='center', va='bottom', fontsize=24, color=WHITE, alpha=0.5, zorder=5)
 
 # ── X-axis ──
 xtick_positions = [X_OFF - 2, X_OFF - 1, X_OFF, X_OFF + 1, X_OFF + 2]
 xtick_labels = [r'$\times 0.01$', r'$\times 0.1$',
                 r'$\times 1$', r'$\times 10$', r'$\times 100$']
 ax.set_xticks(xtick_positions)
-ax.set_xticklabels(xtick_labels, fontsize=15, color=WHITE)
+ax.set_xticklabels(xtick_labels, fontsize=24, color=WHITE)
 ax.set_xlabel('factor relative to observed value',
-              fontsize=18, color=WHITE, labelpad=12)
+              fontsize=28, color=WHITE, labelpad=12)
 
 # ── Y-axis ──
 ax.set_yticks([])
@@ -201,10 +206,10 @@ ax.set_xlim(-2.75, 3.0)
 ax.set_ylim(-1.5, y_positions[0] + 1.4)
 
 # ── Legend (contained box, upper right) ──
-leg_x0 = 1.6
-leg_y0 = y_positions[0] + 0.3
-leg_w = 1.3
-leg_h = 1.0
+leg_x0 = 1.4
+leg_y0 = y_positions[0] + 0.4
+leg_w = 1.7
+leg_h = 1.2
 
 leg_bg = FancyBboxPatch((leg_x0, leg_y0), leg_w, leg_h,
                           boxstyle="round,pad=0.1",
@@ -212,24 +217,24 @@ leg_bg = FancyBboxPatch((leg_x0, leg_y0), leg_w, leg_h,
                           alpha=0.9, lw=1.0, zorder=8)
 ax.add_patch(leg_bg)
 
-ly1 = leg_y0 + 0.7
-ly2 = leg_y0 + 0.3
+ly1 = leg_y0 + 0.85
+ly2 = leg_y0 + 0.35
 lx_icon = leg_x0 + 0.2
 lx_text = leg_x0 + 0.42
 
 # PPM prediction
-ax.plot(lx_icon, ly1, 'D', color=GOLD, markersize=9,
-        markeredgecolor=WHITE, markeredgewidth=1.0, zorder=9)
-ax.text(lx_text, ly1, 'PPM prediction', color=GOLD, fontsize=13,
+ax.plot(lx_icon, ly1, 'D', color=GOLD, markersize=14,
+        markeredgecolor=WHITE, markeredgewidth=1.5, zorder=9)
+ax.text(lx_text, ly1, 'PPM prediction', color=GOLD, fontsize=22,
         va='center', zorder=9)
 
 # Life-permitting range
-bar_leg = FancyBboxPatch((lx_icon - 0.12, ly2 - 0.1), 0.24, 0.2,
+bar_leg = FancyBboxPatch((lx_icon - 0.14, ly2 - 0.13), 0.28, 0.26,
                            boxstyle="round,pad=0.02",
                            facecolor=BAR_COL, edgecolor=BAR_COL,
-                           alpha=0.3, lw=1.2, zorder=9)
+                           alpha=0.3, lw=1.5, zorder=9)
 ax.add_patch(bar_leg)
-ax.text(lx_text, ly2, 'life-permitting range', color=SILVER, fontsize=13,
+ax.text(lx_text, ly2, 'life-permitting range', color=SILVER, fontsize=22,
         va='center', zorder=9)
 
 # ── Spines ──
