@@ -225,6 +225,9 @@ def make_rosetta_figure(data):
     ax.set_xlim(1, 95)
     ax.set_ylim(-1.7, n_rows + 0.6)
     ax.set_yticks([])
+    # Explicit x-ticks include k=1 (Planck) plus the natural grid; otherwise
+    # matplotlib's auto-ticks omit the leftmost edge.
+    ax.set_xticks([1, 20, 40, 60, 80])
     ax.set_xlabel('k-level',
                   color=WHITE, fontsize=22, weight='bold')
     ax.set_title('Where each framework language places its critical regime',

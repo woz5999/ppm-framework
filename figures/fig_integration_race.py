@@ -287,7 +287,7 @@ def main():
               ha='center', color=GRAY, fontsize=9, style='italic')
 
     plt.tight_layout(rect=[0, 0.045, 1, 1])
-    save(fig, 'fig_integration_race.png')
+    save(fig, 'integration-recovery-race.png')
 
 
 if __name__ == '__main__':
