@@ -4,8 +4,14 @@ Entropy budget across scales — Fig. for ch09-thermodynamics.
 Shows constant entropy production ΔS ≈ 5.5 k_B per event vs
 declining information yield I(k) as a function of k-level.
 Crossing at k ≈ 73 marks the quantum-classical boundary (at T=310K).
-Consciousness window marked at k ∈ (53.8, 75.75).
 QCD confinement at k ≈ 51 shown as a separate transition.
+
+(Consciousness-window content was previously layered onto this figure
+but was removed 2026-04-30: ch09 doesn't introduce or use the
+consciousness window, and the band created visual clutter without
+serving the chapter's purpose. A consciousness-flavored version of
+this figure belongs in a later chapter where the multiple-bound
+convergence story is being told.)
 """
 
 import sys, os
@@ -17,8 +23,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
 
-from ppm.consciousness import (DELTA_S_PER_EVENT, K_B_JK, T_BODY_K,
-                                consciousness_window)
+from ppm.consciousness import DELTA_S_PER_EVENT, K_B_JK, T_BODY_K
 from ppm.hierarchy import energy_mev
 
 # ── PPM Colors (light-theme variant) ──
@@ -52,10 +57,6 @@ def info_nats(k, T_K=T_BODY_K):
 
 info_vals = np.array([info_nats(k) for k in k_vals])
 
-cw = consciousness_window(T_K=T_BODY_K)
-k_conscious_min = cw['k_min']
-k_conscious_max = cw['k_max']
-
 # Find crossing point
 for i in range(len(k_vals) - 1):
     if info_vals[i] >= delta_s_nats and info_vals[i+1] < delta_s_nats:
@@ -75,26 +76,6 @@ for r in np.linspace(2, 40, 30):
                     edgecolor=CYAN, alpha=0.008, lw=0.8, zorder=0,
                     transform=ax.transData)
     ax.add_patch(c)
-
-# ── Consciousness window — rich gradient fill ──
-for i, alpha_val in enumerate([0.06, 0.04, 0.03]):
-    ax.axvspan(k_conscious_min - i*0.5, k_conscious_max + i*0.5,
-               alpha=alpha_val, color=CYAN, zorder=0)
-ax.axvspan(k_conscious_min, k_conscious_max, alpha=0.15, color=CYAN, zorder=0)
-
-# Boundary lines with glow
-for k_bound in [k_conscious_min, k_conscious_max]:
-    ax.axvline(k_bound, color=CYAN, alpha=0.15, linewidth=6, zorder=1)
-    ax.axvline(k_bound, color=CYAN, alpha=0.5, linewidth=1.5, linestyle=':',
-               zorder=2)
-
-# ── Lower consciousness bound label (Zeno bound) ──
-ax.annotate(r'Zeno bound' + '\n' + f'$k \\approx {k_conscious_min:.1f}$',
-            xy=(k_conscious_min, delta_s_nats * 0.6),
-            xytext=(k_conscious_min - 5, delta_s_nats * 0.6),
-            color=SILVER, fontsize=14,
-            arrowprops=dict(arrowstyle='->', color=SILVER, lw=1.5),
-            ha='center', va='center', zorder=7)
 
 # ── Fill between curves — quantum vs classical domains ──
 quantum_mask = info_vals > delta_s_nats
@@ -140,14 +121,8 @@ ax.text(k_qcd + 0.5, max(info_vals) * 0.95, 'QCD confinement',
         color=RED, fontsize=16, alpha=0.9, va='top', ha='left',
         fontweight='bold')
 
-# ── Consciousness window label — shifted left to avoid arrow ──
-ax.text(k_conscious_min + 3, delta_s_nats + 5.5,
-        'consciousness window',
-        color=SILVER, fontsize=18, ha='left', alpha=0.9, style='italic',
-        fontweight='bold', zorder=4)
-
 # ── Regime labels — large watermark style ──
-midpoint_q = (k_min_plot + k_conscious_min) / 2
+midpoint_q = (k_min_plot + k_cross) / 2
 ax.text(midpoint_q, max(info_vals) * 0.50, 'QUANTUM', color=VIOLET,
         fontsize=32, fontweight='bold', ha='center', alpha=0.45, zorder=1)
 ax.text(77.5, delta_s_nats * 1.8, 'CLASSICAL', color=GOLD,
@@ -193,4 +168,3 @@ fig.savefig(outpath, dpi=200, facecolor=BG, bbox_inches='tight', pad_inches=0.3)
 plt.close(fig)
 print(f"Saved: {outpath}")
 print(f"Crossing at k ≈ {k_cross:.1f}")
-print(f"Consciousness window: {k_conscious_min:.1f} – {k_conscious_max:.1f}")

@@ -1,16 +1,27 @@
 """
 v2_decoherence_k_scale.py — Decoherence time vs k-level.
 
-Plots the framework's intrinsic gravitational decoherence ceiling as
-a function of the k-energy hierarchy.  Each k indexes an energy via
+Plots two timescale curves over the k-energy hierarchy in comparable
+units (seconds).  Each k indexes an energy via
 E(k) = m_pi c^2 (2*pi)^((51-k)/2); the candidate "object at k" has
 rest mass m(k) = E(k)/c^2.
 
-Curve: tau_grav(k) = hbar^2 / (G m(k)^3 c)
+Curve 1 (ceiling): tau_grav(k) = hbar^2 / (G m(k)^3 c)
     Penrose-Diosi gravitational decoherence time.  Depends only on
     mass and fundamental constants.  This is a ceiling: any actual
     environmental coupling makes the realised coherence time shorter.
-    The framework's intrinsic prediction.
+
+Curve 2 (floor): tau_event(k) = pi hbar / (2 E(k))
+    Per-event timescale from the Margolus-Levitin minimum-evolution
+    bound.  This is a floor: tau-projection events cannot happen
+    faster.  Composes directly to Bremermann's compute-rate bound
+    2 m c^2 / (pi hbar) when integrated over particle count.
+
+Together the two curves bracket the allowed coherence window at
+each scale.  Both start at tau_Planck at k=1; they diverge at higher
+k (smaller mass), with tau_grav rising as 1/m^3 and tau_event rising
+only as 1/E.  At the consciousness scale, the floor sits at ~30 fs
+while the ceiling is gravitationally irrelevant.
 
 Regime bands:
     - Above t_universe (4.35e17 s): gravity is irrelevant
@@ -87,6 +98,16 @@ def tau_grav(k):
     return HBAR**2 / (G_NEWTON * m**3 * C_LIGHT)
 
 
+def E_k(k):
+    """Energy at level k in Joules: E(k) = m_pi c^2 (2pi)^((51-k)/2)."""
+    return M_PI_KG * C_LIGHT**2 * (2.0 * np.pi) ** ((K_REF - k) / 2.0)
+
+
+def tau_event(k):
+    """Per-event Margolus-Levitin timescale (s): tau_event = pi hbar / (2 E)."""
+    return np.pi * HBAR / (2.0 * E_k(k))
+
+
 def lambda_air():
     """Joos-Zeh thermal-scattering localization rate (1 / (m^2 s))."""
     return (8.0 * np.sqrt(2.0 * np.pi) * N_AIR * SIGMA_AIR
@@ -158,6 +179,7 @@ def main():
     # ── compute curves ──
     k_arr = np.linspace(1.0, 80.0, 1600)
     tg = tau_grav(k_arr)
+    te = tau_event(k_arr)
 
     # ── plot ──
     fig, ax = plt.subplots(figsize=(15, 9.2), facecolor=BG)
@@ -191,11 +213,17 @@ def main():
                       edgecolor=RED_HOT, alpha=0.95, lw=0.9), zorder=3)
 
     # ── horizontal reference timescales ──
+    # Neural-relevant 1 ms line uses pink (non-framework color) to avoid
+    # visual confusion with the cyan tau_event curve.  Framework semantic
+    # colors (gold/violet/cyan) are reserved for tau-even / tau-odd /
+    # actualization-event content; "neural-relevant" is not a framework
+    # ontological category and gets a non-framework highlight color.
+    PINK_NEURAL = '#FF8FB5'
     refs = [
         (TAU_PLANCK,  r'$\tau_{\rm Planck}$',          RED_HOT),
         (1e-15,       r'$1\,$fs',                       DIM_LT),
         (1e-9,        r'$1\,$ns',                       DIM_LT),
-        (1e-3,        r'$1\,$ms (neural)',              CYAN_LT),
+        (1e-3,        r'$1\,$ms (neural)',              PINK_NEURAL),
         (1.0,         r'$1\,$s',                        DIM_LT),
         (3.15e7,      r'$1\,$yr',                       DIM_LT),
         (T_UNIV,      r'$t_{\rm univ}$',                VIO_LT),
@@ -230,18 +258,61 @@ def main():
                 bbox=dict(boxstyle='round,pad=0.15', facecolor=BG,
                           edgecolor=c, alpha=0.85, lw=0.7), zorder=4)
 
-    # ── primary curve: gravitational decoherence ceiling ──
-    ax.semilogy(k_arr, tg, color=VIOLET, lw=3.8, alpha=0.97, zorder=6)
+    # ── primary curves: gravitational ceiling and per-event floor ──
+    # tau_grav: the ceiling — coherence cannot persist longer than this
+    ax.semilogy(k_arr, tg, color=VIOLET, lw=3.8, alpha=0.97, zorder=6,
+                label=r'$\tau_{\rm grav}$ (Penrose-Di\'osi ceiling)')
 
-    # Curve identifier — small label tucked at the top-right end of the
-    # curve, where it leaves the plot at upper-right.  The y-axis already
-    # names the quantity; this just attaches the formula to the line.
+    # tau_event: the floor — events cannot occur faster than this
+    ax.semilogy(k_arr, te, color=CYAN, lw=3.4, alpha=0.95, zorder=6,
+                linestyle='--',
+                label=r'$\tau_{\rm event}$ (Margolus-Levitin floor)')
+
+    # Curve identifier for tau_grav — top-right end of the curve
     ax.text(K_HI - 1.2, tau_grav(K_HI - 1.2) * 10.0**(-2.2),
             r'$\tau_{\rm grav}(k) = \dfrac{\hbar^{2}}{G\,m(k)^{3}\,c}$',
             ha='right', va='top', fontsize=12, color=VIO_LT,
             bbox=dict(boxstyle='round,pad=0.30', facecolor=BG,
                       edgecolor=VIOLET, alpha=0.9, lw=0.8),
             zorder=7)
+
+    # Curve identifier for tau_event — placed below the line in the
+    # empty lower-left region around k=30, where the curve is at
+    # ~1e-30 s and there is no other content nearby.  The label sits a
+    # couple of orders below the line so the visual association is to
+    # the entire curve rather than to any particular point on it.
+    k_te_lbl = 30.0
+    ax.text(k_te_lbl, tau_event(k_te_lbl) * 10.0**(-3.0),
+            r'$\tau_{\rm event}(k) = \dfrac{\pi\hbar}{2\,E(k)}$',
+            ha='center', va='top', fontsize=12, color=CYAN_LT,
+            bbox=dict(boxstyle='round,pad=0.30', facecolor=BG,
+                      edgecolor=CYAN, alpha=0.9, lw=0.8),
+            zorder=7)
+
+    # ── consciousness-scale marker on the tau_event curve ──
+    # At k = 75.35 (R=1 at biological T = 310 K), the elementary projection
+    # clock sits at ~38 fs.  A 25 ms gamma cycle therefore admits
+    # ~6.5e11 ≈ 10^12 events — the collective integration scale that 1 ms
+    # / gamma neural dynamics emerges from.  Mark this point explicitly
+    # so readers don't conflate the elementary clock with the integration
+    # window.
+    k_cons = 75.35
+    tau_cons = tau_event(k_cons)
+    ax.plot(k_cons, tau_cons, marker='o', markersize=12, color=CYAN,
+            markeredgecolor=WHITE, markeredgewidth=1.6, zorder=11)
+    ax.annotate(r'consciousness scale: $\tau_{\rm event} \approx 38\,$fs'
+                '\n' r'(25 ms gamma cycle = $\sim 10^{12}$ events;'
+                '\n' r'1 ms = $\sim 2.6 \times 10^{10}$ events)',
+                xy=(k_cons, tau_cons),
+                xytext=(k_cons - 16, tau_cons * 10.0**5.5),
+                fontsize=10, color=CYAN_LT,
+                ha='left', va='center',
+                bbox=dict(boxstyle='round,pad=0.30', facecolor=BG,
+                          edgecolor=CYAN, alpha=0.95, lw=0.9),
+                arrowprops=dict(arrowstyle='->', color=CYAN,
+                                lw=1.2, alpha=0.9,
+                                connectionstyle='arc3,rad=0.20'),
+                zorder=11)
 
     # ── Planck origin: where the curve emerges ──
     # At k=1, m(k) = m_pi (2pi)^25 ~ 2.3e-8 kg (the Planck mass) and
@@ -268,21 +339,25 @@ def main():
                                 connectionstyle='arc3,rad=-0.25'),
                 zorder=11)
 
-    # ── Penrose-scale callout (where tau_grav crosses 1 s) ──
+    # ── Penrose-scale reference (where tau_grav crosses 1 s) ──
+    # Toned down from the original red star + bold red callout treatment:
+    # this is a useful reference point on the gravitational ceiling
+    # (the regime experiments target), not the chart's key result.
+    # The chart's primary content is the floor/ceiling pair and the
+    # consciousness-scale event-budget marker.
     m_penrose = (HBAR**2 / (G_NEWTON * C_LIGHT)) ** (1.0/3.0)
     k_penrose = k_of_mass(m_penrose)
-    ax.plot(k_penrose, 1.0, marker='*', markersize=24, color=RED_HOT,
-            markeredgecolor=WHITE, markeredgewidth=1.6, zorder=10)
-    ax.annotate('Penrose-scale superposition\n'
-                r'$\tau_{\rm grav} = 1\,$s at $m \approx 8\!\times\!10^{-23}\,$kg'
-                '\n(experimentally testable regime)',
-                xy=(k_penrose, 1.0), xytext=(k_penrose + 6, 1e-9),
-                fontsize=11, color=RED_HOT, fontweight='bold',
+    ax.plot(k_penrose, 1.0, marker='o', markersize=10, color=WHITE,
+            markeredgecolor=VIOLET, markeredgewidth=1.8, zorder=10)
+    ax.annotate('Penrose scale\n'
+                r'$\tau_{\rm grav} = 1\,$s at $m \approx 8\!\times\!10^{-23}\,$kg',
+                xy=(k_penrose, 1.0), xytext=(k_penrose + 5, 1e-7),
+                fontsize=10, color=WHITE,
                 ha='left', va='top',
-                bbox=dict(boxstyle='round,pad=0.30', facecolor=BG,
-                          edgecolor=RED_HOT, alpha=0.95, lw=1.0),
-                arrowprops=dict(arrowstyle='->', color=RED_HOT,
-                                lw=1.4, alpha=0.9),
+                bbox=dict(boxstyle='round,pad=0.25', facecolor=BG,
+                          edgecolor=DIM_LT, alpha=0.94, lw=0.6),
+                arrowprops=dict(arrowstyle='->', color=DIM_LT,
+                                lw=0.9, alpha=0.8),
                 zorder=11)
 
     # ── named objects on the tau_grav curve ──
@@ -338,7 +413,7 @@ def main():
 
     ax.set_xlabel(r'$k$-level   (low $k$ = large mass; high $k$ = small mass)',
                   fontsize=14, color=WHITE, fontfamily='serif', labelpad=10)
-    ax.set_ylabel(r'Decoherence time  $\tau_{\rm grav}$  (s, log scale)',
+    ax.set_ylabel(r'Timescale (s, log scale)',
                   fontsize=14, color=WHITE, fontfamily='serif', labelpad=10)
 
     x_ticks = [1, 10, 16.25, 20, 30, 40, 44.5, 51, 57, 65, 75.4]
