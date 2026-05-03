@@ -378,6 +378,79 @@ def gradient_F_theta(rho: Density, basis: Basis,
     return np.array([grad_AB, grad_CD])
 
 
+# ─── Φ prefactor for the frame-evolution equation ────────────────────────────
+#
+# The frame-evolution equation ∂_t θ_i = -Φ[ρ] ∂F_eff/∂θ_i carries Φ as the
+# rate-controlling prefactor. Per ch13-consciousness §T13.7 ("Why the prefactor
+# is linear in Φ") and ch19-boundaries §Frame Rotation as Active Inference,
+# the linearity of Φ in this equation is forced at leading order by three
+# converging arguments (Mori-Zwanzig adiabatic elimination, dimensional
+# necessity, decoupling smoothness). A residual dimensionless O(1) coefficient
+# κ depends on the chosen Φ-normalization convention; the product κ × Φ is
+# convention-invariant.
+#
+# The implementation below COMMITS to one specific Φ definition: the quantum
+# mutual information across a single bipartition. This is the simplest and
+# most computationally tractable choice. Alternative IIT definitions
+# (Φ_IIT3.0, Φ_IIT4.0, geometric integrated information, integrated information
+# geometry, etc.) yield different numerical values that differ by O(1) factors;
+# the framework's structural prediction is the linearity, not any specific
+# numerical value. See archive/plans/2026-05-03-I8-phi-prefactor/PLAN.md.
+
+
+def phi_prefactor_from_lindblad(rho_total: Density,
+                                 joint_basis: TensorProductBasis) -> float:
+    """
+    Compute Φ for the frame-evolution prefactor on a bipartite system.
+
+    Returns Φ as quantum mutual information across the bipartition:
+        Φ = S(ρ_S) + S(ρ_env) - S(ρ_total)
+    in nats (natural log convention).
+
+    Parameters
+    ----------
+    rho_total : Density
+        Density matrix on the joint basis.
+    joint_basis : TensorProductBasis
+        Bipartite decomposition (basis_S ⊗ basis_env).
+
+    Returns
+    -------
+    float
+        Φ in nats. Vanishes for product states (no integration across
+        the bipartition) and is positive for entangled or correlated
+        states. Per the frame-evolution equation, product-state ρ
+        implies ∂_t θ = 0 (no active inference).
+
+    Convention notes
+    ----------------
+    This function commits to mutual-information Φ on a single bipartition.
+    Other IIT definitions exist and would yield different numerical values;
+    only the product κ × Φ (with κ the dimensionless coefficient defined
+    in ch13-consciousness §T13.7) is convention-invariant. The framework's
+    structural prediction is the LINEARITY of the prefactor in Φ, not a
+    specific numerical value.
+
+    For a partition over more than two factors, the IIT definition
+    requires minimization over partitions; this function does not
+    implement that minimization. For the framework's bipartite-Markov-
+    boundary formulation (per ch19-boundaries), a single bipartition is
+    the natural setting.
+    """
+    rho_S = partial_trace(rho_total, joint_basis, trace_out='env')
+    rho_env = partial_trace(rho_total, joint_basis, trace_out='S')
+
+    def _von_neumann_entropy(rho: Density) -> float:
+        # S(ρ) = -Tr(ρ log ρ); drop numerically-negligible eigenvalues
+        eigs = np.linalg.eigvalsh(rho.matrix)
+        eigs = eigs[eigs > 1e-15]
+        return float(-np.sum(eigs * np.log(eigs)))
+
+    return (_von_neumann_entropy(rho_S)
+            + _von_neumann_entropy(rho_env)
+            - _von_neumann_entropy(rho_total))
+
+
 # ─── ActiveInferenceLoop ─────────────────────────────────────────────────────
 #
 # Couples the inner-loop Lindblad dynamics on ρ to the outer-loop gradient

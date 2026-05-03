@@ -218,6 +218,20 @@ def run_all():
         "Φ-aggregation: integrating agent (N=15) beats naive (N=1) at high noise",
         aggregation_recovery, 0.5, tol_pct=80.0))
 
+    # ─── I8: Φ prefactor on product state vanishes ───────────────────────────
+    # Tests the Phase 1 structural claim that ∂_t θ = -Φ × ∇F implies
+    # product-state ρ ⇒ Φ = 0 ⇒ no frame motion. Standard MI-on-bipartition
+    # identity. Sanity-checks the implementation in
+    # ppm.active_inference.phi_prefactor_from_lindblad against the
+    # ch13-consciousness §T13.7 derivation.
+    phi_product, phi_bell = check_phi_prefactor_product_state_zero()
+    results.append(check(
+        "I8: Φ ≈ 0 on bipartite product state (no integration)",
+        phi_product, 0.0, tol_pct=1e-8))
+    results.append(check(
+        "I8: Φ = 2 ln 2 on Bell state (maximal MI on 2x2)",
+        phi_bell, 2.0 * math.log(2.0), tol_pct=1e-6))
+
     # ─── I11: Kähler-spectrum on CP³ (radial sector) ─────────────────────────
     # Free CP³ Laplacian: eigenvalues should be 4l(l+3) for l = 0, 1, 2, ...
     free = KS.free_laplacian_spectrum(N=1500, n_eigs=6)
@@ -525,6 +539,46 @@ def check_decoherence_race_active_advantage():
         gamma=0.5, dt=0.05, N_inner=10, n_cycles=40,
         eta_active=0.05)
     return result['fitness_advantage']
+
+
+def check_phi_prefactor_product_state_zero():
+    """
+    I8 sanity check: the Φ prefactor in the frame-evolution equation
+    ∂_t θ_i = -Φ[ρ] ∂F_eff/∂θ_i must vanish for product states (no
+    integration across the bipartition) and saturate at 2 ln 2 for a
+    Bell state on a 2x2 system (maximal mutual information).
+
+    Returns (phi_product, phi_bell) for two unit tests of the
+    ppm.active_inference.phi_prefactor_from_lindblad implementation.
+
+    Backs the ch13-consciousness §T13.7 / ch19-boundaries §Frame
+    Rotation derivation: integrated information enters linearly,
+    separating systems that undergo active inference from those that
+    do not.
+    """
+    import numpy as np
+
+    class _MockBasis:
+        def __init__(self, dim): self.total_dim = dim
+
+    bS = _MockBasis(2)
+    bE = _MockBasis(2)
+    joint = AI.TensorProductBasis(bS, bE)
+
+    # Product state ρ_S ⊗ ρ_env on 2x2 → MI = 0 by construction
+    rho_S = D.Density(bS, np.array([[0.7, 0.1], [0.1, 0.3]], dtype=complex))
+    rho_E = D.Density(bE, np.array([[0.6, 0.0], [0.0, 0.4]], dtype=complex))
+    rho_prod = joint.product_density(rho_S, rho_E)
+    phi_product = AI.phi_prefactor_from_lindblad(rho_prod, joint)
+
+    # Bell state on 2x2 → MI = 2 ln 2 (maximal entanglement)
+    psi_bell = np.zeros(4, dtype=complex)
+    psi_bell[0] = 1.0 / np.sqrt(2.0)
+    psi_bell[3] = 1.0 / np.sqrt(2.0)
+    rho_bell = D.Density(joint, np.outer(psi_bell, psi_bell.conj()))
+    phi_bell = AI.phi_prefactor_from_lindblad(rho_bell, joint)
+
+    return float(phi_product), float(phi_bell)
 
 
 def check_zeno_regime_protection():
