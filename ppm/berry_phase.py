@@ -21,15 +21,25 @@ from . import constants as C
 
 def delta_cp():
     """
-    CP-violating phase from Berry phase on RP³ ↪ CP³.
+    CP-violating phase from Berry phase on Spin(RP³).
 
     LaTeX: \\delta_{CP} = \\pi\\left(1 - \\frac{1}{\\varphi}\\right) = \\frac{\\pi}{\\varphi^2}
-    Section: Appendix B.5.3, section3-measurement.tex
+    Section: ch10b-mixing.tex §10.2 (CP Violation in the Quark Sector),
+             ch10b-mixing.tex §Berry Connection on Spin(RP³)
+             (sec:T10.berry_connection) for the bundle-level derivation.
     Status: DERIVED (VERIFIED)
 
-    The phase arises from the holonomy of the Fubini-Study connection
-    along a path in CP³ that encircles the RP³ locus. The golden ratio
-    enters through the A₅ structure of the moduli space (see golden_ratio.py).
+    Per the I10 formalization (2026-05-03), this phase is the Berry phase
+    on the spinor bundle Spin(RP³) ≅ RP³ × C² (non-trivial spin structure)
+    pulled back to the (k, |z|, φ) parameter space. The connection 1-form
+    decomposes as A = A_radial dρ + A_Hopf dφ + A_scale dk with
+    A_radial = 0 (Fubini-Study geodesic), A_scale = 0 (k preserves angular
+    spinor frame), A_Hopf = 1/2 (spin-1/2 rep of holomorphic U(1) Hopf-fiber
+    rotation). The 720° closure is the Hopf-fiber spinor holonomy:
+    ∮(0→2π) A_Hopf dφ = π (spinor sign -1), second loop returns +1, total
+    path 4π = 720°. The golden-ratio factor π/φ² enters through the
+    self-similar τ-action on the flag manifold Fl(1,2,3;C^4) (see
+    golden_ratio.py for the A₅ moduli structure).
 
     Result: δ_CP = 1.1956 rad = 68.50° (observed: 1.20 ± 0.08 rad)
     """
@@ -57,16 +67,36 @@ def delta_cp():
 
 def ckm_angles():
     """
-    CKM quark mixing angles from Berry phase integrals on CP³.
+    CKM quark mixing angle MAGNITUDES from wavefunction-overlap mass-ratios.
 
-    The mixing angles θ_ij arise from Berry phases accumulated along
-    paths between quark positions at different k-levels. The 720° path
-    structure from π₁(RP³) = Z₂ determines the geometric phase.
+    Per the I10 formalization (2026-05-03, ch10b-mixing.tex §Berry Connection
+    on Spin(RP³)), the CKM matrix decomposes into magnitude and phase parts:
+
+        V_ij = |V_ij| × exp(i arg V_ij)
+
+    The PHASE structure (CP-violating phase δ_CP = π/φ²) is the Berry phase
+    on Spin(RP³) — see delta_cp() above for the derivation.
+
+    The MAGNITUDES |V_ij| are NOT produced by the Berry connection alone.
+    They come from the off-diagonal overlap of mass-eigenstate wavefunctions
+    at the quark positions (k_i, |z_i|) and (k_j, |z_j|): larger Kähler-radial
+    separation gives smaller overlap and therefore smaller mixing. The
+    Cabibbo formula θ_C ≈ √(m_d/m_s) used here is the standard two-flavour
+    wavefunction-overlap result, evaluated with the framework's mass formula
+    in place of conventional Yukawa eigenvalues.
+
+    Independent first-principles |V_ij| from explicit Berry-phase integrals
+    over (k, |z|) parameter space requires Kähler-radial positions ρ_i derived
+    from the framework rather than fitted backwards from observed masses.
+    That is research-agenda item I3 (light quark |z| positions from first
+    principles), specialist tractability. Until I3 closes, the magnitude
+    computation here remains the mass-ratio approximation by design.
 
     Quark k-levels (from hierarchy):
         u: 53.8, d: 53.3, s: 51.8, c: 49.4, b: 48.0, t: 44.5
 
-    Status: VERIFIED (mechanism; individual angles are approximate)
+    Status: VERIFIED (CP phase via Berry-on-Spin(RP³); magnitudes via
+            wavefunction-overlap mass-ratio approximation pending I3)
     """
     # Observed CKM magnitudes (PDG 2023)
     V_obs = {
