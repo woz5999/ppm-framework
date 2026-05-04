@@ -25,20 +25,9 @@ from matplotlib.patches import FancyBboxPatch
 
 from ppm.consciousness import DELTA_S_PER_EVENT, K_B_JK, T_BODY_K
 from ppm.hierarchy import energy_mev
+from _style import apply_style, GOLD, VIOLET, CYAN, WHITE, GRAY, RED, BG
 
-# ── PPM Colors (light-theme variant) ──
-BG      = '#F2F2F6'
-GOLD    = '#A8841F'
-VIOLET  = '#5547A8'
-CYAN    = '#1A6A75'
-WHITE   = '#1A1A2E'   # text-dark; named WHITE for body-code continuity
-GRAY    = '#666677'
-RED     = '#B83020'
-VIO_LT  = '#7868C8'   # secondary violet accent (slightly lighter than VIOLET)
-GOLD_LT = '#B89638'   # secondary gold accent
-CYAN_LT = '#3A8A95'   # secondary cyan accent
-DIM     = '#888899'
-SILVER  = '#444454'   # neutral dark gray, readable on light bg
+apply_style()
 
 # --- Data ---
 k_min_plot, k_max_plot = 40, 80
@@ -104,13 +93,23 @@ ax.plot(k_cross, delta_s_nats, 'o', color=CYAN, markersize=20, zorder=5,
 ax.plot(k_cross, delta_s_nats, 'o', color=CYAN, markersize=14, zorder=6,
         markeredgecolor=WHITE, markeredgewidth=2)
 
-ax.annotate(f'quantum-classical boundary\n$k \\approx {k_cross:.0f}$  (310 K)',
+ax.annotate(f'$I = \\Delta S$ crossover\n$k \\approx {k_cross:.0f}$  (310 K)',
             xy=(k_cross, delta_s_nats),
-            xytext=(k_cross - 10, delta_s_nats + 25),
-            color=CYAN, fontsize=16, fontweight='bold',
-            arrowprops=dict(arrowstyle='->', color=CYAN, lw=2.5,
-                            connectionstyle='arc3,rad=0.2'),
-            ha='center', zorder=7)
+            xytext=(k_cross + 4, delta_s_nats + 14),
+            color=CYAN, fontsize=15, fontweight='bold',
+            arrowprops=dict(arrowstyle='->', color=CYAN, lw=2.0,
+                            connectionstyle='arc3,rad=-0.2'),
+            ha='left', zorder=7)
+
+# ── Consciousness band (R ≈ 1) overlay ────────────────────────────────────
+# The R ≈ 1 boundary is a different criterion than the I = ΔS crossover.
+# R(k) = E(k)/k_BT crosses unity at k ≈ 75; the I = ΔS information-vs-
+# entropy crossover sits at k ≈ 73.  Both lie in a narrow band.  Label
+# is placed below the x-axis, parallel to the particle-level labels, so
+# it does not collide with the I(k) curve, the QUANTUM watermark, or the
+# crossover annotation.
+k_R1_lo, k_R1_hi = 73.0, 76.5
+ax.axvspan(k_R1_lo, k_R1_hi, color=CYAN, alpha=0.10, zorder=0)
 
 # ── QCD confinement marker — single line label ──
 k_qcd = 51
@@ -121,13 +120,19 @@ ax.text(k_qcd + 0.5, max(info_vals) * 0.95, 'QCD confinement',
         color=RED, fontsize=16, alpha=0.9, va='top', ha='left',
         fontweight='bold')
 
-# ── Regime labels — large watermark style ──
-midpoint_q = (k_min_plot + k_cross) / 2
-ax.text(midpoint_q, max(info_vals) * 0.50, 'QUANTUM', color=VIOLET,
-        fontsize=32, fontweight='bold', ha='center', alpha=0.45, zorder=1)
-ax.text(77.5, delta_s_nats * 1.8, 'CLASSICAL', color=GOLD,
-        fontsize=22, fontweight='bold', ha='center', alpha=0.55, zorder=1,
-        rotation=90)
+# ── Regime labels — watermark style, placed clear of curves and arrows ──
+# QUANTUM sits in the wide low-k portion of the violet region, well above
+# the ΔS line and well below the (much higher) I(k) curve there.  At k=44
+# the I(k) curve sits near ~75 nats while ΔS ≈ 5.5; placing the label at
+# y ≈ 30 keeps it inside the shaded region without touching either curve
+# or the QCD/crossover labels.
+ax.text(44.5, 30.0, 'QUANTUM', color=VIOLET,
+        fontsize=28, fontweight='bold', ha='center', alpha=0.40, zorder=1)
+# CLASSICAL lives in the small post-crossover gold region (between I(k)
+# and the ΔS line for k > k_cross).  Place horizontally near the bottom
+# right so it does not collide with the crossover annotation arrow.
+ax.text(78.0, 2.3, 'CLASSICAL', color=GOLD,
+        fontsize=14, fontweight='bold', ha='center', alpha=0.65, zorder=1)
 
 # ── Key k-levels along bottom — neutral color, no EWSB ──
 key_levels = [
@@ -142,6 +147,13 @@ for k_lev, name in key_levels:
         ax.text(k_lev, -1.5, name, color=GRAY, fontsize=14, ha='center',
                 alpha=1.0, fontweight='bold')
 
+# R ≈ 1 band label, vertical text at the top of the band — well above the
+# I(k) curve (which is below 5.5 inside the band) and below the legend.
+ax.text(0.5*(k_R1_lo + k_R1_hi), 50.0,
+        r'$R \approx 1$ band',
+        color=CYAN, fontsize=13, ha='center', va='center',
+        rotation=90, alpha=0.85, fontweight='bold', zorder=2)
+
 # ── Axes — y=0 at bottom of plot ──
 ax.set_xlabel('$k$-level (energy hierarchy)', fontsize=20, color=WHITE)
 ax.set_ylabel(r'nats ($k_B$ units) per event', fontsize=20, color=WHITE)
@@ -150,7 +162,7 @@ ax.set_ylim(0, max(info_vals) * 1.05)
 
 ax.tick_params(axis='both', labelsize=16, colors=WHITE)
 ax.legend(loc='upper right', fontsize=17, framealpha=0.85,
-          facecolor='#FAFAFC', edgecolor=GRAY, labelcolor=WHITE)
+          edgecolor=GRAY, labelcolor=WHITE)
 
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)

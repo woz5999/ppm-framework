@@ -11,10 +11,6 @@ degenerates to a single cell: the four fact types fuse.  Corner labels
 associate each corner with one of the four canonical measurement
 configurations {(A or B) x (C or D)}.
 
-This figure uses a LIGHT palette (overrides the project's default dark
-style) for legibility — three nearly-empty squares against a black
-background read as a visual black hole.
-
 Run:  python v2_measurement_torus.py
 Output: figures/computed/v2_measurement_torus.png
 """
@@ -26,30 +22,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.patches import Rectangle
+from _style import apply_style, BG, WHITE, GRAY, CYAN, ORANGE
 
-# ── Local LIGHT palette (overrides shared dark style) ──
-BG_LIGHT      = '#F2F2F6'   # light gray background
-PANEL_BG      = '#FAFAFC'   # near-white panel fill
-TEXT_DARK     = '#1A1A2E'   # near-black text
-TEXT_MUTED    = '#4A4A5C'   # muted dark gray for secondary text
-GRID_LINE     = '#9999AA'   # mid-gray grid lines
-ORANGE_BRIGHT = '#FF8A1E'   # bright orange highlight
-ORANGE_EDGE   = '#D86A0A'   # darker orange for cell border
-BORDER_TEAL   = '#1F7A85'   # darker teal for outer box (readable on light)
-ANNOT_ORANGE  = '#C95A0E'   # bold orange for cell-count annotation
+apply_style()
+
+# ── Tokens used below, mapped to the standard dark palette ──
+PANEL_BG      = BG          # axes facecolor — same dark as figure
+TEXT_DARK     = WHITE       # legacy alias retained to minimize diff
+TEXT_MUTED    = GRAY
+GRID_LINE     = '#5A5A70'   # mid-gray grid lines, readable on dark
+ORANGE_BRIGHT = ORANGE      # highlight cell fill
+ORANGE_EDGE   = '#FFB870'   # lighter orange edge, readable on dark
+BORDER_TEAL   = CYAN        # outer-box stroke
+ANNOT_ORANGE  = ORANGE      # cell-count annotation
 
 mpl.rcParams.update({
-    'figure.facecolor': BG_LIGHT,
-    'axes.facecolor':   PANEL_BG,
-    'savefig.facecolor': BG_LIGHT,
-    'text.color':       TEXT_DARK,
-    'axes.labelcolor':  TEXT_DARK,
-    'xtick.color':      TEXT_DARK,
-    'ytick.color':      TEXT_DARK,
-    'font.family':      'serif',
-    'font.size':        12,
-    'axes.titlesize':   14,
-    'axes.labelsize':   13,
+    'font.size':      12,
+    'axes.titlesize': 14,
+    'axes.labelsize': 13,
 })
 
 # ── Three representative R values and their cell counts ──
@@ -60,7 +50,7 @@ panels = [
 ]
 
 fig, axes = plt.subplots(1, 3, figsize=(15, 6))
-fig.patch.set_facecolor(BG_LIGHT)
+fig.patch.set_facecolor(BG)
 
 PI2 = np.pi / 2.0
 

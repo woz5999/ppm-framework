@@ -24,10 +24,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
 from figures._style import (
-    apply_light_style as apply_style,
-    BG_LIGHT as BG, GOLD_DARK as GOLD, VIOLET_DARK as VIOLET,
-    CYAN_DARK as CYAN, TEXT_DARK as WHITE, GRAY_DARK as GRAY,
-    RED_DARK as RED,
+    apply_style, BG, GOLD, VIOLET, CYAN, WHITE, GRAY, RED,
 )
 
 apply_style()
@@ -38,9 +35,9 @@ plt.rcParams.update({
     'axes.labelsize': 30,
 })
 
-# ── Colors (light-theme variants of the original light/silver shades) ──
-SILVER  = '#666677'   # muted dark gray — readable on light bg
-GOLD_LT = '#B89638'   # slightly darker gold accent
+# ── Accent shades (dark-theme variants) ──
+SILVER  = '#A0A0B0'   # light gray accent for sub-labels on dark bg
+GOLD_LT = '#E8C36B'   # brightened gold for the % error labels
 BAR_COL = '#5A7FA0'   # neutral steel-blue — no theoretical meaning
 
 # ═══════════════════════════════════════════════════════════════
