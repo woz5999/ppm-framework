@@ -7,7 +7,7 @@
   <a href="https://projectiveprocessmonism.com">projectiveprocessmonism.com</a>
 </p>
 
-## A Topological Framework for Fundamental Constants, Gravity, and Consciousness
+## A Topological Framework for Physics, Information, and the Observer
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD)
 [![tests](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml)
@@ -43,14 +43,14 @@ one lets you break and fix the framework interactively, and one reproduces every
 
 Every prediction computed live. No sliders, no preamble — just the numbers.
 
-| Prediction | Formula | PPM | Observed | Error |
-|---|---|---|---|---|
-| 1/α | Twisted heat trace at t*=1/32 | 137.257 | 137.036 | 0.16% |
-| δ_CP | π(1 − 1/φ) = π/φ² | 68.5° | 68.4 ± 3° | within 1σ |
-| H₀ | 1/T_universe | 70.9 km/s/Mpc | 67.4–73.0 | splits tension |
-| sin²θ_W | 3/8 (Pati-Salam) | 0.375 | 0.375 | 0.13% |
-| Generations | CP³ topology | 3 | 3 | exact |
-| θ_strong | RP³ non-orientability | 0 | < 10⁻¹⁰ | exact |
+| Prediction  | Formula                       | PPM           | Observed  | Error          |
+| ----------- | ----------------------------- | ------------- | --------- | -------------- |
+| 1/α         | Twisted heat trace at t*=1/32 | 137.257       | 137.036   | 0.16%          |
+| δ_CP        | π(1 − 1/φ) = π/φ²             | 68.5°         | 68.4 ± 3° | within 1σ      |
+| H₀          | 1/T_universe                  | 70.9 km/s/Mpc | 67.4–73.0 | splits tension |
+| sin²θ_W     | 3/8 (Pati-Salam)              | 0.375         | 0.375     | 0.13%          |
+| Generations | CP³ topology                  | 3             | 3         | exact          |
+| θ_strong    | RP³ non-orientability         | 0             | < 10⁻¹⁰   | exact          |
 
 Fast to scroll. 33 cells. Full scorecard at the end.
 
@@ -59,11 +59,11 @@ Fast to scroll. 33 cells. Full scorecard at the end.
 Narrative-driven with FloatSliders at each stage. Move parameters off their geometric values and
 watch multiple observables break simultaneously. Voila-compatible.
 
-| Section | Slider | What breaks when you change it |
-|---|---|---|
-| Hierarchy | g (5.0–7.8) | Move g off 2π → masses diverge |
-| EWSB | k_EWSB (43–46) | Higgs, top, τ, μ all move |
-| α | log₁₀(t) | Twisted heat trace ratio vs t |
+| Section   | Slider           | What breaks when you change it   |
+| --------- | ---------------- | -------------------------------- |
+| Hierarchy | g (5.0–7.8)      | Move g off 2π → masses diverge   |
+| EWSB      | k_EWSB (43–46)   | Higgs, top, τ, μ all move        |
+| α         | log₁₀(t)         | Twisted heat trace ratio vs t    |
 | Cosmology | log₁₀(N) (78–86) | G and Λ curves cross at N_cosmic |
 
 [**→ Run in browser (no install)**](https://ppm-framework.fly.dev/voila/render/explorer.ipynb)
@@ -307,13 +307,13 @@ spectral basis. Provides:
 
 Numerically validated:
 
-| Analytical claim                                       | Implementation evidence    |
-|--------------------------------------------------------|----------------------------|
-| Trace and positivity preservation under Lindblad RK4   | drift < 1e-8 at 500 steps  |
-| Off-diagonal decay rate exp(-γt/2) (Penrose-Diósi)     | matches to 4 decimals      |
-| Born-rule yield Tr(Â\|ψ⟩⟨ψ\|Â) = cos²(θ)               | exact to 10 decimals       |
-| Quantum Zeno regime (γ ≫ ω suppresses τ-odd drift)     | < 5% τ-odd at γ = 1000     |
-| Σ_b A_b = Â over all boundary operators                | exact to 1e-12             |
+| Analytical claim                                     | Implementation evidence   |
+| ---------------------------------------------------- | ------------------------- |
+| Trace and positivity preservation under Lindblad RK4 | drift < 1e-8 at 500 steps |
+| Off-diagonal decay rate exp(-γt/2) (Penrose-Diósi)   | matches to 4 decimals     |
+| Born-rule yield Tr(Â\|ψ⟩⟨ψ\|Â) = cos²(θ)             | exact to 10 decimals      |
+| Quantum Zeno regime (γ ≫ ω suppresses τ-odd drift)   | < 5% τ-odd at γ = 1000    |
+| Σ_b A_b = Â over all boundary operators              | exact to 1e-12            |
 
 ### `ppm.active_inference` — Coupled inner-outer dynamics
 
@@ -346,12 +346,12 @@ torus T² = PGL(4,ℝ) / Stab(V_AB ⊕ V_CD).
 **Verified emergent coordination** (from `figures/fig_two_boundary_coordination.py`):
 
 | α (coupling) | Mutual information MI(ρ_1; ρ_2) [nats] |
-|--------------|---------------------------------------|
-| 0.00         | 0.0000  (joint state stays product)   |
-| 0.30         | 0.0010                                |
-| 0.60         | 0.0087                                |
-| 0.90         | 0.0615                                |
-| 1.00         | 0.1376                                |
+| ------------ | -------------------------------------- |
+| 0.00         | 0.0000  (joint state stays product)    |
+| 0.30         | 0.0010                                 |
+| 0.60         | 0.0087                                 |
+| 0.90         | 0.0615                                 |
+| 1.00         | 0.1376                                 |
 
 Independent boundaries develop correlated state structure through their
 shared environment without direct communication.
@@ -386,12 +386,12 @@ confer a measurable selective advantage over passive systems.
 
 ### Test and verification scope
 
-| Suite                      | Coverage                       | Count         |
-|----------------------------|--------------------------------|---------------|
-| `tests/test_all.py`        | Static-side modules            | (existing)    |
-| `tests/test_dynamics.py`   | Lindblad solver                | 75 tests      |
-| `tests/test_active_inference.py` | Active inference + 2-boundary + canonical demos | 79 tests |
-| `ppm.verify.run_all()`     | All static + dynamical checks  | 36/36 PASS    |
+| Suite                            | Coverage                                        | Count      |
+| -------------------------------- | ----------------------------------------------- | ---------- |
+| `tests/test_all.py`              | Static-side modules                             | (existing) |
+| `tests/test_dynamics.py`         | Lindblad solver                                 | 75 tests   |
+| `tests/test_active_inference.py` | Active inference + 2-boundary + canonical demos | 79 tests   |
+| `ppm.verify.run_all()`           | All static + dynamical checks                   | 36/36 PASS |
 
 ---
 
