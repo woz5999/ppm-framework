@@ -12,8 +12,6 @@ the radial sector becomes:
 
 with regularity at r=0 and Dirichlet at r=π/2 (V → ∞).
 
-Research agenda item I11.
-
 Result (this module): the spectrum is approximately
     ε_n ≈ 2n(n+3) + ε_0,    ε_0 ≈ 1.706
 i.e. the free CP³ radial Laplacian eigenvalues 4n(n+3) divided by 2
@@ -38,6 +36,10 @@ def _build_radial_H(N=2000, r_min=1e-4, r_max_offset=1e-3,
     """
     Build the dimensionless radial Hamiltonian matrix on a finite-difference
     grid for the CP³ Kähler problem.
+
+    LaTeX: n/a
+    Section: utility (Kähler radial Schrödinger)
+    Status: INTERNAL
 
     Parameters
     ----------
@@ -88,6 +90,10 @@ def h_alpha_spectrum(N=2000, n_eigs=15):
     """
     Compute the lowest eigenvalues of H_α on the CP³ radial sector.
 
+    LaTeX: H_\\alpha = -(1/2J)\\partial_r(J\\partial_r) - 2\\log\\cos r
+    Section: ch18-quantum §Hamiltonian Architecture
+    Status: VERIFIED
+
     Returns
     -------
     eigs : ndarray
@@ -102,6 +108,10 @@ def free_laplacian_spectrum(N=2000, n_eigs=10):
     """
     Sanity-check eigenvalues of the free CP³ radial Laplacian.
 
+    LaTeX: \\lambda_l = 4l(l+3)
+    Section: §2 (Spectral structure of CP³)
+    Status: VERIFIED
+
     Should match 4l(l+3) for l = 0, 1, 2, ... (after multiplying by 2
     to undo the kinetic prefactor of -(1/2)).
     """
@@ -113,6 +123,10 @@ def free_laplacian_spectrum(N=2000, n_eigs=10):
 def quadratic_fit(eigs):
     """
     Fit ε_n ≈ a·n(n+3) + b to the eigenvalues. Returns (a, b, max_err_pct).
+
+    LaTeX: \\epsilon_n \\approx a\\,n(n+3) + b
+    Section: utility (Kähler radial Schrödinger)
+    Status: INTERNAL
 
     For H_α with the Kähler potential, the framework expectation
     (verified by this module) is a ≈ 2 and b ≈ ε_0 ≈ 1.71.
@@ -132,6 +146,10 @@ def cascade_k(epsilon, k_anchor=51):
     via E(k) = m_π (2π)^((k_anchor - k)/2), which inverts to
     k = k_anchor - 2 log_{2π}(ε).
 
+    LaTeX: k = k_{\\rm anchor} - 2 \\log_{2\\pi}(\\epsilon)
+    Section: §4 (Bootstrap & Hierarchy)
+    Status: VERIFIED
+
     This is the soft-formulation locator: it places any energy on the
     cascade k-coordinate without claiming the cascade is the spectrum.
     """
@@ -140,9 +158,13 @@ def cascade_k(epsilon, k_anchor=51):
     return k_anchor - 2.0 * math.log(epsilon) / math.log(2 * math.pi)
 
 
-def i11_summary():
+def spectrum_summary():
     """
-    Status-register I11 summary: compute, fit, and report.
+    Compute the H_α radial spectrum, fit ε_n ≈ a·n(n+3) + b, and report.
+
+    LaTeX: n/a
+    Section: ch18-quantum §Hamiltonian Architecture
+    Status: INTERNAL
     """
     eigs = h_alpha_spectrum(N=2000, n_eigs=15)
     a, b, max_err_pct = quadratic_fit(eigs[:10])
@@ -191,9 +213,9 @@ def i11_summary():
 
 if __name__ == '__main__':
     import json
-    summary = i11_summary()
+    summary = spectrum_summary()
     # Pretty-print the key facts
-    print("I11 spectral verification — H_α on CP³ radial sector")
+    print("H_α radial-sector spectral verification on CP³")
     print("=" * 60)
     fit = summary['quadratic_fit']
     print(f"\nFit: ε_n ≈ {fit['a']:.4f}·n(n+3) + {fit['b']:.4f}")

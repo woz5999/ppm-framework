@@ -2,9 +2,8 @@
 ppm.dynamics — Lindblad dynamical infrastructure for the actualization channel
 ==============================================================================
 
-Numerical implementation of the actualization Lindblad dynamics analytically
-derived in archive/scripts/actualization_operator.py and documented in
-core/ontology/ch08-variational.tex and core/technical/ch18-quantum.tex.
+Numerical implementation of the actualization Lindblad dynamics documented
+in core/ontology/ch08-variational.tex and core/technical/ch18-quantum.tex.
 
 Provides:
     Basis      : truncated CP³ spectral basis with τ-parity tracking
@@ -34,10 +33,9 @@ For development we default to k_max = 2 (total_dim = 100), which is large enough
 to demonstrate Lindblad dynamics and validate Born-rule emergence while staying
 numerically light.
 
-Locked design decisions (see archive/plans/2026-04-26-route-b-lindblad/PLAN.md
-and NOTES.md):
-    D2 — A_b operators built as projections onto specific (k, α) τ-even modes
-    D3 — H_α is the free CP³ Laplacian only (no Kähler potential at this stage)
+Design decisions:
+    - A_b operators built as projections onto specific (k, α) τ-even modes
+    - H_α is the free CP³ Laplacian only (no Kähler potential at this stage)
 
 Section: ch08-variational §Actualization Free Energy
         ch18-quantum    §Hamiltonian Architecture
@@ -445,8 +443,9 @@ def tau_projector(basis: Basis) -> Operator:
     This operator represents the actualization channel as a single global
     object. Per-boundary operators A_b are built by `boundary_operator`.
 
+    LaTeX: \\hat{A} = P^+ = \\sum_k P_k^+
     Section: ch08-variational §Actualization Free Energy
-            archive/scripts/actualization_operator.py items (i)–(iii)
+    Status: VERIFIED
     """
     diag = np.where(basis.tau_parity == +1, 1.0, 0.0).astype(np.complex128)
     return Operator(basis, np.diag(diag))
@@ -475,16 +474,16 @@ def free_hamiltonian(basis: Basis) -> Operator:
     ch18-quantum §Hamiltonian Architecture states the full form of H_α as
     the Schrödinger operator on CP³ with both the Laplacian and the Kähler
     potential. This implementation returns the Laplacian piece only — a
-    deliberate simplification (D3 default per
-    archive/plans/2026-04-26-route-b-lindblad/PLAN.md). The Kähler
-    contribution is omitted because the analytical claims this module
-    validates (Born-rule emergence, Penrose–Diósi decoherence rate,
-    quantum Zeno regime, trace/positivity preservation under the Lindblad
-    flow) do not depend on it. Adding the Kähler term is a Phase 6 item
-    if/when downstream figures or chapter results require it.
+    deliberate simplification. The Kähler contribution is omitted because
+    the analytical claims this module validates (Born-rule emergence,
+    Penrose–Diósi decoherence rate, quantum Zeno regime, trace/positivity
+    preservation under the Lindblad flow) do not depend on it. Adding the
+    Kähler term is a future extension if/when downstream figures or
+    chapter results require it.
 
+    LaTeX: H_\\alpha\\;\\text{(Laplacian piece, } \\lambda_k = k(k+3)\\text{)}
     Section: ch18-quantum §Hamiltonian Architecture
-            archive/scripts/actualization_operator.py item (ii) commutators
+    Status: VERIFIED
     """
     diag = basis.eigenvalues.astype(np.complex128)
     return Operator(basis, np.diag(diag))
@@ -515,11 +514,11 @@ def boundary_operator(basis: Basis, mode_index: int) -> Operator:
     Notes
     -----
     The mode-projection convention defers spatial localization of boundaries
-    to a higher-fidelity model. Locked as the Phase 2 default in
-    archive/plans/2026-04-26-route-b-lindblad/PLAN.md (decision D2).
+    to a higher-fidelity model.
 
+    LaTeX: A_b = |b\\rangle\\langle b|
     Section: ch08-variational §Actualization Free Energy
-            archive/scripts/actualization_operator.py items (i), (ii)
+    Status: VERIFIED
     """
     if not 0 <= mode_index < basis.dim_plus:
         raise IndexError(
@@ -538,6 +537,10 @@ def boundary_operator(basis: Basis, mode_index: int) -> Operator:
 def all_boundary_operators(basis: Basis) -> list[Operator]:
     """
     Return the full set of boundary operators {A_b : b ∈ τ-even modes}.
+
+    LaTeX: \\{A_b\\}_{b\\in V^+}
+    Section: ch08-variational §Actualization Free Energy
+    Status: VERIFIED
 
     Length equals basis.dim_plus. Sum equals tau_projector(basis).
 
@@ -569,7 +572,6 @@ def all_boundary_operators(basis: Basis) -> list[Operator]:
 #
 # Section: ch08-variational §Actualization Free Energy
 #         ch18-quantum    §Hamiltonian Architecture
-#         archive/scripts/actualization_operator.py "LINDBLAD DYNAMICS"
 
 
 def _lindblad_rhs_matrix(rho_m: np.ndarray, H_m: np.ndarray,
@@ -578,6 +580,10 @@ def _lindblad_rhs_matrix(rho_m: np.ndarray, H_m: np.ndarray,
                          hbar: float) -> np.ndarray:
     """
     Pure-matrix Lindblad right-hand side. Returns dρ/dt as a complex matrix.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
 
     Caller is responsible for matching shapes and unit conventions. This is
     the inner loop; user-facing API is `lindblad_rhs`.
@@ -599,6 +605,10 @@ def lindblad_rhs(rho: Density, H: Operator,
                  hbar: float = 1.0) -> np.ndarray:
     """
     Compute dρ/dt under the Lindblad master equation.
+
+    LaTeX: d\\rho/dt = -i/\\hbar [H,\\rho] + \\sum_b \\gamma_b (A_b \\rho A_b^\\dagger - \\tfrac{1}{2}\\{A_b^\\dagger A_b,\\rho\\})
+    Section: ch08-variational §Actualization Free Energy
+    Status: VERIFIED
 
     Returns the time derivative as a complex matrix (not a Density —
     intermediate dρ/dt values are not states themselves).
@@ -637,6 +647,10 @@ def lindblad_step(rho: Density, H: Operator,
                   hbar: float = 1.0) -> Density:
     """
     Advance ρ by one timestep dt using fourth-order Runge–Kutta (RK4).
+
+    LaTeX: \\rho(t+dt) = \\rho(t) + (dt/6)(k_1 + 2k_2 + 2k_3 + k_4)
+    Section: ch08-variational §Actualization Free Energy
+    Status: VERIFIED
 
     Returns a new Density (does NOT mutate the input). Intermediate matrices
     are not validated as states — RK4 evaluates dρ/dt at non-state points.
@@ -684,6 +698,10 @@ def lindblad_evolve(rho_0: Density, H: Operator,
                     hbar: float = 1.0) -> list[tuple[float, Density]]:
     """
     Evolve ρ from t=0 to t=T using `n_steps` RK4 steps of size dt = T/n_steps.
+
+    LaTeX: \\rho(T) from solving Lindblad equation
+    Section: ch08-variational §Actualization Free Energy
+    Status: VERIFIED
 
     Returns a trajectory: a list of (time, Density) tuples at the requested
     snapshot step indices. By default, snapshots = [0, n_steps] (initial and
@@ -747,6 +765,10 @@ def yield_distribution(rho: Density, A_ops: list[Operator]) -> dict:
     Return {b: P_b} where P_b = Tr(A_b ρ A_b†) is the actualization yield
     for jump operator b.
 
+    LaTeX: P_b = \\mathrm{Tr}(A_b\\,\\rho\\,A_b^\\dagger)
+    Section: ch08-variational §Actualization Free Energy
+    Status: VERIFIED
+
     For Hermitian rank-1 projectors A_b = |b⟩⟨b|, this reduces to the
     diagonal element ρ_{bb}. For more general A_b it gives the standard
     quantum-channel transition probability.
@@ -764,6 +786,10 @@ def free_energy(rho: Density, A_ops: list[Operator],
                 agg: str = 'max') -> float:
     """
     Actualization free energy F = -log P, aggregated across the operator set.
+
+    LaTeX: F = -\\log P_b\\;\\text{(per-mode)} \\text{ or aggregated across modes}
+    Section: ch08-variational §Actualization Free Energy
+    Status: VERIFIED
 
     Aggregation modes:
         'max'  : F = -log(max_b P_b)        — the easiest available firing

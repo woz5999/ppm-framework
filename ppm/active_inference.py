@@ -28,12 +28,12 @@ Relationship to chapter prose
   "Minimization over ρ gives the Lindblad dissipation. Minimization over θ
   gives the frame dynamics (active inference)."
 
-Locked design decisions (see archive/plans/2026-04-26-active-inference/PLAN.md):
-    A1 — A_b(θ) explicit form via principled-toy stipulation
-    A2 — outer-loop θ via gradient descent (finite differences)
-    A3 — inner-outer alternating, N inner steps per outer step
-    A4 — Tier 2 coupling: shared environment
-    A5 — Φ > 0 assumed, not computed
+Design decisions:
+    - A_b(θ) explicit form via principled-toy stipulation
+    - outer-loop θ via gradient descent (finite differences)
+    - inner-outer alternating, N inner steps per outer step
+    - Tier 2 coupling: shared environment
+    - Φ > 0 assumed, not computed
 
 Section: active (Tier 1 + Tier 2 implemented: TensorProductBasis, partial_trace,
         ParameterizedBoundaryOperator, ActiveInferenceLoop, FrameFindingLoop,
@@ -145,6 +145,10 @@ def partial_trace(rho_total: Density, joint_basis: TensorProductBasis,
     """
     Trace out one subsystem from a density matrix on a TensorProductBasis.
 
+    LaTeX: \\rho_S = \\mathrm{Tr}_{\\rm env}\\rho_{\\rm total}
+    Section: ch08-variational §Tensor Products
+    Status: VERIFIED
+
     Parameters
     ----------
     rho_total : Density
@@ -217,15 +221,18 @@ def partial_trace(rho_total: Density, joint_basis: TensorProductBasis,
 # via the outer-loop active-inference dynamics, the channel "tilts" between
 # different fact-type readouts.
 #
-# Reference: archive/plans/2026-04-26-active-inference/PLAN.md decision A1.
 # Toy basis assignment for |A⟩, |B⟩, |C⟩, |D⟩ uses four consecutive τ-even
-# modes at k=1; canonical isotropy-irrep alignment flagged as item AI-1.
+# modes at k=1. Canonical isotropy-irrep alignment is an open refinement.
 
 
 def default_doublet_indices(basis: Basis) -> tuple[int, int, int, int]:
     """
     A1 toy stipulation: return four consecutive τ-even basis indices at k=1
     representing fact types (A, B, C, D).
+
+    LaTeX: n/a
+    Section: ch08-variational §Doublet Stipulation
+    Status: INTERNAL
 
     Requires basis.k_max ≥ 1 and at least 4 τ-even modes at k=1. At k=1 there
     are 9 τ-even modes (d_k⁺ = 9), so this always succeeds for k_max ≥ 1.
@@ -251,6 +258,10 @@ def parameterized_boundary_operator(basis: Basis,
                                     theta_CD: float) -> Operator:
     """
     Construct the θ-parameterized actualization operator A_b(θ_AB, θ_CD).
+
+    LaTeX: A_b(\\theta) = |\\psi_K(\\theta_{AB})\\rangle\\langle\\psi_K(\\theta_{AB})| + |\\psi_G(\\theta_{CD})\\rangle\\langle\\psi_G(\\theta_{CD})|
+    Section: ch08-variational §Parameterized Boundary Operator
+    Status: VERIFIED
 
     Returns the rank-2 projector onto the doublet-rotated states:
         A_b(θ) = |ψ_K(θ_AB)⟩⟨ψ_K(θ_AB)| + |ψ_G(θ_CD)⟩⟨ψ_G(θ_CD)|
@@ -330,6 +341,10 @@ def free_energy_at_theta(rho: Density, basis: Basis,
     """
     Evaluate F[ρ, θ] = -log Tr[A_b(θ) ρ A_b(θ)†].
 
+    LaTeX: F[\\rho, \\theta] = -\\log \\mathrm{Tr}[A_b(\\theta) \\rho A_b(\\theta)^\\dagger]
+    Section: ch08-variational §Actualization Free Energy
+    Status: VERIFIED
+
     Returns +inf when the yield is zero (ρ has no support in the doublet
     subspace at this θ).
 
@@ -351,6 +366,10 @@ def gradient_F_theta(rho: Density, basis: Basis,
                      h: float = 1e-4) -> np.ndarray:
     """
     Central-difference gradient of F[ρ, θ] in (θ_AB, θ_CD).
+
+    LaTeX: \\nabla_\\theta F[\\rho, \\theta]
+    Section: ch08-variational §Actualization Free Energy
+    Status: VERIFIED
 
     Returns a 2-element ndarray [∂F/∂θ_AB, ∂F/∂θ_CD].
 
@@ -395,13 +414,17 @@ def gradient_F_theta(rho: Density, basis: Basis,
 # (Φ_IIT3.0, Φ_IIT4.0, geometric integrated information, integrated information
 # geometry, etc.) yield different numerical values that differ by O(1) factors;
 # the framework's structural prediction is the linearity, not any specific
-# numerical value. See archive/plans/2026-05-03-I8-phi-prefactor/PLAN.md.
+# numerical value.
 
 
 def phi_prefactor_from_lindblad(rho_total: Density,
                                  joint_basis: TensorProductBasis) -> float:
     """
     Compute Φ for the frame-evolution prefactor on a bipartite system.
+
+    LaTeX: \\Phi = S(\\rho_S) + S(\\rho_{\\rm env}) - S(\\rho_{\\rm total})
+    Section: ch13-consciousness §T13.7 (Φ prefactor)
+    Status: VERIFIED
 
     Returns Φ as quantum mutual information across the bipartition:
         Φ = S(ρ_S) + S(ρ_env) - S(ρ_total)
@@ -471,7 +494,6 @@ def phi_prefactor_from_lindblad(rho_total: Density,
 #
 # Section: ch02-operator.tex §Cross-Scale Specialization Consciousness Scale
 #         ch18-quantum.tex §Reduced Dynamics
-#         archive/plans/2026-04-26-active-inference/PLAN.md decisions A3, A2
 
 
 class ActiveInferenceLoop:
@@ -624,7 +646,7 @@ class ActiveInferenceLoop:
 # property of the master equation are the same property at different levels
 # of description."
 #
-# Reference: archive/plans/2026-04-26-active-inference/PLAN.md decision A4.
+# Tier 2 coupling: shared environment.
 
 
 class TwoBoundarySystem:
@@ -951,6 +973,10 @@ def run_decoherence_race(rho_0: Density,
     Run paired passive (η=0) and active (η>0) trajectories from the same
     initial state with the same Lindblad parameters.
 
+    LaTeX: \\Delta F = \\bar F_{\\rm passive} - \\bar F_{\\rm active}
+    Section: ch08-variational §Active Inference, ch13 §Decoherence Race
+    Status: VERIFIED
+
     Returns a dict with both trajectories and summary metrics:
         {
             'passive_traj': [snapshots],
@@ -1003,6 +1029,10 @@ def fitness_vs_eta_sweep(rho_0: Density,
     Sweep η across a range and return mean-F per η. Demonstrates the
     selective-advantage gradient: faster adaptation → lower mean-F → fitter.
 
+    LaTeX: \\bar F(\\eta)
+    Section: ch08-variational §Active Inference
+    Status: VERIFIED
+
     Returns:
         {'etas': [...], 'mean_F': [...]}
     """
@@ -1051,14 +1081,24 @@ def fitness_vs_eta_sweep(rho_0: Density,
 
 
 def _embed_S1(op_local, basis_S2):
-    """Embed an operator on S1 as op_local ⊗ I_S2 on the joint S1 ⊗ S2 basis."""
+    """Embed an operator on S1 as op_local ⊗ I_S2 on the joint S1 ⊗ S2 basis.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     D2 = basis_S2.total_dim
     eye_S2 = np.eye(D2, dtype=np.complex128)
     return np.kron(op_local.matrix, eye_S2)
 
 
 def _embed_S2(op_local, basis_S1):
-    """Embed an operator on S2 as I_S1 ⊗ op_local on the joint basis."""
+    """Embed an operator on S2 as I_S1 ⊗ op_local on the joint basis.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     D1 = basis_S1.total_dim
     eye_S1 = np.eye(D1, dtype=np.complex128)
     return np.kron(eye_S1, op_local.matrix)
@@ -1073,6 +1113,10 @@ def shared_environment_jump_operators(joint_basis: TensorProductBasis,
     """
     Build the joint Lindblad jump operators implementing the shared-environment
     coupling between two boundaries.
+
+    LaTeX: \\{L_{\\rm local,1}, L_{\\rm local,2}, L_{\\rm cross}\\}
+    Section: ch08-variational §Two-Boundary Coupling
+    Status: VERIFIED
 
     Returns (A_ops, gammas) suitable for `lindblad_step(rho_joint, H, A_ops,
     gammas, dt)`.

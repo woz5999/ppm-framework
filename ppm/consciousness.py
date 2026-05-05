@@ -59,6 +59,7 @@ def delta_s():
 
     LaTeX: ΔS = 3 k_B ln(2π) ≈ 5.51 k_B ≈ 7.95 bits
     Section: §3 (eq:entropy_per_firing), §9 (multiple references)
+    Status: VERIFIED
 
     Returns
     -------
@@ -75,6 +76,7 @@ def channel_capacity(k, T_K=T_BODY_K):
 
     LaTeX: I(k) = 3 log₂ R(k),  where R(k) = E(k)/(k_B T)
     Section: §4 (measurement), §3 (actualization channel)
+    Status: VERIFIED
 
     Parameters
     ----------
@@ -103,6 +105,7 @@ def integrated_information(N_synapses=N_SYNAPSES_HUMAN, c_sigma=C_SIGMA, d_sigma
 
     LaTeX: Φ ≈ c_Σ N^{(d_Σ-1)/d_Σ} α²
     Section: §9.3 (eq:phi_formula, eq:phi_brain)
+    Status: VERIFIED
 
     The factors:
       N^{(d-1)/d} : minimum-cut area on d-dimensional boundary network
@@ -137,6 +140,7 @@ def tau_firing_rate(T_K=T_BODY_K):
 
     LaTeX: ν_τ = k_B T / ℏ
     Section: §9 (eq:phenomenal_flux context)
+    Status: VERIFIED
 
     Parameters
     ----------
@@ -156,6 +160,7 @@ def phenomenal_flux(Phi=None, nu_tau=None, Delta_S=None):
 
     LaTeX: Ψ = Φ × ν_τ × ΔS
     Section: §9 (eq:phenomenal_flux)
+    Status: VERIFIED
     Units: nats · k_B · s⁻¹
 
     Parameters
@@ -184,11 +189,13 @@ def consciousness_states():
     """
     Φ values for different consciousness states.
 
+    LaTeX: n/a
+    Section: §9.3 (sec:phi_predictions), §12
+    Status: FORMULA
+
     Reduced Φ in sleep/anesthesia modeled as reduced effective N
     (decreased thalamocortical coupling reduces the number of
     coherently integrated synapses).
-
-    Section: §9.3 (sec:phi_predictions), §12
 
     Returns
     -------
@@ -231,7 +238,9 @@ def phi_scaling_prediction(N_values=None):
     """
     Testable prediction: Φ ∝ √N across species/systems.
 
+    LaTeX: \\Phi \\propto \\sqrt{N}
     Section: §9.3 (sec:phi_predictions)
+    Status: AWAITING DATA
 
     Parameters
     ----------
@@ -268,8 +277,7 @@ def phi_scaling_prediction(N_values=None):
 
 # ─── CP³ spectral Z₂ decomposition ──────────────────────────────────────────
 #
-# From: archive/scripts/actualization_operator.py
-# Section: §2 (τ involution, actualization operator formalism)
+# Section: ch02 (τ involution, actualization operator formalism)
 #
 # The τ involution (complex conjugation on CP³) decomposes each Laplacian
 # eigenspace V_k into τ-even (RP³-compatible) and τ-odd subspaces.
@@ -290,8 +298,9 @@ def cp3_spectral_data(k_max=20):
     The τ-even states span the harmonic analysis on RP³ = Fix(τ).
     Asymptotically d⁺/d → 1/2 (spectral democracy at high k).
 
+    LaTeX: \\lambda_k = k(k+3),\\;d_k = \\binom{k+3}{3}^2 - \\binom{k+2}{3}^2
     Section: §2 (actualization operator)
-    Status: DERIVED
+    Status: VERIFIED
 
     Parameters
     ----------
@@ -331,8 +340,7 @@ def cp3_spectral_data(k_max=20):
 
 # ─── Lindblad decoherence rates ─────────────────────────────────────────────
 #
-# From: archive/scripts/actualization_operator.py
-# Section: §2 (Lindblad master equation for actualization)
+# Section: ch02 (Lindblad master equation for actualization)
 #
 # The actualization dissipator D[ρ] = Σ_b Γ_b (Â ρ Â − ½{Â, ρ}) drives
 # τ-odd components to zero with rate Γ_b = Gm³c/ℏ² (Penrose-Diósi with
@@ -346,7 +354,7 @@ def decoherence_time(m_kg):
 
     LaTeX: τ_{\\rm dec} = \\frac{2\\hbar^2}{G m^3 c}
     Section: §2 (Lindblad dynamics)
-    Status: DERIVED
+    Status: VERIFIED
 
     Uses r = λ_C = ℏ/(mc) as the characteristic length scale, giving
     Γ = Gm³c/ℏ². At Planck mass, τ_dec = 2 t_Planck exactly.
@@ -371,8 +379,9 @@ def decoherence_rate(m_kg):
     mesoscopic systems where the spatial extent differs from λ_C, use
     decoherence_rate_composite() instead.
 
+    LaTeX: \\Gamma = G m^3 c / \\hbar^2
     Section: §2 (Lindblad dynamics)
-    Status: DERIVED
+    Status: VERIFIED
 
     Parameters
     ----------
@@ -389,6 +398,10 @@ def decoherence_rate(m_kg):
 def decoherence_rate_composite(m_kg, r_m):
     """
     Penrose-Diósi decoherence rate for composite/mesoscopic systems.
+
+    LaTeX: \\Gamma = G m^2 / (\\hbar r)
+    Section: §2 (Lindblad dynamics)
+    Status: VERIFIED
 
     Γ = Gm²/(ℏr) where r is the characteristic spatial extent of the
     mass distribution (a measurable physical parameter).
@@ -413,6 +426,10 @@ def decoherence_rate_composite(m_kg, r_m):
 def decoherence_table():
     """
     Decoherence times at representative mass scales.
+
+    LaTeX: n/a
+    Section: §2 (Lindblad dynamics)
+    Status: INTERNAL
 
     Returns
     -------
@@ -441,8 +458,7 @@ def decoherence_table():
 
 # ─── Consciousness k-window ─────────────────────────────────────────────────
 #
-# From: archive/scripts/k_conscious_window.py
-# Section: §9 (consciousness constraints)
+# Section: ch09 (consciousness constraints)
 #
 # Two independent constraints bound the k-level at which consciousness
 # can operate:
@@ -470,8 +486,9 @@ def consciousness_window(T_K=T_BODY_K):
         Δk = k_max − k_thermal = 2 ln(1/ln 2) / ln(2π) ≈ 0.40
         This is temperature-independent.
 
+    LaTeX: k \\in (53.8,\\,75.75) \\text{ at 310\\,K}
     Section: §9 (consciousness constraints)
-    Status: DERIVED
+    Status: VERIFIED
 
     Parameters
     ----------
@@ -532,8 +549,9 @@ def consciousness_window_temperature_scan(T_values=None):
     """
     Consciousness window parameters across a range of temperatures.
 
+    LaTeX: n/a
     Section: §9 (temperature dependence of consciousness window)
-    Status: DERIVED
+    Status: FORMULA
 
     Parameters
     ----------
@@ -563,7 +581,12 @@ def consciousness_window_temperature_scan(T_values=None):
 # ─── Standalone runner ────────────────────────────────────────────────────────
 
 def _verify():
-    """Print all consciousness-scale predictions for verification."""
+    """Print all consciousness-scale predictions for verification.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     print("=" * 60)
     print("PPM Consciousness-Scale Predictions")
     print("=" * 60)
@@ -627,6 +650,9 @@ def threshold():
     """Consciousness threshold — k-window boundaries.
 
     LaTeX: \\textit{Code: ppm.consciousness.threshold()}  [ch13]
+    Section: ch13 §Threshold
+    Status: VERIFIED
+
     Returns: consciousness_window() dict with k_min, k_max, width.
     """
     return consciousness_window()
@@ -636,6 +662,9 @@ def qualia():
     """Qualia structure from spectral Z₂ decomposition.
 
     LaTeX: \\textit{Code: ppm.consciousness.qualia()}  [ch13]
+    Section: ch13 §Qualia
+    Status: VERIFIED
+
     Counts τ-odd eigenspace dimensions (quale dimensions) from CP³ spectral data.
     """
     spec = cp3_spectral_data(10)
@@ -649,6 +678,9 @@ def phi():
     """Integrated information Φ for the human brain.
 
     LaTeX: \\textit{Code: ppm.consciousness.phi()}  [ch13]
+    Section: ch13 §Phi
+    Status: VERIFIED
+
     Φ = c_Σ √N α² with area-law scaling from 2D cortical boundary.
     """
     Phi = integrated_information()
@@ -665,6 +697,9 @@ def active_inference():
     """Active inference parameters from PPM framework.
 
     LaTeX: \\textit{Code: ppm.consciousness.active_inference()}  [ch13]
+    Section: ch13 §Active Inference
+    Status: VERIFIED
+
     Computes integration timescale, channel capacity, and τ-firing rate
     at consciousness scale. Biology exploits these conditions for
     Bayesian updating.
@@ -683,6 +718,9 @@ def state_equation():
     """Consciousness state equation: Φ, Ψ, ΔS, ν_τ.
 
     LaTeX: \\textit{Code: ppm.consciousness.state_equation()}  [ch13]
+    Section: ch13 §State Equation
+    Status: VERIFIED
+
     Ψ = Φ × ν_τ × ΔS (phenomenal flux from integrated information).
     """
     Phi = integrated_information()
@@ -702,6 +740,9 @@ def bkt_transition():
     """BKT transition parameters for consciousness onset.
 
     LaTeX: \\textit{Code: ppm.consciousness.bkt_transition()}  [ch13]
+    Section: ch13 §BKT Transition
+    Status: VERIFIED
+
     Returns k_critical and margin from the consciousness window.
     """
     w = consciousness_window()
@@ -716,6 +757,8 @@ def integration_time():
     """Neural integration time from decoherence hierarchy.
 
     LaTeX: \\textit{Code: ppm.consciousness.integration_time()}  [ch13]
+    Section: ch13 §Integration Time
+    Status: VERIFIED
     """
     from . import cosmology as GR
     return GR.integration_time(T_BODY_K)
@@ -725,6 +768,8 @@ def motor_reliability():
     """Motor output reliability from channel capacity.
 
     LaTeX: \\textit{Code: ppm.consciousness.motor_reliability()}  [ch13]
+    Section: ch13 §Motor Reliability
+    Status: VERIFIED
     """
     from . import cosmology as GR
     nr = GR.n_reliable()

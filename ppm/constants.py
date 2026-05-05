@@ -206,7 +206,12 @@ N_SELF_CONSISTENCY_ERR_PCT = (N_SELF_CONSISTENCY / N_ASYMPTOTIC - 1.0) * 100.0
 # ─── Quick sanity checks ──────────────────────────────────────────────────────
 
 def _verify():
-    """Print a quick sanity check of key constant values."""
+    """Print a quick sanity check of key constant values.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     print(f"LAMBDA_PPM     = {LAMBDA_PPM:.6f}  (expect 0.141047)")
     print(f"DELTA_LAMBDA   = {DELTA_LAMBDA:.6f}  (expect 0.282095)")
     print(f"Y_TOP_PPM      = {Y_TOP_PPM:.6f}  (expect 0.992)")

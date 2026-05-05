@@ -9,7 +9,7 @@
 
 ## A Topological Framework for Physics, Information, and the Observer
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD)
+[![Run on Fly.io](https://img.shields.io/badge/Run-Voila%20on%20Fly.io-blue)](https://ppm-framework.fly.dev/)
 [![tests](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml)
 
 ---
@@ -32,47 +32,49 @@ These are not gaps at the edges of knowledge. They are holes at its center.
 
 ---
 
-## Three notebooks: three ways into the framework
+## Two notebooks
 
 This repository is the computational companion to
 [projectiveprocessmonism.com](https://projectiveprocessmonism.com). The theory and full
-derivations live there. What lives here are three notebooks — one shows the headline numbers,
-one lets you break and fix the framework interactively, and one reproduces every equation.
+derivations live there. What lives here are two notebooks: one public-facing artifact for
+predictions and sensitivity, and one technical companion for the underlying math.
 
-### `predictions.ipynb` — The Sizzle Reel
+### `predictions.ipynb` — Predictions and Sensitivity
 
-Every prediction computed live. No sliders, no preamble — just the numbers.
+The public-facing notebook. Scorecard at the top, then deep-dives organized by what they buy:
+the foundational instanton coincidence and shared-N_∞ structure, Standard Model parameters PPM
+eliminates, cosmology from one boundary capacity, where the golden ratio enters, a live
+active-inference demo, and a "How to Break the Framework" section with sliders and falsification
+tests.
 
 | Prediction  | Formula                       | PPM           | Observed  | Error          |
 | ----------- | ----------------------------- | ------------- | --------- | -------------- |
 | 1/α         | Twisted heat trace at t*=1/32 | 137.257       | 137.036   | 0.16%          |
 | δ_CP        | π(1 − 1/φ) = π/φ²             | 68.5°         | 68.4 ± 3° | within 1σ      |
 | H₀          | 1/T_universe                  | 70.9 km/s/Mpc | 67.4–73.0 | splits tension |
-| sin²θ_W     | 3/8 (Pati-Salam)              | 0.375         | 0.375     | 0.13%          |
+| sin²θ_W     | 3/8 (Pati–Salam)              | 0.375         | 0.375     | 0.13%          |
 | Generations | CP³ topology                  | 3             | 3         | exact          |
-| θ_strong    | RP³ non-orientability         | 0             | < 10⁻¹⁰   | exact          |
+| θ_strong    | T-invariance of τ-involution  | 0             | < 10⁻¹⁰   | exact          |
 
-Fast to scroll. 33 cells. Full scorecard at the end.
+Inline sliders let you break the framework at the points readers are most likely to be skeptical:
 
-### `explorer.ipynb` — Interactive Explorer
+| Slider           | Where                | What breaks when you change it           |
+| ---------------- | -------------------- | ---------------------------------------- |
+| g (5.0–7.8)      | Mass hierarchy panel | Move g off 2π → 14 particle masses slide |
+| k_EWSB (43–46)   | Higgs panel          | v, m_t, m_H errors blow up together      |
+| log₁₀(t)         | α panel              | t* = 1/32 is the unique balance point    |
+| log₁₀(N) (78–86) | Foundation           | Λ, H₀, G all break in lockstep           |
 
-Narrative-driven with FloatSliders at each stage. Move parameters off their geometric values and
-watch multiple observables break simultaneously. Voila-compatible.
+Plus five fixed-comparison falsification tests (CP² vs CP³, τ = identity, m_π ±10%, N_∞ exponent
+variation, square-pyramidal-number variation) and an Active Inference live demo.
 
-| Section   | Slider           | What breaks when you change it   |
-| --------- | ---------------- | -------------------------------- |
-| Hierarchy | g (5.0–7.8)      | Move g off 2π → masses diverge   |
-| EWSB      | k_EWSB (43–46)   | Higgs, top, τ, μ all move        |
-| α         | log₁₀(t)         | Twisted heat trace ratio vs t    |
-| Cosmology | log₁₀(N) (78–86) | G and Λ curves cross at N_cosmic |
-
-[**→ Run in browser (no install)**](https://ppm-framework.fly.dev/voila/render/explorer.ipynb)
+[**→ Run in browser (no install)**](https://ppm-framework.fly.dev/voila/render/predictions.ipynb)
 
 ### `derivations.ipynb` — Technical Derivations
 
-Every claim in the paper that involves a number, reproduced with intermediate steps. 44 cells
-covering all 22 sections from CP³ spectral data through cosmological predictions. For physicists
-checking the math.
+Every equation and intermediate step from the Technical Reference, reproduced in code. Spectral
+data, the three α derivation routes, instanton calculations, the golden-ratio chain, cosmological
+derivations. Mapped section-by-section to the paper, for physicists checking the math.
 
 ---
 
@@ -98,9 +100,10 @@ g² = |Z₂ × Z₂| × Vol(RP³) = 4 × π² = 4π²   →   g = 2π
 ```
 
 No particle mass enters this calculation. That single formula — one measured input, step size from
-geometry — predicts particle masses across 30 orders of magnitude, and the same constant fixes
-the strength of electromagnetism, the weakness of gravity, the cosmological constant, and the
-temperature at which biological processes are possible.
+geometry — places every Standard Model particle on a single curve spanning 23 orders of magnitude
+(Planck scale to electron mass), and the same geometry fixes the strength of electromagnetism, the
+weakness of gravity, the cosmological constant, and the temperature window in which biological
+matter can exhibit phase coherence.
 
 ### The logical chain
 
@@ -117,13 +120,13 @@ geometry, not fitting.
 emergence condition at `k_EWSB = 44.5`. The lepton mass hierarchy — spanning six orders of
 magnitude with no Standard Model explanation — emerges as a Z₂-quantized tower above this level.
 
-**Fine structure constant.** The framework's formulas for G and Λ both contain α. The observed Λ fixes N (no free parameters); then the observed G and N determine α:
+**Fine structure constant.** Three independent routes give α from CP³ geometry:
 
-```
-α = G_obs · m_π² · √N / (16π⁴ ħc) = 1/(137.6 ± 1.3)
-```
+- **Route I (heat-trace, 0.16%):** α = Θ^τ(t*) / Θ_{CP³}(t*) — a ratio of two spectral traces on CP³ at the half-variance time t* = 1/32. Yields 1/α = 137.257 directly from the Laplacian eigenvalues; no other input.
+- **Route II (G-inversion, 0.4%):** invert the gravity formula G = 16π⁴ ℏc α / (m_π² √N) using observed G and Λ to fix N → α; consistency check at 1/α = 137.6 ± 1.3.
+- **Route III (instanton):** prefactor pending; structurally complete, numerically open.
 
-Central error 0.4%; the observed value 1/137.036 lies within the 1σ band from Λ_obs uncertainty. This is a consistency prediction using zero free parameters.
+Two routes deliver α independently and agree with observation; finding three independent geometric paths to the same number is the structural argument.
 
 **Newton's constant and the cosmological constant.** Both follow from the same holographic count
 with different exponents:
@@ -138,11 +141,11 @@ value is `N ≈ 10⁸²`. Gravity is weak because the universe is old and large 
 square root of the holographic count. The cosmological constant is small because Λ falls faster.
 Neither requires fine-tuning; both are consequences of the universe's age.
 
-**Phase coherence and body temperature.** At each rung k, two phase contributions compete —
-thermal phase (large at high energy, decreasing) and Berry phase (small at low energy,
-increasing). They cross at exactly one point. At `n = 5/6` — the crossing falls at `k_cross ≈ 75.354`, corresponding to `T = 310 K`. Human body
-temperature is not a separate prediction. It is an automatic consequence of the value of n
-established by electromagnetism.
+**Phase coherence and body temperature.** The cascade rung at which thermal energy matches the
+framework's coherence floor — given by E(k) = k_B T — falls at k_c ≈ 75.35, corresponding to
+T ≈ 310 K. Mammalian body temperature is not a separate prediction; it is the temperature at
+which biological matter sits exactly at the coherence-decoherence boundary on the same E(k)
+ladder that fixes every particle mass.
 
 ---
 
@@ -151,20 +154,28 @@ established by electromagnetism.
 All predictions use `g = 2π` (topology) and `m_π = 140 MeV` (one experimental anchor).
 No other free parameters.
 
-| Observable | Formula                               | Prediction     | Observed        | Error    |
-| ---------- | ------------------------------------- | -------------- | --------------- | -------- |
-| Higgs VEV  | `2√2(2π)^(1/4) × E(44.5)`             | 246.2 GeV      | 246.2 GeV       | < 0.01%  |
-| Top quark  | `π × E(44.5)`                         | 172.7 GeV      | 173.0 GeV       | 0.2%     |
-| `α⁻¹`      | Consistency: Λ_obs → N → α            | 137.6 ± 1.3    | 137.036         | 0.4%     |
-| `G`        | `16π⁴ħcα / (m_π² √N)`                 | ~6.5×10⁻¹¹     | 6.674×10⁻¹¹     | ~4%      |
-| `Λ`        | `2m_π² / ((ħc)² N)`                   | ~1.0×10⁻⁵² m⁻² | ~1.1×10⁻⁵² m⁻²  | ~9%      |
-| `T_bio`    | Phase coherence crossing at `n = 5/6` | 310 K          | 310 K           | exact    |
-| `α_w`      | `1/(3π²)` from RP³ geometry           | `1/29.6`       | `1/29.9`        | ~1%      |
-| `α_s`      | Confinement condition at `k = 51`     | `1/3`          | `1/3`           | exact    |
-| `δ_CP`     | Berry phase: `π(1 − 1/φ)`             | 1.200 rad      | 1.20 ± 0.08 rad | 0.0%     |
-| `sin²θ₂₃`  | Tribimaximal from Z₂ × 3D topology    | `1/2` (exact)  | 0.546 ± 0.021   | 8.4%     |
-| `H₀`       | `1/T_universe` (CMB age: 13.797 Gyr)  | 70.9 km/s/Mpc  | 69.8 (TRGB)     | ~1.5%    |
-| `G(t)/G₀`  | `N_cosmic ∝ (1+z)^{-3}` causal volume | 5–36× at z=10  | 3–100× (JWST)   | overlaps |
+| Observable | Formula                                                | Prediction      | Observed        | Error   |
+| ---------- | ------------------------------------------------------ | --------------- | --------------- | ------- |
+| `α⁻¹`      | Heat-trace ratio Θ^τ(t*)/Θ_CP³(t*) at t* = 1/32        | 137.257         | 137.036         | 0.16%   |
+| Higgs VEV  | `2√2(2π)^(1/4) × E(44.5)`                              | 246.2 GeV       | 246.2 GeV       | <0.01%  |
+| Top quark  | `π × E(44.5)`                                          | 172.7 GeV       | 173.0 GeV       | 0.15%   |
+| `Λ`        | `2(m_π c²)² / ((ħc)² N)`, m_π = 134.977 MeV (neutral)  | 1.117×10⁻⁵² m⁻² | 1.1×10⁻⁵² m⁻²   | 1.5%    |
+| `H₀`       | `1/T_universe` (CMB age: 13.797 Gyr)                   | 70.9 km/s/Mpc   | 69.8 (TRGB)     | 1.5%    |
+| `G`        | `16π⁴ħcα / (m_π² √N)`, m_π = 134.977 MeV (neutral)     | 6.785×10⁻¹¹     | 6.674×10⁻¹¹     | 1.7%    |
+| `sin²θ_W`  | `dim(RP³) / (2 χ(CP³)) = 3/8` at Pati–Salam            | 0.375           | 0.231 (M_Z)     | 0.13%¹  |
+| `α_w⁻¹`    | RP³ volume ratio                                       | 29.61           | 29.59           | 0.07%   |
+| `δ_CP`     | Berry phase on RP³: `π(1 − 1/φ) = π/φ²`                | 1.200 rad       | 1.20 ± 0.08 rad | within 1σ |
+| `m_H`      | `√(2λ) × v` with `λ = 1/(4√π)` (tree-level geometric)  | 130.8 GeV       | 125.25 GeV      | 4.4%    |
+| `m_τ/m_μ`  | Bulk spacing `(2π)^{3/2}`                              | 15.75           | 16.82           | 6.3%    |
+| `sin²θ₂₃`  | Tribimaximal from Z₂ × A₄                              | 0.500           | 0.546 ± 0.021   | 8.4%    |
+| `T_bio`    | E(k_c) = k_B T at k_c ≈ 75.35                          | 310 K           | 310 K           | exact   |
+| `θ_strong` | T-invariance of τ-involution (no axion)                | 0               | < 10⁻¹⁰         | exact   |
+| `N_gen`    | CP³ topology                                           | 3               | 3               | exact   |
+
+¹ at the Z pole, after standard SM one-loop running from the Pati–Salam scale.
+
+26 numbered predictions in the live scorecard; 11 within 1%, 4 within 1–5%, 4 within 5–10%, 7 below
+current sensitivity or stated mechanism-only. Full table runs live in `predictions.ipynb`.
 
 ---
 
@@ -188,13 +199,14 @@ EW sector              anchor: m_π = 140 MeV                        │
 Higgs, top, τ, μ, e                                                 │
    │                                                                │
    ▼                                                                │
-n = 5/6  (CP³ phase space: 5 of 6 dims projected by Z₂)            │
+α = Θ^τ(t*)/Θ_CP³(t*) at t* = 1/32  →  1/α = 137.257  (Route I)     │
    │                                                                │
    ▼                                                                │
-Λ_obs → N_cosmic = 10⁸²                                            │
+N_∞ = φ^392 ≈ 8.4×10⁸¹  (boundary capacity, set by A₅ tiling)      │
    │                                                                │
-   ├──►  G,  Λ,  H₀                                                 │
-   ├──►  α = 1/(137.6 ± 1.3)  (consistency prediction from G, N)   │
+   ├──►  Λ = 2(m_π c²)² / ((ħc)² N_∞)                               │
+   ├──►  H₀ = c / (√N_∞ · λ_C)                                      │
+   ├──►  G = 16π⁴ ħc α / (m_π² √N_∞)                                │
    │                                                                │
    ▼                                                                │
 T_bio = 310 K                                                       │
@@ -202,10 +214,11 @@ T_bio = 310 K                                                       │
    └──  k_c ≈ 75.4  ·  E(k_c) = k_B × 310 K  ·  on E(k) above ───┘
 ```
 
-Topology fixes `g`. Geometry fixes `k_EWSB` and `n`. Holography fixes `N_cosmic`. The consistency
-of G and Λ with framework geometry determines `α`. Phase coherence fixes `T_bio`. No step adjusts
-a previous result to fit a new observation. The endpoint — 310 K —
-lands back on the same `E(k)` ladder the chain began with.
+Topology fixes `g`. Geometry fixes `k_EWSB` and the cascade. CP³ spectral data fixes `α` directly
+(Route I) and consistency-checks against `G` and `Λ` (Route II). The icosahedral A₅ symmetry fixes
+the boundary capacity `N_∞ = φ^392`, from which `Λ`, `H₀`, and `G` follow. The thermal/coherence
+crossing on the same E(k) ladder fixes `T_bio`. No step adjusts a previous result to fit a new
+observation; the endpoint — 310 K — lands back on the same ladder the chain began with.
 
 ---
 
@@ -250,12 +263,17 @@ ppm-framework/
 │   │                             selective advantage of adaptation).
 │   │
 │   ├── predictions.py          # Master prediction table
-│   └── verify.py               # Run-all checker (34/34 PASS)
+│   └── verify.py               # Run-all checker (42/42 PASS)
 │
-├── tests/
-│   ├── test_all.py             # Static-side test suite
-│   ├── test_dynamics.py        # Lindblad solver suite (75 tests)
-│   └── test_active_inference.py # Active-inference suite (70 tests)
+├── tests/                      # 14 test files, 541+ tests
+│   ├── test_all.py             # Static-side integration suite
+│   ├── test_dynamics.py        # Lindblad solver
+│   ├── test_active_inference.py# Active inference + 2-boundary + canonical demos
+│   ├── test_alpha.py           # Fine-structure constant routes
+│   ├── test_gravity.py, test_hierarchy.py, test_predictions.py
+│   ├── test_higgs.py, test_neutrino.py, test_cosmology.py
+│   ├── test_bridges.py, test_instanton.py, test_golden_ratio.py
+│   ├── test_consciousness.py, test_stability.py
 │
 ├── figures/                    # Per-figure scripts; output to figures/computed/
 │   ├── _style.py               # Shared dark-cosmological palette + RC params
@@ -267,9 +285,8 @@ ppm-framework/
 │   └── ... (other PPM figure scripts)
 │
 ├── notebooks/
-│   ├── predictions.ipynb       # Sizzle Reel — headline numbers
-│   ├── explorer.ipynb          # Interactive Explorer — sliders + narrative
-│   └── derivations.ipynb       # Technical Derivations — every equation
+│   ├── predictions.ipynb       # Public-facing: predictions, sliders, falsification, active inference
+│   └── derivations.ipynb       # Technical companion: every equation reproduced
 │
 ├── notebooks/archive/          # Old notebooks (preserved)
 └── ppm_old/                    # Old ppm/ package (preserved)
@@ -386,12 +403,14 @@ confer a measurable selective advantage over passive systems.
 
 ### Test and verification scope
 
-| Suite                            | Coverage                                        | Count      |
-| -------------------------------- | ----------------------------------------------- | ---------- |
-| `tests/test_all.py`              | Static-side modules                             | (existing) |
-| `tests/test_dynamics.py`         | Lindblad solver                                 | 75 tests   |
-| `tests/test_active_inference.py` | Active inference + 2-boundary + canonical demos | 79 tests   |
-| `ppm.verify.run_all()`           | All static + dynamical checks                   | 36/36 PASS |
+| Suite                                              | Coverage                                        | Count       |
+| -------------------------------------------------- | ----------------------------------------------- | ----------- |
+| `tests/test_all.py`                                | Static-side integration                         | (baseline)  |
+| `tests/test_dynamics.py`                           | Lindblad solver                                 | 75 tests    |
+| `tests/test_active_inference.py`                   | Active inference + 2-boundary + canonical demos | 79 tests    |
+| `tests/test_alpha.py + 9 module test files`        | Per-module unit coverage (signature, return-shape, key numerics) | 281 tests   |
+| `pytest tests/ -q`                                 | Full suite                                      | 541 passed  |
+| `ppm.verify.run_all()`                             | Static + dynamical numerical checks             | 42/42 PASS  |
 
 ---
 
@@ -405,7 +424,6 @@ pip install -e .
 
 ```bash
 jupyter notebook notebooks/predictions.ipynb
-jupyter notebook notebooks/explorer.ipynb
 jupyter notebook notebooks/derivations.ipynb
 ```
 

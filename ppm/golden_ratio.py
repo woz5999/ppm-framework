@@ -30,6 +30,10 @@ def pyramidal_number(n):
     """
     Square pyramidal number P_n = n(n+1)(2n+1)/6.
 
+    LaTeX: P_n = n(n+1)(2n+1)/6
+    Section: utility
+    Status: INTERNAL
+
     P_n counts the number of spheres in a pyramid with square base of side n.
     These arise naturally from CP³ spectral geometry because the eigenvalue
     multiplicities of the Laplacian on CP³ are built from binomial coefficients
@@ -51,11 +55,13 @@ def pyramidal_identity():
     This is equivalent to e^{-30π} ≈ φ^{-196} — the core numerical coincidence
     of the instanton sector.
 
+    LaTeX: P_3^2 \\ln \\varphi \\approx P_4 \\pi
+    Section: §10.5 (Why φ?)
+    Status: VERIFIED
+
     Both 196 and 30 arise as square pyramidal numbers from CP³ spectral geometry:
     - P₃² = 196: from the (k+3,3)²-(k+2,3)² degeneracy pattern
     - P₄  = 30:  dim_R(PGL(4,C)) = 2(N²-1) = 30 zero modes
-
-    Status: VERIFIED
     """
     P3 = pyramidal_number(3)   # = 14
     P4 = pyramidal_number(4)   # = 30
@@ -83,13 +89,15 @@ def cpn_selectivity():
     """
     Show that the pyramidal identity is specific to CP³ (n=3).
 
+    LaTeX: \\text{Ratio}(n) = d_1 \\ln(\\varphi) / [\\dim PGL(n+1) \\cdot \\pi/(2n)]
+    Section: §10.5 (Why φ?)
+    Status: VERIFIED
+
     For CP^n, the analogous identity would be:
       [C(n+3,n)² - C(n+2,n)²] × ln(φ)  vs  [dim SU(n+1)]  × π
 
     Only n=3 produces a near-identity. For other n, the ratio deviates
     by tens of percent or more.
-
-    Status: VERIFIED
     """
     results = {}
     for n in range(1, 8):
@@ -165,7 +173,8 @@ def dirichlet_l_function():
     ln(φ) because φ is the fundamental unit of Z[φ] = Z[(1+√5)/2].
 
     LaTeX: L(1, (\\cdot/5)) = \\frac{2\\ln\\varphi}{\\sqrt{5}}
-    Status: DERIVED (classical number theory)
+    Section: §10.5 (Why φ?)
+    Status: VERIFIED
     """
     L_value = 2.0 * math.log(C.PHI) / math.sqrt(5.0)
     return {
@@ -178,7 +187,12 @@ def dirichlet_l_function():
 
 
 def print_golden_ratio_summary():
-    """Print summary of golden ratio structural analysis."""
+    """Print summary of golden ratio structural analysis.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     print("=== Golden Ratio in PPM: Structural Origin ===\n")
 
     pi = pyramidal_identity()

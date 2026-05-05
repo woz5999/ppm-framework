@@ -54,15 +54,23 @@ def log_det_delta():
     """
     Log of functional determinant of scalar Δ on CP³.
 
+    LaTeX: \\log \\det \\Delta = -\\zeta'_\\Delta(0) \\approx 0.250
+    Section: Appendix A
+    Status: VERIFIED
+
     log det(Δ) = -ζ'_Δ(0)
     Numerically: log det(Δ) ≈ 0.250
-    Status: DERIVED (VERIFIED, from prior session spectral computation)
     """
     return 0.250  # = -ζ'_Δ(0)
 
 
 def det_delta():
-    """Functional determinant of scalar Δ on CP³. ≈ 1.284."""
+    """Functional determinant of scalar Δ on CP³. ≈ 1.284.
+
+    LaTeX: \\det \\Delta = e^{\\log \\det \\Delta} \\approx 1.284
+    Section: Appendix A
+    Status: VERIFIED
+    """
     return math.exp(log_det_delta())
 
 
@@ -70,10 +78,13 @@ def Z1_oneloop():
     """
     One-loop partition function Z₁ on CP³.
 
+    LaTeX: Z_1^{\\rm oneloop} \\approx 0.88
+    Section: Appendix A
+    Status: VERIFIED
+
     Z₁ ≈ 0.88
     All O(1) — golden ratio absent from perturbative spectrum.
     This confirms non-perturbative physics (instantons) as the source of φ^{-196}.
-    Status: DERIVED (VERIFIED)
     """
     return C.Z1_ONELOOP
 

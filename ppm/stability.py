@@ -40,7 +40,8 @@ def beta_coefficients_su3(n_f):
     -------
     tuple (b0, b1)
 
-    Status: VERIFIED (standard QCD result)
+    Section: §6 (Gauge Structure), Confinement
+    Status: VERIFIED
     """
     b0 = 11.0 - 2.0 * n_f / 3.0
     b1 = 102.0 - 38.0 * n_f / 3.0
@@ -69,7 +70,8 @@ def run_alpha_s_twoloop(mu_start, mu_end, alpha_start, n_f, n_steps=200000):
     -------
     tuple (mus, alphas) — arrays of energy scales and coupling values
 
-    Status: VERIFIED (reproduces α_s(M_Z) = 0.1179 from Pati-Salam)
+    Section: §6 (Gauge Structure), Two-loop running
+    Status: VERIFIED
     """
     b0, b1 = beta_coefficients_su3(n_f)
 
@@ -135,7 +137,8 @@ def confinement_scale(alpha_mz=None):
     dict with mu_conf_GeV, k_conf, delta_k, alpha_at_mb, alpha_at_mc,
          lambda_qcd_MeV, status, note
 
-    Status: VERIFIED (Δk ≈ 1.9 from known k = 51)
+    Section: §6 (Gauge Structure), Confinement
+    Status: VERIFIED
     """
     from .hierarchy import k_from_energy_gev
 
@@ -217,7 +220,8 @@ def alpha3_at_pati_salam(alpha_mz=None):
     -------
     dict with alpha3_ps, alpha_gut_ppm, normalization_ratio, status
 
-    Status: KNOWN OPEN (holonomy calculation pending)
+    Section: §6 (Gauge Structure), Pati-Salam scale
+    Status: OPEN
     """
     from .hierarchy import energy_gev
 
@@ -269,7 +273,8 @@ def ewsb_bifurcation(use_ppm_quartic=True):
     -------
     dict with E_ewsb_GeV, k_ewsb, delta_k, c_T, mu_GeV, m_H_GeV, status
 
-    Status: VERIFIED (Δk ≈ 1.1 with full SM c_T)
+    Section: §10 (EWSB)
+    Status: VERIFIED
     """
     from .hierarchy import k_from_energy_gev
 
@@ -335,7 +340,8 @@ def cascade_irreversibility():
     -------
     list of dicts with name, dim_G, dim_H, dim_coset, delta_F, irreversible
 
-    Status: DERIVED
+    Section: §6 (Gauge Structure), §9 (Thermodynamics)
+    Status: VERIFIED
     """
     results = []
     for name, dim_G, dim_H in CASCADE_STEPS:
@@ -357,6 +363,10 @@ def cascade_irreversibility():
 def signal_to_noise(k, T_kelvin=310.0):
     """
     Signal-to-noise ratio R(k) = E(k) / (k_B T).
+
+    LaTeX: R(k) = E(k) / (k_B T)
+    Section: §4 (Measurement Theory)
+    Status: VERIFIED
 
     Parameters
     ----------
@@ -491,6 +501,10 @@ def summary():
     """
     Summary table of all k-level stability predictions.
 
+    LaTeX: n/a
+    Section: §4 (Measurement Theory), §5 (Hierarchy)
+    Status: INTERNAL
+
     Returns
     -------
     list of dicts with scale, mechanism, k_predicted, k_known, delta_k
@@ -532,7 +546,12 @@ def summary():
 
 
 def print_summary():
-    """Print formatted summary of k-level predictions."""
+    """Print formatted summary of k-level predictions.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     print("=" * 80)
     print("PPM k-Level Stability Predictions")
     print("=" * 80)

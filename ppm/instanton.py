@@ -43,6 +43,10 @@ def instanton_suppression():
     """
     Instanton suppression factor e^{-S} = e^{-30π}.
 
+    LaTeX: e^{-S} = e^{-30\\pi}
+    Section: §10.5 (Why φ?), Appendix A
+    Status: VERIFIED
+
     This is the core exponential suppression of non-perturbative effects.
     Its near-equality to φ^{-196} is the key numerical result of the framework.
     """
@@ -58,9 +62,12 @@ def phi_196_check():
     196ln(φ)  = 196 × 0.48121 = 94.317
     Mismatch  = (94.317 - 94.248) / 94.248 = 0.073%
 
+    LaTeX: e^{-30\\pi} \\approx \\varphi^{-196}
+    Section: §10.5 (Why φ?), Appendix A
+    Status: VERIFIED
+
     This is the central numerical coincidence — the framework's prediction
     that the coupling constant c₁_topo ~ φ^{-196} (the muon quantum number).
-    Status: VERIFIED
     """
     S = instanton_action()
     exponent_phi196 = 196.0 * math.log(C.PHI)
@@ -85,9 +92,11 @@ def zero_mode_count():
     Equivalently: h^0(f^*T_{\\mathbb{CP}^3}) = 3 \\times 5 = 15 complex = 30 real
     And: dim_R(PGL(4,C)) = 2(N^2-1) = 30
 
+    Section: Appendix A (Instanton Sector)
+    Status: VERIFIED
+
     These three expressions agree, confirming that PGL(4,C) acts transitively
     on rational normal curves of degree N-1.
-    Status: DERIVED (VERIFIED)
     """
     N = C.N_OUTCOMES
     n_complex_correct = 15
@@ -108,6 +117,9 @@ def zero_mode_volume(V_perp=None):
     Zero-mode integral (collective coordinate volume).
 
     LaTeX: F_{\\rm zero} = V_\\perp^{N_{\\rm zero}/2} = 10^{15}
+    Section: Appendix A (Instanton Sector)
+    Status: VERIFIED
+
     Where V_⊥ = β×πR = 10 (transverse volume in Planck units)
     And N_zero/2 = 15 (half the zero modes)
 
@@ -133,8 +145,10 @@ def t2_modular_parameter():
     Modular parameter τ for the T² = S¹_β × S¹_Hopf.
 
     LaTeX: \\tau = i\\frac{\\beta}{\\pi R} = i\\frac{10/\\pi}{\\pi} = i\\frac{10}{\\pi^2}
+    Section: Appendix A (Instanton Sector)
+    Status: VERIFIED
+
     With R = l_P (Planck units), β = 10/π from S = 30π constraint.
-    Status: DERIVED (VERIFIED)
     """
     beta = 10.0 / math.pi   # thermal time circle
     piR  = math.pi          # Hopf fiber circumference (R = 1 in Planck units)
@@ -153,6 +167,8 @@ def dedekind_eta(tau_imag, n_terms=200):
     |η(iτ_im)| = q^{1/24} × ∏_{n=1}^∞ (1 - q^n)  where q = e^{-2πτ_im}
 
     LaTeX: |\\eta(i\\tau_{\\rm Im})| = q^{1/24} \\prod_{n=1}^\\infty (1-q^n)
+    Section: utility (T² partition function)
+    Status: INTERNAL
     """
     q = math.exp(-2.0 * math.pi * tau_imag)
     product = 1.0
@@ -175,11 +191,12 @@ def zt2_per_scalar():
     NO FFS data needed — Z_T² is computable purely from the T² geometry (τ fixed
     by S=30π and R=l_P).
 
+    Section: Appendix A (Instanton Sector)
+    Status: VERIFIED
+
     Result:
         log Z_T² per scalar = 0.5274
         Z_T² per scalar     = 1.6945
-
-    Status: DERIVED (VERIFIED session 28)
     """
     tau = t2_modular_parameter()
     tau_im = tau['tau_imag']
@@ -198,6 +215,10 @@ def zt2_per_scalar():
 def zt2_total(n_dof=6):
     """
     Total Z_T² for n_dof real scalar degrees of freedom.
+
+    LaTeX: Z_{T^2}^{\\rm total} = (Z_{T^2}^{\\rm per\\,scalar})^{n_{\\rm dof}}
+    Section: Appendix A (Instanton Sector)
+    Status: VERIFIED
 
     Parameters
     ----------
@@ -224,10 +245,12 @@ def prefactor_subtotal(translation_factor=150.0, n_dof=6):
         log F_trans = log(150) ≈ 5.01   [translation moduli normalization; OPEN]
         log Z_T²    = 3.164              [T² contribution; VERIFIED]
 
+    LaTeX: \\log J = \\log F_{\\rm zero} + \\log F_{\\rm trans} + \\log Z_{T^2}^{\\rm total} + \\log Z_{\\rm worldsheet}
+    Section: Appendix A (Instanton Sector)
+    Status: OPEN
+
     Target: log J ≈ -100 (for c₁_topo ~ 10^{-44})
     → Z_worldsheet must supply: log ≈ -142.7
-
-    Status: Geometric subtotal VERIFIED; Z_worldsheet PARKED (FFS)
     """
     fz = zero_mode_volume()
     ft = math.log(translation_factor)

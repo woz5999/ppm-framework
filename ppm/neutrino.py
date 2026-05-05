@@ -5,7 +5,7 @@ ppm.neutrino — PMNS matrix, θ_strong, and neutrino mass brackets
 PPM neutrino sector predictions:
 
 1. PMNS matrix: Tribimaximal (TBM) mixing from Z₂ × A₄ structure
-2. θ_strong = 0 exactly (RP³ non-orientability forbids the θ-term)
+2. θ_strong = 0 exactly (T-invariance of the τ-involution forbids the θ-term)
 3. Sterile neutrino mass window from k-level brackets
 
 Section references: §6 (Gauge Structure), §7 (SM Parameters)
@@ -23,9 +23,10 @@ def theta_strong():
     Section: §6 (Gauge Structure)
     Status: DERIVED (VERIFIED)
 
-    Physical argument: The θ-term ∝ F ∧ F requires a well-defined Hodge star
-    on the physical vacuum. RP³ is non-orientable, so the Hodge star is
-    undefined → the θ-term cannot be constructed → θ = 0 exactly.
+    Physical argument: The strong-CP term L_θ = θ (g²/32π²) G^a_{μν} G̃^{a,μν}
+    is odd under time reversal T. The framework's actualization axiom imposes
+    T-invariance via the τ-involution (anti-holomorphic conjugation on CP³),
+    so the θ-term is forbidden → θ = 0 exactly.
 
     This resolves the strong CP problem without an axion.
     Observed bound: |θ| < 10⁻¹⁰ (from neutron EDM).
@@ -33,7 +34,7 @@ def theta_strong():
     return {
         'theta': 0.0,
         'observed_bound': 1e-10,
-        'mechanism': 'RP³ non-orientability → Hodge star undefined → θ-term forbidden',
+        'mechanism': 'T-invariance of τ-involution → strong-CP θ-term is T-odd → θ = 0 exactly',
         'status': 'DERIVED',
         'note': 'Resolves strong CP problem without axion'
     }
@@ -98,8 +99,9 @@ def sterile_neutrino_mass_window():
     if a sterile state exists, it sits at a half-integer k-level between
     the active neutrino sector and the confinement scale.
 
+    LaTeX: m_{\\rm sterile} \\in [E(k{=}62), E(k{=}61)]
     Section: §7 (SM Parameters)
-    Status: VERIFIED (bracket prediction; 3.5 keV line is controversial)
+    Status: AWAITING DATA
     """
     from .hierarchy import energy_mev
 
@@ -125,8 +127,9 @@ def neutrino_mass_bounds():
     Active neutrinos at k ≈ 63–64 give masses of order 0.01–0.1 eV,
     consistent with oscillation data (Δm² ~ 10⁻³ eV²).
 
+    LaTeX: m_\\nu \\in [E(k{=}64), E(k{=}63)]
     Section: §7 (SM Parameters)
-    Status: VERIFIED (order-of-magnitude; individual masses not predicted)
+    Status: FLAGGED
     """
     from .hierarchy import energy_mev
 

@@ -19,9 +19,8 @@ COPY ppm/ ./ppm/
 COPY pyproject.toml ./
 RUN pip install --no-deps .
 
-# Copy current notebooks (explicit list — keeps notebooks/archive/ out of the image)
+# Copy current notebooks (explicit list — keeps notebooks/archive/ out of the image).
 COPY notebooks/predictions.ipynb \
-     notebooks/explorer.ipynb \
      notebooks/derivations.ipynb \
      ./notebooks/
 

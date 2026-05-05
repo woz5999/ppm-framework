@@ -37,9 +37,11 @@ def lambda_tau_conjugate():
     Higgs quartic in the τ-conjugate sector.
 
     LaTeX: \\lambda_{\\tau} = -\\lambda_{\\rm PPM}
+    Section: §2 (τ involution), §7 (SM parameters)
+    Status: VERIFIED
+
     The anti-holomorphic involution τ reverses the sign of τ-odd quantities.
     λ is τ-odd, so the τ-conjugate sector has λ = −λ_PPM.
-    Status: DERIVED
     """
     return -lambda_ppm()
 
@@ -49,6 +51,9 @@ def delta_lambda():
     Geometric identity: separation between τ-sector endpoints.
 
     LaTeX: \\Delta\\lambda = \\lambda_{\\rm PPM} - \\lambda_{\\tau} = \\frac{1}{2\\sqrt{\\pi}} \\approx 0.28209
+    Section: §2 (τ involution), §7 (SM parameters)
+    Status: VERIFIED
+
     Both endpoints are geometrically fixed (RP³ curvature in both τ-orientations).
     Their difference is therefore a geometric identity, not a fitted result.
 
@@ -56,7 +61,6 @@ def delta_lambda():
       One-loop:  Δλ_SM = 0.270 (95.8%)
       Two-loop:  Δλ_SM = 0.286 (101.5%)
     Geometric target is 1.5% above two-loop, confirming ≤1.5% accuracy.
-    Status: DERIVED (VERIFIED)
     """
     return lambda_ppm() - lambda_tau_conjugate()
 
@@ -65,12 +69,15 @@ def delta_lambda_observed(loops=2):
     """
     Observed Δλ from SM running (for comparison with geometric identity).
 
+    LaTeX: \\Delta\\lambda_{\\rm SM}\\;\\text{(SM running, 1-loop or 2-loop)}
+    Section: §7 (SM parameters), section4-new.tex
+    Status: VERIFIED
+
     section4-new.tex:
       One-loop:  Δλ_SM^(1) = 0.270  (95.8% of 1/(2√π))
       Two-loop:  Δλ_SM^(2) = 0.286  (101.5% of 1/(2√π))
     The geometric target 1/(2√π) = 0.282 is bracketed between the two,
     with the two-loop answer only 1.5% away.
-    Status: VERIFIED (from paper section4-new.tex)
     """
     if loops == 1:
         return 0.270  # One-loop SM running
@@ -80,6 +87,10 @@ def delta_lambda_observed(loops=2):
 def higgs_quartic_comparison():
     """
     Compare λ_PPM to observed Higgs quartic at M_Z.
+
+    LaTeX: \\lambda_{\\rm PPM}\\;\\text{vs}\\;\\lambda(M_Z)
+    Section: §7 (SM parameters)
+    Status: FLAGGED
 
     Observed: λ(M_Z) ≈ 0.1292 (MSbar)
     PPM:      λ_PPM  = 1/(4√π) ≈ 0.14105
@@ -121,13 +132,16 @@ def beta_lambda_ppm():
     """
     One-loop β_λ at the PPM geometric point (λ_PPM, y_t_PPM, SM gauge at M_Z).
 
+    LaTeX: 16\\pi^2 \\beta_\\lambda = 24\\lambda^2 + 12\\lambda y_t^2 - 6y_t^4 + \\dots
+    Section: §7 (SM parameters)
+    Status: VERIFIED
+
     Standard SM formula (PDG/Buttazzo et al.):
       16π² β_λ = 24λ² + 12λy_t² − 6y_t⁴
                  + (3/8)(2g₂⁴ + (g'² + g₂²)²)
                  − 3λ(3g₂² + g'²)
 
     Result: β_λ ≈ −0.0254 at (λ_PPM, y_t_PPM, SM gauge at M_Z).
-    Status: VERIFIED (standard SM formula applied correctly)
     """
     lam = lambda_ppm()
     yt  = top_yukawa_ppm()
@@ -157,6 +171,10 @@ def geometric_identity_check():
     """
     Verify the geometric identity Δλ = 1/(2√π).
 
+    LaTeX: \\Delta\\lambda \\stackrel{?}{=} 1/(2\\sqrt{\\pi})
+    Section: §2 (τ involution), §7 (SM parameters)
+    Status: INTERNAL
+
     Returns dict with both the formula value and its components.
     """
     dl = delta_lambda()
@@ -175,8 +193,7 @@ def geometric_identity_check():
 
 # ─── Coleman-Weinberg EWSB ──────────────────────────────────────────────────
 #
-# From: archive/scripts/ewsb_cw.py
-# Section: §7 (SM parameters), §10 (electroweak symmetry breaking)
+# Section: ch07 (SM parameters), ch10 (electroweak symmetry breaking)
 #
 # PPM UV boundary conditions at k=0 (conformal, m²=0):
 #   y_t(k=0) = π^{3/4} / 2^{5/4}
@@ -190,6 +207,10 @@ def geometric_identity_check():
 def _sm_beta_functions(y, t):
     """
     One-loop SM beta functions for [y_t, λ, g₁, g₂, g₃].
+
+    LaTeX: \\beta_i\\;\\text{(one-loop SM RGEs)}
+    Section: utility (SM running)
+    Status: INTERNAL
 
     Parameters
     ----------
@@ -241,8 +262,9 @@ def ewsb_coleman_weinberg(k_target=None, n_steps=200000):
     CW condition for EWSB (radiative symmetry breaking, m²=0):
         λ(v) = 3 y_t(v)⁴ / (4π²)
 
-    Section: §7, §10
-    Status: DERIVED
+    LaTeX: \\lambda(v) = 3 y_t(v)^4 / (4\\pi^2)
+    Section: §7 (SM parameters), §10 (EWSB)
+    Status: VERIFIED
 
     Parameters
     ----------

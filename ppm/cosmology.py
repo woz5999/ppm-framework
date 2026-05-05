@@ -62,10 +62,13 @@ def hubble_from_sidharth():
     """
     H₀ from Sidharth relations with N = φ^{392}.
 
+    LaTeX: H_0 = c / (\\sqrt{N} \\lambda_C)
+    Section: §10.7
+    Status: VERIFIED
+
     R = √N × λ_C, T = √N × τ_C, H₀ = c/R = 1/T.
     Gives T ≈ 14.14 Gyr → H₀ ≈ 69.1 km/s/Mpc.
     The paper uses T_obs = 13.797 Gyr → 70.9.
-    Status: VERIFIED
     """
     m_pi_kg = 134.977e6 * 1.602176634e-19 / _C**2
     lambda_C = _HBAR / (m_pi_kg * _C)
@@ -197,9 +200,11 @@ def gw_phase_shift(f_hz, d_Mpc):
     """
     Accumulated GW phase shift at frequency f over distance d.
 
-    Δφ = (Δv/c) × 2πf × d/c
+    LaTeX: \\Delta\\phi = (\\Delta v/c) \\cdot 2\\pi f \\cdot d/c
     Section: app-A §A.10
     Status: VERIFIED
+
+    Δφ = (Δv/c) × 2πf × d/c
     """
     dv = gw_dispersion(f_hz)['delta_v_over_c']
     d_m = d_Mpc * 3.0857e22  # Mpc to meters
@@ -212,6 +217,10 @@ def gw_phase_shift(f_hz, d_Mpc):
 def w_eff(omega_delta_ratio):
     """
     DEPRECATED — use w_eff_backreaction() instead.
+
+    LaTeX: w_{\\rm eff} = -1 + (2/3)\\,\\Omega_\\delta/\\Omega_{\\rm DE}
+    Section: §10.4 (deprecated; superseded by w_eff_backreaction)
+    Status: INTERNAL
 
     Original formula: w_eff = -1 + (2/3) Ω_δ/Ω_DE
     Kept for backward compatibility.
@@ -259,14 +268,15 @@ def friedmann_age(Omega_m=0.315, Omega_L=0.685):
     """
     Universe age from Friedmann equation with geometric Λ.
 
+    LaTeX: T = f(\\Omega_m, \\Omega_\\Lambda) \\times \\sqrt{N} \\times \\tau_C
+    Section: §10.7 (derived from §10.3 Λ formula)
+    Status: VERIFIED
+
     T = f(Ω_m, Ω_Λ) × τ_C × √N, where f ≈ 0.951.
     This DERIVES T = √N τ_C from Friedmann dynamics — it is a consequence
     of geometric Λ, not an independent Sidharth assumption.
 
     The integral: H₀T = ∫₀^∞ da / [a √(Ω_m a⁻³ + Ω_Λ)]
-
-    Section: §10.7 (derived from §10.3 Λ formula)
-    Status: VERIFIED (3.6% accuracy to observed age)
     """
     # Numerical integration (Simpson's rule, good enough)
     N_steps = 100000
@@ -321,6 +331,10 @@ def actualization_record(T_Gyr=13.797, N_particles=2e80):
     """
     Cumulative actualization record: M(t), S_record, S_BH comparison.
 
+    LaTeX: M(t_0) = N_{\\rm particles} \\times t_0 / \\tau_C
+    Section: §9 (thermodynamics), §11 (cosmological evidence)
+    Status: VERIFIED
+
     M(t₀) = N_particles × t₀/τ_C ≈ 1.8×10¹²¹ τ-events.
     S_record = M × ΔS_event ≈ 10¹²² k_B.
     S_BH = (R_H/l_P)² k_B ≈ 6.5×10¹²¹ k_B.
@@ -329,9 +343,6 @@ def actualization_record(T_Gyr=13.797, N_particles=2e80):
     Each boundary position re-actualized M/N_∞ ≈ 10³⁹ times on average.
     The arrow of time accumulates through repetition, not through filling
     new positions.
-
-    Section: §9 (thermodynamics), §11 (cosmological evidence)
-    Status: VERIFIED
     """
     m_pi_c2 = 134.977e6 * 1.602176634e-19  # J
     tau_C = _HBAR / m_pi_c2
@@ -400,15 +411,16 @@ def integration_time(T_K=310.0, N_sites=1e14):
     producing t_integrate ≈ 0.13 ms — inconsistent with ch13. Retained
     here only as `t_integrate_singlesite_ms` for diagnostic comparison.
 
+    LaTeX: t_{\\rm integrate} = \\tau_{\\rm sys,eff}^2 / \\tau_{\\rm bath}
+    Section: §T13.9 (ch13-consciousness.tex eq:integration_time)
+    Status: VERIFIED
+
     Parameters
     ----------
     T_K : float
         Temperature in kelvin. Default 310 K (body temperature).
     N_sites : float
         Number of coherently coupled synaptic sites. Default 10¹⁴.
-
-    Section: §T13.9 (ch13-consciousness.tex eq:integration_time)
-    Status: canonical (collective-coherence, 60 ms)
     """
     # Bath timescales
     tau_bath_thermal     = 1.0e-12                                  # thermal-photon relaxation (ch13)
@@ -460,6 +472,7 @@ def n_reliable(Delta_m=1e-14, t_motor=0.150, T_K=310.0):
     (≈ 4.9×10⁵, matching corticospinal tract anatomy 10⁵–10⁶ fibers).
     Only M_windows is affected by the canonical t_integrate.
 
+    LaTeX: N_{\\rm reliable} = \\ln(100) / (\\Gamma_{\\rm PD} t_{\\rm motor})
     Section: §T13.10 (ch13-consciousness.tex eq:motor_reliability)
     Status: VERIFIED
     """
@@ -481,7 +494,7 @@ def brain_power(N_boundaries=1e14, f_cycle=10.0, T_K=310.0):
     """
     Minimum power for Z₂ topological maintenance in the brain.
 
-    P = N × k_BT × ln2 × f
+    LaTeX: P = N \\cdot k_B T \\cdot \\ln 2 \\cdot f
     Section: §12.5 (section7-new.tex)
     Status: VERIFIED
 

@@ -1,7 +1,16 @@
 # PPM Notebook Rebuild — Execution Plan
 
 ## Date: 2026-03-19
-## Status: COMPLETE
+## Status: COMPLETE — SUPERSEDED 2026-05-04
+
+> **Historical document.** This plan describes the original three-notebook rebuild
+> (Sizzle Reel + Interactive Explorer + Technical Derivations). On 2026-05-04 the
+> Sizzle Reel and Interactive Explorer notebooks were merged into a single
+> `predictions.ipynb` with inline sliders, falsification tests, and an active
+> inference demo; `explorer.ipynb` is now a redirect stub. See
+> `archive/plans/2026-05-04-notebook-merge/PLAN.md` for the merge plan and
+> `core/notebooks-status.yaml` for current per-panel status. This document
+> remains for audit-trail purposes only.
 
 ---
 

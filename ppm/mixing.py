@@ -55,16 +55,17 @@ def cp_violation():
 
 
 def strong_cp():
-    """Strong CP: θ_strong = 0 from RP³ topology.
+    """Strong CP: θ_strong = 0 from T-invariance of the τ-involution.
 
     LaTeX: \\textit{Code: ppm.strong_cp()}  [ch10]
-    RP³ is non-orientable → Hodge star undefined → θ-term forbidden.
+    The strong-CP term is odd under time reversal T; the framework's
+    actualization axiom imposes T-invariance via τ → θ-term forbidden.
     Section: §10.10
     Status: VERIFIED
     """
     return {
         'theta_strong': 0.0,
-        'mechanism': 'RP3 non-orientable, Hodge star undefined, theta-term topologically forbidden',
+        'mechanism': 'T-invariance of τ-involution → strong-CP θ-term is T-odd → θ = 0 exactly',
         'upper_bound_experimental': 1e-10,
         'status': 'VERIFIED'
     }

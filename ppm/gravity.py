@@ -32,15 +32,23 @@ def newton_constant():
     \\textit{Code: ppm.gravity.newton_constant()}  [ch12]
     Section: §12.1
     Status: VERIFIED
+
+    Uses the neutral pion mass m_{π⁰} = 134.977 MeV (per ch12-gravity.tex
+    "The neutral pion input yields the better match in both G and Λ
+    simultaneously"). The Λ formula in cosmology.cosmological_constant()
+    uses the same neutral pion mass; both give error ≈ +1.5–1.7%.
     """
     alpha = 1.0 / C.ALPHA_EM_INV
+    # Neutral pion mass in kg (matches Λ derivation in cosmology.py)
+    m_pi0_kg = 134.977e6 * 1.602176634e-19 / C.C_LIGHT_SI**2
     G_ppm = 16 * math.pi**4 * C.HBAR_SI * C.C_LIGHT_SI * alpha / (
-        C.M_PI_KG**2 * math.sqrt(C.N_ASYMPTOTIC))
+        m_pi0_kg**2 * math.sqrt(C.N_ASYMPTOTIC))
     return {
         'G_ppm_si': G_ppm,
         'G_obs_si': C.G_NEWTON_SI,
         'error_pct': (G_ppm / C.G_NEWTON_SI - 1) * 100,
         'formula': '16 pi^4 hbar c alpha / (m_pi^2 sqrt(N_inf))',
+        'm_pi_used_MeV': 134.977,
         'status': 'VERIFIED'
     }
 
@@ -70,6 +78,8 @@ def hubble():
     """Hubble constant from Friedmann age.
 
     LaTeX: \\textit{Code: ppm.gravity.hubble()}  [ch12]
+    Section: §12.7 (ch12-gravity.tex)
+    Status: VERIFIED
     """
     return hubble_from_age()
 

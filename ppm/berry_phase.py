@@ -29,17 +29,16 @@ def delta_cp():
              (sec:T10.berry_connection) for the bundle-level derivation.
     Status: DERIVED (VERIFIED)
 
-    Per the I10 formalization (2026-05-03), this phase is the Berry phase
-    on the spinor bundle Spin(RP³) ≅ RP³ × C² (non-trivial spin structure)
-    pulled back to the (k, |z|, φ) parameter space. The connection 1-form
-    decomposes as A = A_radial dρ + A_Hopf dφ + A_scale dk with
-    A_radial = 0 (Fubini-Study geodesic), A_scale = 0 (k preserves angular
-    spinor frame), A_Hopf = 1/2 (spin-1/2 rep of holomorphic U(1) Hopf-fiber
-    rotation). The 720° closure is the Hopf-fiber spinor holonomy:
-    ∮(0→2π) A_Hopf dφ = π (spinor sign -1), second loop returns +1, total
-    path 4π = 720°. The golden-ratio factor π/φ² enters through the
-    self-similar τ-action on the flag manifold Fl(1,2,3;C^4) (see
-    golden_ratio.py for the A₅ moduli structure).
+    This phase is the Berry phase on the spinor bundle Spin(RP³) ≅ RP³ × C²
+    (non-trivial spin structure) pulled back to the (k, |z|, φ) parameter
+    space. The connection 1-form decomposes as A = A_radial dρ + A_Hopf dφ
+    + A_scale dk with A_radial = 0 (Fubini-Study geodesic), A_scale = 0
+    (k preserves angular spinor frame), A_Hopf = 1/2 (spin-1/2 rep of
+    holomorphic U(1) Hopf-fiber rotation). The 720° closure is the
+    Hopf-fiber spinor holonomy: ∮(0→2π) A_Hopf dφ = π (spinor sign -1),
+    second loop returns +1, total path 4π = 720°. The golden-ratio factor
+    π/φ² enters through the self-similar τ-action on the flag manifold
+    Fl(1,2,3;C^4) (see golden_ratio.py for the A₅ moduli structure).
 
     Result: δ_CP = 1.1956 rad = 68.50° (observed: 1.20 ± 0.08 rad)
     """
@@ -69,13 +68,17 @@ def ckm_angles():
     """
     CKM quark mixing angle MAGNITUDES from wavefunction-overlap mass-ratios.
 
-    Per the I10 formalization (2026-05-03, ch10b-mixing.tex §Berry Connection
-    on Spin(RP³)), the CKM matrix decomposes into magnitude and phase parts:
+    LaTeX: \\theta_C \\approx \\sqrt{m_d/m_s}
+    Section: ch10b-mixing.tex §10.3 (Quark Mixing Magnitudes)
+    Status: FLAGGED
+
+    The CKM matrix decomposes into magnitude and phase parts:
 
         V_ij = |V_ij| × exp(i arg V_ij)
 
     The PHASE structure (CP-violating phase δ_CP = π/φ²) is the Berry phase
-    on Spin(RP³) — see delta_cp() above for the derivation.
+    on Spin(RP³) — see delta_cp() above and ch10b-mixing.tex §Berry
+    Connection on Spin(RP³) for the derivation.
 
     The MAGNITUDES |V_ij| are NOT produced by the Berry connection alone.
     They come from the off-diagonal overlap of mass-eigenstate wavefunctions
@@ -86,17 +89,19 @@ def ckm_angles():
     in place of conventional Yukawa eigenvalues.
 
     Independent first-principles |V_ij| from explicit Berry-phase integrals
-    over (k, |z|) parameter space requires Kähler-radial positions ρ_i derived
-    from the framework rather than fitted backwards from observed masses.
-    That is research-agenda item I3 (light quark |z| positions from first
-    principles), specialist tractability. Until I3 closes, the magnitude
-    computation here remains the mass-ratio approximation by design.
+    over (k, |z|) parameter space requires Kähler-radial positions ρ_i
+    derived from the framework rather than fitted backwards from observed
+    masses. That is an outstanding open calculation in the framework's
+    research agenda (light quark |z| positions from first principles).
+    Until that closes, the magnitude computation here remains the
+    mass-ratio approximation by design.
 
     Quark k-levels (from hierarchy):
         u: 53.8, d: 53.3, s: 51.8, c: 49.4, b: 48.0, t: 44.5
 
     Status: VERIFIED (CP phase via Berry-on-Spin(RP³); magnitudes via
-            wavefunction-overlap mass-ratio approximation pending I3)
+            wavefunction-overlap mass-ratio approximation; first-principles
+            magnitudes are an open calculation)
     """
     # Observed CKM magnitudes (PDG 2023)
     V_obs = {
@@ -130,11 +135,12 @@ def jarlskog_invariant():
     """
     Jarlskog invariant J from PPM Berry phase.
 
-    J = c₁₂ c₂₃ c₁₃² s₁₂ s₂₃ s₁₃ sin(δ_CP)
+    LaTeX: J = c_{12} c_{23} c_{13}^2 s_{12} s_{23} s_{13} \\sin(\\delta_{CP})
+    Section: ch10b-mixing.tex §10.4 (Jarlskog Invariant)
+    Status: VERIFIED
 
     Using approximate PPM angles and δ_CP = π/φ²:
     J ≈ 3.1 × 10⁻⁵ (observed: 3.08 × 10⁻⁵)
-    Status: VERIFIED (approximate; depends on mixing angle accuracy)
     """
     dcp = delta_cp()
     sin_delta = math.sin(dcp['delta_cp_rad'])

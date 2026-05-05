@@ -48,7 +48,8 @@ def run_alpha_1loop(alpha0, b, ln_mu_over_mu0):
     -------
     float, or nan if Landau pole encountered
 
-    Status: VERIFIED (session 28 — sign convention corrected)
+    Section: §6 (Gauge Structure)
+    Status: VERIFIED
     """
     inv_alpha = 1.0/alpha0 - b/(2.0*math.pi) * ln_mu_over_mu0
     if inv_alpha <= 0.0:
@@ -93,6 +94,10 @@ def sin2_theta_W_sm_running(E_break_GeV=None):
     """
     Weinberg angle at E_break from SM one-loop running.
 
+    LaTeX: \\sin^2\\theta_W(E_{\\rm break})\\;\\text{from one-loop SM RGE}
+    Section: §6 (Gauge Structure)
+    Status: VERIFIED
+
     Computes sin²θ_W at E_break by running α₁ and α₂ up from M_Z using
     observed values, then applying the standard formula.
 
@@ -135,6 +140,10 @@ def sin2_theta_W_sm_running(E_break_GeV=None):
 def couplings_at_ebreak(E_break_GeV=None):
     """
     SM-required coupling values at E_break (running UP from M_Z).
+
+    LaTeX: \\alpha_i(E_{\\rm break})\\;\\text{from one-loop SM RGE}
+    Section: §6 (Gauge Structure)
+    Status: OPEN
 
     Compared to PPM prediction α_GUT = 0.1 (Fubini-Study).
     """
@@ -184,13 +193,15 @@ def lepton_mass_ratios():
     """
     Lepton mass hierarchy from orbifold topology.
 
+    LaTeX: m_\\tau/m_\\mu \\approx (2\\pi)^{3/2};\\; m_\\mu/m_e \\approx (3/2)e^{\\pi^2/2}
+    Section: §8 (Particle Spectrum), eq:bulk_spacing, eq:wall_suppression
+    Status: FLAGGED
+
     eq:bulk_spacing: m_τ/m_μ ≈ (2π)^{3/2} = 15.75  (observed: 16.82, error −6.3%)
         Exponent 3/2 reflects codimension of RP³ in CP³.
 
     eq:wall_suppression: m_μ/m_e ≈ (3/2)e^{π²/2} = 208.6  (observed: 206.77, error +0.9%)
         e^{π²/2} from blanket volume; 3/2 prefactor conjectured from codim/2.
-
-    Status: VERIFIED (6.3% gap in τ/μ ratio is acknowledged in paper as open)
     """
     m_tau, m_mu, m_e = 1776.86, 105.658, 0.51100  # MeV
     ratio_tau_mu_obs = m_tau / m_mu
@@ -213,11 +224,14 @@ def alpha_blanket_volume():
     """
     1/α from blanket volume: e^{π²/2} = 139.0 (1.5% error).
 
+    LaTeX: 1/\\alpha \\approx e^{\\pi^2/2}
+    Section: §5 (Three Derivations of α), eq:alpha_vol
+    Status: VERIFIED
+
     eq:alpha_vol: independent route to α from RP³ domain wall geometry.
     Structurally independent from the spectral route.
 
     Combined with heat kernel (136.8): weighted average = 137.5 (0.36% from 137.036).
-    Status: VERIFIED
     """
     alpha_inv_blanket = math.exp(math.pi**2 / 2.0)
     alpha_inv_hk = 136.8  # from separate-manifold heat kernel ratio (§6)
@@ -238,6 +252,9 @@ def breaking_chain():
     """Pati-Salam → SM breaking chain.
 
     LaTeX: \\textit{Code: ppm.gauge.breaking_chain()}  [ch04]
+    Section: ch04 §Pati-Salam → SM
+    Status: VERIFIED
+
     Returns: dict with breaking scales and group-theory data.
     """
     from . import hierarchy as H
@@ -256,6 +273,9 @@ def hypercharge():
     """Hypercharge embedding from Pati-Salam.
 
     LaTeX: \\textit{Code: ppm.gauge.hypercharge()}  [ch04]
+    Section: ch04 §Hypercharge
+    Status: VERIFIED
+
     Returns: dict with hypercharge normalization and Weinberg angle.
     """
     return {

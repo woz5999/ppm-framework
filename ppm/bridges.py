@@ -227,7 +227,7 @@ def k_ewsb_from_topology(
         - Dividing by 2 accounts for Z₂ fiber quantization
         - The result is the single empirical input once Planck anchor is adopted
 
-    Paper Reference: §3 (The Six Bridges), line 310
+    Section: §3 (The Six Bridges), line 310
     Status: DERIVED
 
     Parameters
@@ -274,7 +274,7 @@ def n_tau_from_topology(dim_rp3: int = 3) -> Dict:
         The tau appears at the same topological depth below EWSB (Δk = 7/2 half-steps)
         as the VEV sits above confinement.
 
-    Paper Reference: §8 (Particle Spectrum), line 45
+    Section: §8 (Particle Spectrum), line 45
     Status: DERIVED (no inputs)
 
     Parameters
@@ -311,7 +311,7 @@ def n_mu_from_topology(n_tau: int = 7) -> Dict:
         creates two homotopy classes: single-winding (tau) and double-winding (muon).
         The number 14 = P₃ (third square pyramidal number), same as in N = φ^(2×14²) = φ^392.
 
-    Paper Reference: §8 (Particle Spectrum), lines 58–62
+    Section: §8 (Particle Spectrum), lines 58–62
     Status: DERIVED (no inputs beyond n_τ)
 
     Parameters
@@ -351,7 +351,7 @@ def k_electron_from_topology(k_ref: float = 51.0, dim_cp3_r: int = 6) -> Dict:
         This marks the end of the particle spectrum: no V₄-compatible fiber mode exists at k > 57.
         dim_ℝ(CP³) = 6 is the real dimension of the pre-actualization arena.
 
-    Paper Reference: §8 (Particle Spectrum), lines 64–67
+    Section: §8 (Particle Spectrum), lines 64–67
     Status: DERIVED (no inputs)
 
     Parameters
@@ -386,7 +386,7 @@ def n_electron_from_topology(k_electron: float = 57.0, k_ewsb: float = 44.5) -> 
     LaTeX:
         n_e = 2(k_e - k_EWSB) = 2(57 - 44.5) = 2(12.5) = 25
 
-    Paper Reference: §8 (Particle Spectrum), line 49
+    Section: §8 (Particle Spectrum), line 49
     Status: DERIVED
 
     Parameters
@@ -433,7 +433,7 @@ def lepton_quantum_number_sum_check(
         The total quantum number budget equals the full hierarchy range (50 half-steps)
         minus the Euler characteristic overhead (4 fact types).
 
-    Paper Reference: §8 (Particle Spectrum), lines 69–73
+    Section: §8 (Particle Spectrum), lines 69–73
     Status: VERIFIED (topological consistency check)
 
     Parameters
@@ -494,7 +494,7 @@ def higgs_vev_from_topology(
         - 7 = 2×dim(ℝℙ³) + 1 (same as n_τ formula)
         - m_π is the actualization energy scale
 
-    Paper Reference: §3 (The Six Bridges), line 290
+    Section: §3 (The Six Bridges), line 290
     Status: DERIVED
 
     Parameters
@@ -554,7 +554,7 @@ def fermi_constant_from_topology(
         - Formula is algebraically exact; error reflects only m_π and k_EWSB inputs
         - No approximations beyond these two inputs
 
-    Paper Reference: §3 (The Six Bridges), lines 289–293
+    Section: §3 (The Six Bridges), lines 289–293
     Status: DERIVED (VERIFIED)
 
     Parameters
@@ -611,7 +611,7 @@ def verify_orbit_sum_rule(chi_cp3: int = 4) -> Dict:
         the Euler characteristic of the kinematic arena. This is a topological
         constraint, not a numerical coincidence.
 
-    Paper Reference: §3 (The Six Bridges), lines 527–534
+    Section: §3 (The Six Bridges), lines 527–534
     Status: DERIVED (topological identity)
 
     Parameters
@@ -674,7 +674,7 @@ def verify_self_consistency_condition(
         It connects the fundamental constants (via α) to the golden ratio geometry
         at a specific topological depth (27 = 2χ(CP³)×(dim(ℝℙ³)/2) + ...).
 
-    Paper Reference: §3 (The Six Bridges), line 313
+    Section: §3 (The Six Bridges), line 313
     Status: VERIFIED (cross-check of numerical consistency)
 
     Parameters
@@ -732,7 +732,7 @@ def verify_weinberg_topological(n: int = 3) -> Dict:
     General formula holds for all n:
         n=1: 1/4,  n=2: 1/3,  n=3: 3/8,  n=4: 2/5, ...
 
-    Paper Reference: §3 (The Six Bridges), lines 549–559
+    Section: §3 (The Six Bridges), lines 549–559
     Status: DERIVED (topological identity)
 
     Parameters
@@ -782,6 +782,10 @@ def verify_all_bridges() -> Dict:
     """
     Run all bridge verification checks.
 
+    LaTeX: n/a
+    Section: §3 (The Six Bridges)
+    Status: INTERNAL
+
     Returns
     -------
     dict
@@ -830,7 +834,12 @@ def verify_all_bridges() -> Dict:
 # ─── Convenience Getters ───────────────────────────────────────────────────
 
 def get_orbit(orbit_number: int) -> Optional[BridgeOrbit]:
-    """Retrieve an orbit by number (1, 2, or 3)."""
+    """Retrieve an orbit by number (1, 2, or 3).
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     for orbit in ORBITS:
         if orbit.orbit_number == orbit_number:
             return orbit
@@ -838,7 +847,12 @@ def get_orbit(orbit_number: int) -> Optional[BridgeOrbit]:
 
 
 def get_bridge(name: str) -> Optional[Bridge]:
-    """Retrieve a bridge by name or symbol."""
+    """Retrieve a bridge by name or symbol.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     all_bridges = [BRIDGE_C, BRIDGE_GF, BRIDGE_THETA_W, BRIDGE_G, BRIDGE_H, BRIDGE_TAU]
     for bridge in all_bridges:
         if bridge.name == name or bridge.symbol == name or name in bridge.name.lower():
@@ -847,12 +861,22 @@ def get_bridge(name: str) -> Optional[Bridge]:
 
 
 def list_all_bridges() -> List[Bridge]:
-    """Return all six bridges."""
+    """Return all six bridges.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     return [BRIDGE_C, BRIDGE_GF, BRIDGE_THETA_W, BRIDGE_G, BRIDGE_H, BRIDGE_TAU]
 
 
 def print_bridge_summary():
-    """Print human-readable summary of bridges and orbits."""
+    """Print human-readable summary of bridges and orbits.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     print("=" * 80)
     print("THE SIX BRIDGE CONSTANTS AND V₄ ORBIT STRUCTURE")
     print("=" * 80)

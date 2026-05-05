@@ -30,7 +30,12 @@ from . import topology as TOP
 
 
 def _row(pred_id, quantity, ppm_val, obs_val, tier, status, notes=""):
-    """Build a single prediction row."""
+    """Build a single prediction row.
+
+    LaTeX: n/a
+    Section: utility (predictions table builder)
+    Status: INTERNAL
+    """
     if obs_val and obs_val != 0 and ppm_val is not None:
         err = (ppm_val / obs_val - 1.0) * 100.0
     else:
@@ -50,6 +55,10 @@ def _row(pred_id, quantity, ppm_val, obs_val, tier, status, notes=""):
 def build_table():
     """
     Build the complete PRED.1–23 + derived quantities cross-check table.
+
+    LaTeX: n/a
+    Section: ch15 (Predictions), app-numerical
+    Status: VERIFIED
 
     All values computed live from ppm/ modules. No hardcoded numerics
     except observed values (from PDG/Planck).
@@ -77,7 +86,7 @@ def build_table():
     # ─── PRED.3: θ_strong = 0 ────────────────────────────────────────────
     rows.append(_row('PRED.3', 'θ_strong = 0',
         0.0, 0.0, 1, 'VERIFIED',
-        'RP³ non-orientable → Hodge star undefined → θ-term forbidden'))
+        'T-invariance of τ-involution → strong-CP θ-term is T-odd → θ = 0 exactly'))
 
     # ─── PRED.4: v = 246.2 GeV (Higgs VEV) ──────────────────────────────
     rows.append(_row('PRED.4', 'v (Higgs VEV) [GeV]',
@@ -145,10 +154,12 @@ def build_table():
         f'Bulk spacing (2π)^{{3/2}}; err {lmr["tau_mu_err_pct"]:+.1f}%'))
 
     # ─── PRED.15: G_N (neutral π⁰) ──────────────────────────────────────
+    from . import gravity as GRAV
     lam_cc = GR.cosmological_constant()
+    g_pred = GRAV.newton_constant()
     rows.append(_row('PRED.15', 'G_N [from PPM formula]',
-        None, C.G_NEWTON_SI, 2, 'VERIFIED',
-        f'16π⁴ℏcα/(m_π²√N); err +1.7% (neutral pion, 135.0 MeV)'))
+        g_pred['G_ppm_si'], C.G_NEWTON_SI, 2, 'VERIFIED',
+        f'16π⁴ℏcα/(m_π²√N); err {g_pred["error_pct"]:+.1f}% (neutral pion, 135.0 MeV)'))
 
     # ─── PRED.16: Λ = 1.12e-52 m⁻² ─────────────────────────────────────
     rows.append(_row('PRED.16', 'Λ [m⁻²]',
@@ -156,10 +167,17 @@ def build_table():
         f'2(m_πc²)²/((ℏc)²N); err {lam_cc["error_pct"]:+.1f}%'))
 
     # ─── PRED.17: H₀ = 70.9 km/s/Mpc ───────────────────────────────────
+    # Comparator: TRGB late-universe value (Freedman 2020, 69.8 km/s/Mpc).
+    # PPM's H₀ comes from a late-universe mechanism (boundary capacity scaling
+    # to today), so a direct distance-ladder measurement is the right physical
+    # comparator. Planck CMB (67.4) is a ΛCDM-extrapolated value PPM doesn't
+    # share; its 5.2% gap reflects the Hubble tension itself, not framework
+    # disagreement. SH0ES Cepheids (73.0) gives -2.9%; full landscape in
+    # ch12-gravity §The Hubble Constant.
     h0 = GR.hubble_from_age()
     rows.append(_row('PRED.17', 'H₀ [km/s/Mpc]',
         h0['H0_km_s_Mpc'], 69.8, 2, 'VERIFIED',
-        '1/T_universe; T=13.797 Gyr'))
+        '1/T_universe; T=13.797 Gyr; comparator TRGB 69.8 (late-universe)'))
 
     # ─── PRED.18: Sterile ν: 5.7–14.3 keV ──────────────────────────────
     sn = NU.sterile_neutrino_mass_window()
@@ -190,13 +208,19 @@ def build_table():
         E_break, None, 3, 'VERIFIED',
         f'Pati-Salam scale E(k_break={C.K_BREAK}) = {E_break:.2e} GeV'))
 
-    # ─── PRED.23: GW dispersion (Planck scale, from a₄ heat kernel) ─────
+    # ─── PRED.23: GW dispersion coefficient (Planck scale, from a₄ heat kernel) ─────
+    # The framework predicts the dimensionless dispersion coefficient α_GW.
+    # Δv/c = ½ α_GW (ℓ_P k)² is Planck-suppressed and undetectable by 60+
+    # orders of magnitude at LIGO frequencies — there is no measurement to
+    # compare against, only consistency with upper bounds. Status reflects
+    # this: predicted from first principles, awaiting any test that can
+    # reach Planck-scale dispersion.
     gw_ligo = GR.gw_dispersion(100)
     gw_uhe = GR.gw_dispersion(1e15)
-    rows.append(_row('PRED.23', 'GW dispersion Δv/c',
-        None, None, 3, 'VERIFIED',
-        f'α_GW={GR.ALPHA_GW:.3f}; LIGO: {gw_ligo["delta_v_over_c"]:.1e}; '
-        f'UHE: {gw_uhe["delta_v_over_c"]:.1e}'))
+    rows.append(_row('PRED.23', 'α_GW (GW dispersion coeff.)',
+        GR.ALPHA_GW, None, 3, 'AWAITING DATA',
+        f'Predicted Δv/c — LIGO 100 Hz: {gw_ligo["delta_v_over_c"]:.1e}; '
+        f'UHE 10¹⁵ Hz: {gw_uhe["delta_v_over_c"]:.1e}; both far below sensitivity'))
 
     # ─── Derived quantities (verified but not numbered PREDs) ────────────
 
@@ -306,7 +330,12 @@ def build_table():
 
 
 def summary_stats(rows=None):
-    """Count predictions by status."""
+    """Count predictions by status.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     if rows is None:
         rows = build_table()
     stats = {}
@@ -317,7 +346,12 @@ def summary_stats(rows=None):
 
 
 def print_table():
-    """Print the full prediction cross-check table."""
+    """Print the full prediction cross-check table.
+
+    LaTeX: n/a
+    Section: utility
+    Status: INTERNAL
+    """
     rows = build_table()
 
     print(f"{'ID':<8} {'Quantity':<35} {'PPM':>12} {'Obs':>12} {'Err%':>8}  {'Status':<12} Notes")
@@ -344,6 +378,9 @@ def particle_physics():
     """Particle-physics subset of predictions.
 
     LaTeX: \\textit{Code: ppm.predictions.particle_physics()}  [ch15]
+    Section: ch15 §Particle Physics
+    Status: VERIFIED
+
     Returns: list of prediction rows for particle physics (PRED.1–14).
     """
     return [r for r in build_table() if r['id'].startswith('PRED')
@@ -354,6 +391,9 @@ def cosmology_predictions():
     """Cosmology subset of predictions.
 
     LaTeX: \\textit{Code: ppm.predictions.cosmology()}  [ch15]
+    Section: ch15 §Cosmology
+    Status: VERIFIED
+
     Returns: list of prediction rows for cosmological quantities (PRED.15–20).
     """
     return [r for r in build_table() if r['id'].startswith('PRED')
@@ -364,6 +404,9 @@ def gravity_predictions():
     """Gravity subset of predictions.
 
     LaTeX: \\textit{Code: ppm.predictions.gravity()}  [ch15]
+    Section: ch15 §Gravity
+    Status: VERIFIED
+
     Returns: list of prediction rows for gravitational quantities (PRED.15, 21–23).
     """
     ids = {'PRED.15', 'PRED.21', 'PRED.22', 'PRED.23'}
@@ -374,6 +417,9 @@ def consciousness_predictions():
     """Consciousness-scale subset of predictions.
 
     LaTeX: \\textit{Code: ppm.predictions.consciousness()}  [ch15]
+    Section: ch15 §Consciousness
+    Status: VERIFIED
+
     Returns: list of prediction rows for consciousness-scale quantities (DER.7–14).
     """
     return [r for r in build_table() if r['id'].startswith('DER')
@@ -384,6 +430,9 @@ def hubble_tension():
     """Hubble tension analysis.
 
     LaTeX: \\textit{Code: ppm.predictions.hubble_tension()}  [ch12]
+    Section: ch12 §The Hubble Constant
+    Status: VERIFIED
+
     Returns: dict with PPM H₀ prediction and comparison to CMB/local values.
     """
     from . import cosmology as GR
