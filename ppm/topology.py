@@ -6,21 +6,18 @@ Computes topological invariants that underpin the framework:
 generation count, error correction properties, and no-cloning
 constraints from the Z₂ involution structure.
 
-LaTeX: ch03 (Born Rule), ch05 (Generations), ch07 (Information), ch12 (Gravity), ch14 (Closure)
 """
 
 import math
 from . import constants as C
 
-
 def generations():
     """Number of fermion generations from CP³ topology.
 
     LaTeX: N_gen = χ(CP³)/|Z₂| + 1 = 4/2 + 1 = 3
-    \\textit{Code: ppm.topology.generations()}  [ch05]
+    \\textit{Code: ppm.topology.generations()}
     Two bulk generations from Euler characteristic quotient, plus one
     wall generation from the RP³ fixed-point set.
-    Section: §5.1
     Status: VERIFIED
     """
     chi_cp3 = C.CP3_DIM + 1  # χ(CP^n) = n+1, so χ(CP³) = 4
@@ -39,14 +36,11 @@ def generations():
         'status': 'VERIFIED'
     }
 
-
 def error_correction():
     """Quantum error correction from topological protection.
 
-    LaTeX: \\textit{Code: ppm.topology.error_correction()}  [ch14]
     The Z₂ involution provides a natural error-correcting structure:
     τ-even states (on RP³) are protected against τ-odd perturbations.
-    Section: §14.4
     Status: FORMULA
     """
     return {
@@ -58,14 +52,11 @@ def error_correction():
         'status': 'FORMULA'
     }
 
-
 def no_cloning():
     """No-cloning theorem from fiber geometry.
 
-    LaTeX: \\textit{Code: ppm.topology.no_cloning()}  [ch07]
     The non-trivial fiber bundle structure of CP³ → RP³ prevents
     duplication of quantum information across the projection.
-    Section: §7.8
     Status: FORMULA
     """
     return {
@@ -77,12 +68,10 @@ def no_cloning():
         'status': 'FORMULA'
     }
 
-
 def boundary_capacity():
     """Topological boundary capacity N_∞ = φ^{392}.
 
     LaTeX: N_∞ = φ^{392}
-    Section: §1, §12
     Status: VERIFIED
     """
     return {

@@ -14,13 +14,10 @@ N enters through:
 The Sidharth scaling T = √N τ_C is a consequence of geometric Λ +
 Friedmann dynamics (derived, not adopted independently; 3.6% accuracy).
 
-Section references: §10 (Gravitational Constants), §11 (Cosmological Evidence),
-                    §12 (Consciousness)
 """
 
 import math
 from . import constants as C
-
 
 # ─── Fundamental constants (SI) ──────────────────────────────────────────────
 
@@ -30,7 +27,6 @@ _K_B    = 1.380649e-23      # J/K
 _G_OBS  = 6.674e-11         # m³ kg⁻¹ s⁻²
 _MPC_KM = 3.0857e19         # km per Mpc
 
-
 # ─── H₀ from Sidharth relations ─────────────────────────────────────────────
 
 def hubble_from_age(T_Gyr=13.797):
@@ -38,7 +34,6 @@ def hubble_from_age(T_Gyr=13.797):
     H₀ = 1/T_universe.
 
     LaTeX: H_0 = \\frac{1}{T_{\\rm universe}} = 70.9\\,\\mathrm{km/s/Mpc}
-    Section: §10.7
     Status: VERIFIED
 
     Derivation: Sidharth relations give R = √N λ_C, T = √N τ_C.
@@ -57,13 +52,11 @@ def hubble_from_age(T_Gyr=13.797):
         'status': 'VERIFIED'
     }
 
-
 def hubble_from_sidharth():
     """
     H₀ from Sidharth relations with N = φ^{392}.
 
     LaTeX: H_0 = c / (\\sqrt{N} \\lambda_C)
-    Section: §10.7
     Status: VERIFIED
 
     R = √N × λ_C, T = √N × τ_C, H₀ = c/R = 1/T.
@@ -88,7 +81,6 @@ def hubble_from_sidharth():
         'status': 'VERIFIED'
     }
 
-
 # ─── Cosmological constant Λ ────────────────────────────────────────────────
 
 def cosmological_constant():
@@ -96,7 +88,6 @@ def cosmological_constant():
     Λ = 2(m_π c²)² / ((ℏc)² N), with N = φ^{392}.
 
     LaTeX: \\Lambda = \\frac{2(m_\\pi c^2)^2}{(\\hbar c)^2 N}
-    Section: §10.3, section-gravity.tex
     Status: VERIFIED
 
     Neutral pion (134.977 MeV) gives Λ ≈ 1.12×10⁻⁵² m⁻²,
@@ -114,7 +105,6 @@ def cosmological_constant():
         'status': 'VERIFIED'
     }
 
-
 # ─── G_eff(z) evolution ─────────────────────────────────────────────────────
 
 def g_eff(z):
@@ -122,7 +112,6 @@ def g_eff(z):
     Effective gravitational coupling for nonlinear structure formation.
 
     LaTeX: G_{\\rm eff}(z) = G_0(1+z)^{3/2}
-    Section: §10.4, §11.2
     Status: VERIFIED
 
     Activates only at δ > 1 (nonlinear regime).
@@ -131,13 +120,11 @@ def g_eff(z):
     """
     return (1.0 + z)**1.5
 
-
 def delta_c_ppm(z):
     """
     Modified collapse threshold in PPM.
 
     LaTeX: \\delta_c^{\\rm PPM}(z) \\approx \\frac{1.75}{(1+z)^{0.19}}
-    Section: §10.6, section-gravity.tex eq:delta_c_ppm
     Status: VERIFIED
 
     Exponent 0.19 ≈ (2/3)(1/3)(3/4) × 1.15 correction.
@@ -146,7 +133,6 @@ def delta_c_ppm(z):
     """
     delta_c_std = 1.686
     return 1.04 * delta_c_std / (1.0 + z)**0.19
-
 
 # ─── GW dispersion ──────────────────────────────────────────────────────────
 
@@ -167,7 +153,6 @@ _M_PI_KG  = 134.977e6 * 1.602176634e-19 / _C**2  # neutral pion mass (kg)
 ALPHA_GW = math.log(math.sqrt(2 * math.pi) * _M_PLANCK / _M_PI_KG) / (15 * math.pi)
 # ALPHA_GW ≈ 0.995
 
-
 def gw_dispersion(f_hz):
     """
     PPM gravitational wave dispersion: Δv/c at frequency f.
@@ -178,7 +163,6 @@ def gw_dispersion(f_hz):
     Correction scale is the Planck length, set by the a₄ heat kernel
     coefficient of the CP³ sigma model.
 
-    Section: app-A §A.10, ch15 §T15.3
     Status: VERIFIED
 
     At LIGO (100 Hz): Δv/c ~ 6×10⁻⁸².
@@ -195,13 +179,11 @@ def gw_dispersion(f_hz):
         'status': 'VERIFIED'
     }
 
-
 def gw_phase_shift(f_hz, d_Mpc):
     """
     Accumulated GW phase shift at frequency f over distance d.
 
     LaTeX: \\Delta\\phi = (\\Delta v/c) \\cdot 2\\pi f \\cdot d/c
-    Section: app-A §A.10
     Status: VERIFIED
 
     Δφ = (Δv/c) × 2πf × d/c
@@ -211,7 +193,6 @@ def gw_phase_shift(f_hz, d_Mpc):
     dphi = dv * 2.0 * math.pi * f_hz * d_m / _C
     return dphi
 
-
 # ─── Dark energy equation of state ──────────────────────────────────────────
 
 def w_eff(omega_delta_ratio):
@@ -219,14 +200,12 @@ def w_eff(omega_delta_ratio):
     DEPRECATED — use w_eff_backreaction() instead.
 
     LaTeX: w_{\\rm eff} = -1 + (2/3)\\,\\Omega_\\delta/\\Omega_{\\rm DE}
-    Section: §10.4 (deprecated; superseded by w_eff_backreaction)
     Status: INTERNAL
 
     Original formula: w_eff = -1 + (2/3) Ω_δ/Ω_DE
     Kept for backward compatibility.
     """
     return -1.0 + (2.0 / 3.0) * omega_delta_ratio
-
 
 # ─── Backreaction dark energy EOS ──────────────────────────────────────────
 
@@ -241,7 +220,6 @@ def w_eff_backreaction(beta=0.05, Omega_m=0.315, Omega_L=0.685):
                              {1 + \\beta\\,\\Omega_m/\\Omega_\\Lambda}
     LaTeX: w_a = \\frac{3\\beta\\,\\Omega_m/\\Omega_\\Lambda}
                        {(1 + \\beta\\,\\Omega_m/\\Omega_\\Lambda)^2}
-    Section: §10.4 (section-gravity.tex)
     Status: VERIFIED (structure); β amplitude OPEN (requires FFS)
 
     CPL parameterization: w(a) ≈ w₀ + w_a(1-a).
@@ -261,7 +239,6 @@ def w_eff_backreaction(beta=0.05, Omega_m=0.315, Omega_L=0.685):
         'status': 'VERIFIED (structure); beta OPEN'
     }
 
-
 # ─── Friedmann-derived age ─────────────────────────────────────────────────
 
 def friedmann_age(Omega_m=0.315, Omega_L=0.685):
@@ -269,7 +246,6 @@ def friedmann_age(Omega_m=0.315, Omega_L=0.685):
     Universe age from Friedmann equation with geometric Λ.
 
     LaTeX: T = f(\\Omega_m, \\Omega_\\Lambda) \\times \\sqrt{N} \\times \\tau_C
-    Section: §10.7 (derived from §10.3 Λ formula)
     Status: VERIFIED
 
     T = f(Ω_m, Ω_Λ) × τ_C × √N, where f ≈ 0.951.
@@ -324,7 +300,6 @@ def friedmann_age(Omega_m=0.315, Omega_L=0.685):
         'status': 'VERIFIED'
     }
 
-
 # ─── Actualization record ──────────────────────────────────────────────────
 
 def actualization_record(T_Gyr=13.797, N_particles=2e80):
@@ -332,7 +307,6 @@ def actualization_record(T_Gyr=13.797, N_particles=2e80):
     Cumulative actualization record: M(t), S_record, S_BH comparison.
 
     LaTeX: M(t_0) = N_{\\rm particles} \\times t_0 / \\tau_C
-    Section: §9 (thermodynamics), §11 (cosmological evidence)
     Status: VERIFIED
 
     M(t₀) = N_particles × t₀/τ_C ≈ 1.8×10¹²¹ τ-events.
@@ -369,7 +343,6 @@ def actualization_record(T_Gyr=13.797, N_particles=2e80):
         'status': 'VERIFIED'
     }
 
-
 # ─── Consciousness numerics ─────────────────────────────────────────────────
 
 def k_conscious(T_K=310.0):
@@ -377,7 +350,6 @@ def k_conscious(T_K=310.0):
     Hierarchy level matching biological temperature.
 
     LaTeX: k_{\\rm conscious} = 51 - \\frac{2\\ln(k_BT / m_\\pi c^2)}{\\ln(2\\pi)}
-    Section: §12.1 (section7-new.tex), §4.14–4.15
     Status: VERIFIED
 
     At T = 310 K: k_conscious ≈ 75.35.
@@ -388,12 +360,11 @@ def k_conscious(T_K=310.0):
     k = 51.0 - 2.0 * math.log(E_thermal_MeV / m_pi_MeV) / math.log(2.0 * math.pi)
     return k
 
-
 def integration_time(T_K=310.0, N_sites=1e14):
     """
     Collective-coherence integration time (binding window of the conscious moment).
 
-    Canonical derivation: ch13 §T13.9 eq:integration_time (eq 1045).
+    Canonical derivation:.
 
         τ_sys,eff = √N × ℏ/(k_B T)       (collective across N synaptic sites)
         τ_bath    ≈ 10⁻¹² s              (thermal-photon relaxation at body T)
@@ -408,11 +379,10 @@ def integration_time(T_K=310.0, N_sites=1e14):
 
     Earlier revisions of this function used the single-site τ_sys and
     τ_bath = ℏ/(m_π c²) ≈ 5×10⁻²⁴ s (pion-confinement timescale),
-    producing t_integrate ≈ 0.13 ms — inconsistent with ch13. Retained
+    producing t_integrate ≈ 0.13 ms — inconsistent with. Retained
     here only as `t_integrate_singlesite_ms` for diagnostic comparison.
 
     LaTeX: t_{\\rm integrate} = \\tau_{\\rm sys,eff}^2 / \\tau_{\\rm bath}
-    Section: §T13.9 (ch13-consciousness.tex eq:integration_time)
     Status: VERIFIED
 
     Parameters
@@ -423,7 +393,7 @@ def integration_time(T_K=310.0, N_sites=1e14):
         Number of coherently coupled synaptic sites. Default 10¹⁴.
     """
     # Bath timescales
-    tau_bath_thermal     = 1.0e-12                                  # thermal-photon relaxation (ch13)
+    tau_bath_thermal     = 1.0e-12                                  # thermal-photon relaxation
     m_pi_c2              = 134.977e6 * 1.602176634e-19              # J  (neutral pion rest energy)
     tau_bath_confinement = _HBAR / m_pi_c2                          # ≈ 4.9×10⁻²⁴ s
 
@@ -451,9 +421,8 @@ def integration_time(T_K=310.0, N_sites=1e14):
         't_integrate_singlesite_ms': t_int_single * 1e3,
         'N_eff_sub_singlesite':      t_int_single / tau_bath_confinement,
         'ratio_sys_bath':            tau_sys_eff / tau_bath_thermal,
-        'status': 'canonical (collective, ch13 eq:integration_time)'
+        'status': 'canonical (collective)'
     }
-
 
 def n_reliable(Delta_m=1e-14, t_motor=0.150, T_K=310.0):
     """
@@ -463,7 +432,7 @@ def n_reliable(Delta_m=1e-14, t_motor=0.150, T_K=310.0):
     Γ_PD = G(Δm)²/ℏ, M = t_motor/t_integrate.
 
     Uses the collective-coherence binding window t_integrate ≈ 60 ms
-    (ch13 eq:integration_time) — this is the relevant timescale for
+ — this is the relevant timescale for
     counting integration windows per motor command. M = t_motor/t_integrate
     ≈ 2.5 windows per 150 ms motor command.
 
@@ -473,7 +442,6 @@ def n_reliable(Delta_m=1e-14, t_motor=0.150, T_K=310.0):
     Only M_windows is affected by the canonical t_integrate.
 
     LaTeX: N_{\\rm reliable} = \\ln(100) / (\\Gamma_{\\rm PD} t_{\\rm motor})
-    Section: §T13.10 (ch13-consciousness.tex eq:motor_reliability)
     Status: VERIFIED
     """
     Gamma_PD = _G_OBS * Delta_m**2 / _HBAR
@@ -489,13 +457,11 @@ def n_reliable(Delta_m=1e-14, t_motor=0.150, T_K=310.0):
         'status': 'VERIFIED'
     }
 
-
 def brain_power(N_boundaries=1e14, f_cycle=10.0, T_K=310.0):
     """
     Minimum power for Z₂ topological maintenance in the brain.
 
     LaTeX: P = N \\cdot k_B T \\cdot \\ln 2 \\cdot f
-    Section: §12.5 (section7-new.tex)
     Status: VERIFIED
 
     Conservative (N=10¹⁴, f=10 Hz): P ≈ 3 μW.
@@ -511,7 +477,6 @@ def brain_power(N_boundaries=1e14, f_cycle=10.0, T_K=310.0):
         'fraction_of_brain': P / 20.0,
         'status': 'VERIFIED'
     }
-
 
 if __name__ == "__main__":
     h = hubble_from_age()

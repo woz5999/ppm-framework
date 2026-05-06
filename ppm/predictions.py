@@ -28,12 +28,10 @@ from . import mixing as MX
 from . import bridges as BR
 from . import topology as TOP
 
-
 def _row(pred_id, quantity, ppm_val, obs_val, tier, status, notes=""):
     """Build a single prediction row.
 
     LaTeX: n/a
-    Section: utility (predictions table builder)
     Status: INTERNAL
     """
     if obs_val and obs_val != 0 and ppm_val is not None:
@@ -51,13 +49,11 @@ def _row(pred_id, quantity, ppm_val, obs_val, tier, status, notes=""):
         'notes': notes
     }
 
-
 def build_table():
     """
     Build the complete PRED.1–23 + derived quantities cross-check table.
 
     LaTeX: n/a
-    Section: ch15 (Predictions), app-numerical
     Status: VERIFIED
 
     All values computed live from ppm/ modules. No hardcoded numerics
@@ -173,7 +169,6 @@ def build_table():
     # comparator. Planck CMB (67.4) is a ΛCDM-extrapolated value PPM doesn't
     # share; its 5.2% gap reflects the Hubble tension itself, not framework
     # disagreement. SH0ES Cepheids (73.0) gives -2.9%; full landscape in
-    # ch12-gravity §The Hubble Constant.
     h0 = GR.hubble_from_age()
     rows.append(_row('PRED.17', 'H₀ [km/s/Mpc]',
         h0['H0_km_s_Mpc'], 69.8, 2, 'VERIFIED',
@@ -273,7 +268,7 @@ def build_table():
     # ─── Consciousness-scale predictions ─────────────────────────────────
     rows.append(_row('DER.12', 'ΔS per event [nats]',
         CON.delta_s()['nats'], 5.51, 1, 'VERIFIED',
-        '3 ln(2π) ≈ 5.51; §3 eq:entropy_per_firing'))
+        '3 ln(2π) ≈ 5.51'))
 
     rows.append(_row('DER.13', 'Φ (awake brain) [nats]',
         CON.integrated_information(), 200.0, 1, 'FORMULA',
@@ -291,7 +286,7 @@ def build_table():
     # PRED.25 (sin²θ₁₃ PMNS) intentionally excluded from the master
     # registry: TBM zeroth order gives 0, which renders as a -100% bar
     # that dominates the figure visually without being informative.  The
-    # EXCLUDED case is fully handled in ch10b-mixing's dedicated mixing
+    # EXCLUDED case is fully handled's dedicated mixing
     # predictions figure with appropriate >5σ framing.
 
     # ─── PRED.26: V_us (Cabibbo) ────────────────────────────────────────
@@ -328,12 +323,10 @@ def build_table():
 
     return rows
 
-
 def summary_stats(rows=None):
     """Count predictions by status.
 
     LaTeX: n/a
-    Section: utility
     Status: INTERNAL
     """
     if rows is None:
@@ -344,12 +337,10 @@ def summary_stats(rows=None):
         stats[s] = stats.get(s, 0) + 1
     return stats
 
-
 def print_table():
     """Print the full prediction cross-check table.
 
     LaTeX: n/a
-    Section: utility
     Status: INTERNAL
     """
     rows = build_table()
@@ -373,12 +364,9 @@ def print_table():
     print(f"All items:  {len(rows)} total — " +
           ", ".join(f"{k}: {v}" for k, v in sorted(stats.items())))
 
-
 def particle_physics():
     """Particle-physics subset of predictions.
 
-    LaTeX: \\textit{Code: ppm.predictions.particle_physics()}  [ch15]
-    Section: ch15 §Particle Physics
     Status: VERIFIED
 
     Returns: list of prediction rows for particle physics (PRED.1–14).
@@ -386,12 +374,9 @@ def particle_physics():
     return [r for r in build_table() if r['id'].startswith('PRED')
             and int(r['id'].split('.')[1]) <= 14]
 
-
 def cosmology_predictions():
     """Cosmology subset of predictions.
 
-    LaTeX: \\textit{Code: ppm.predictions.cosmology()}  [ch15]
-    Section: ch15 §Cosmology
     Status: VERIFIED
 
     Returns: list of prediction rows for cosmological quantities (PRED.15–20).
@@ -399,12 +384,9 @@ def cosmology_predictions():
     return [r for r in build_table() if r['id'].startswith('PRED')
             and 15 <= int(r['id'].split('.')[1]) <= 20]
 
-
 def gravity_predictions():
     """Gravity subset of predictions.
 
-    LaTeX: \\textit{Code: ppm.predictions.gravity()}  [ch15]
-    Section: ch15 §Gravity
     Status: VERIFIED
 
     Returns: list of prediction rows for gravitational quantities (PRED.15, 21–23).
@@ -412,12 +394,9 @@ def gravity_predictions():
     ids = {'PRED.15', 'PRED.21', 'PRED.22', 'PRED.23'}
     return [r for r in build_table() if r['id'] in ids]
 
-
 def consciousness_predictions():
     """Consciousness-scale subset of predictions.
 
-    LaTeX: \\textit{Code: ppm.predictions.consciousness()}  [ch15]
-    Section: ch15 §Consciousness
     Status: VERIFIED
 
     Returns: list of prediction rows for consciousness-scale quantities (DER.7–14).
@@ -425,12 +404,9 @@ def consciousness_predictions():
     return [r for r in build_table() if r['id'].startswith('DER')
             and int(r['id'].split('.')[1]) >= 7]
 
-
 def hubble_tension():
     """Hubble tension analysis.
 
-    LaTeX: \\textit{Code: ppm.predictions.hubble_tension()}  [ch12]
-    Section: ch12 §The Hubble Constant
     Status: VERIFIED
 
     Returns: dict with PPM H₀ prediction and comparison to CMB/local values.
@@ -447,8 +423,6 @@ def hubble_tension():
         'notes': 'PPM H₀ sits between CMB and local values',
         'status': 'VERIFIED'
     }
-
-
 
 if __name__ == "__main__":
     print_table()

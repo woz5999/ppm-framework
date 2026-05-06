@@ -11,19 +11,16 @@ Equivalently (adopting Planck UV anchor):
 The ladder is parameterized by integer or half-integer k ∈ [1, ~75] (Planck to consciousness).
 Each k-level corresponds to a characteristic energy scale of the PPM framework.
 
-Section references: §4 (Bootstrap & Hierarchy Scaling), §7 (SM Parameters)
 """
 
 import math
 from . import constants as C
-
 
 def energy_mev(k):
     """
     Energy at k-level in MeV.
 
     LaTeX: E(k) = 140\\,{\\rm MeV} \\times (2\\pi)^{(51-k)/2}
-    Section: §4 (Bootstrap & Hierarchy)
     Status: VERIFIED (anchored at k_ref=51, k=1 gives Planck to 5%)
 
     Parameters
@@ -36,37 +33,30 @@ def energy_mev(k):
     """
     return C.M_PI_MEV * (C.TAU ** ((C.K_REF - k) / 2.0))
 
-
 def energy_gev(k):
     """Energy at k-level in GeV.
 
     LaTeX: E(k)\\;[\\rm GeV] = 0.140\\;[\\rm GeV] \\times (2\\pi)^{(51-k)/2}
-    Section: §4 (Bootstrap & Hierarchy)
     Status: VERIFIED
     """
     return energy_mev(k) * 1e-3
-
 
 def k_from_energy_mev(E_mev):
     """
     Inverse: k-level for a given energy in MeV.
 
     LaTeX: k = 51 - 2\\,\\frac{\\ln(E/140\\,{\\rm MeV})}{\\ln(2\\pi)}
-    Section: §4 (Bootstrap & Hierarchy)
     Status: VERIFIED
     """
     return C.K_REF - 2.0 * math.log(E_mev / C.M_PI_MEV) / math.log(C.TAU)
-
 
 def k_from_energy_gev(E_gev):
     """Inverse: k-level for a given energy in GeV.
 
     LaTeX: k = 51 - 2\\,\\frac{\\ln(E/0.140\\,{\\rm GeV})}{\\ln(2\\pi)}
-    Section: §4 (Bootstrap & Hierarchy)
     Status: VERIFIED
     """
     return k_from_energy_mev(E_gev * 1e3)
-
 
 # ─── Key k-level anchors ──────────────────────────────────────────────────────
 
@@ -75,7 +65,6 @@ def planck_anchor():
     Planck scale from E(k=1): UV anchor of the hierarchy.
 
     LaTeX: E(k{=}1) = 140\\,{\\rm MeV} \\times (2\\pi)^{25}
-    Section: §4 (Bootstrap & Hierarchy)
     Status: VERIFIED
 
     Value: ≈ 1.28 × 10^{19} GeV  (observed E_P = 1.22 × 10^{19} GeV, 5% agreement)
@@ -92,13 +81,11 @@ def planck_anchor():
         'note': 'UV anchor; R=l_P fixes k=1 to Planck energy at 5%'
     }
 
-
 def uv_boundary():
     """
     UV boundary of the effective theory at k = r² = 10.
 
     LaTeX: k_{\\rm UV} = r^2 = 10
-    Section: §4 (Bootstrap & Hierarchy)
     Status: VERIFIED
 
     This is topological: V_⊥ = β×πR = 10 (the transverse volume of the instanton)
@@ -111,13 +98,11 @@ def uv_boundary():
         'note': 'V_⊥ = β×πR = 10 fixes this topologically'
     }
 
-
 def pati_salam_breaking():
     """
     Pati-Salam breaking scale at k_break ≈ 16.25.
 
     LaTeX: k_{\\rm break} \\approx 16.25
-    Section: §6 (Gauge Structure)
     Status: FLAGGED
 
     Determined by: sin²θ_W(E_break) from SM running = 3/8 (PPM/Pati-Salam prediction)
@@ -133,13 +118,11 @@ def pati_salam_breaking():
         'note': 'k_break follows from sin²θ_W = 3/8 matching condition'
     }
 
-
 def ewsb_scale():
     """
     Electroweak symmetry breaking scale at k_EWSB = 44.5.
 
     LaTeX: k_{\\rm EWSB} = 44.5
-    Section: §3 (The Six Bridges), §7 (SM Parameters)
     Status: VERIFIED
 
     Equivalent to the top Yukawa y_t — the single empirical input of the framework
@@ -152,13 +135,11 @@ def ewsb_scale():
         'note': 'Single empirical input; equivalent to y_t'
     }
 
-
 def pion_anchor():
     """
     Pion mass anchor at k = 51.
 
     LaTeX: E(k{=}51) = 140\\,{\\rm MeV}  (by construction)
-    Section: §4 (Bootstrap & Hierarchy)
     Status: VERIFIED
 
     This is the reference point of the ladder formula.
@@ -171,7 +152,6 @@ def pion_anchor():
         'status': 'DERIVED',
         'note': 'Derived from Planck anchor as E_P × (2π)^{-50/2}'
     }
-
 
 def g_from_topology():
     """
@@ -189,7 +169,6 @@ def g_from_topology():
        g = A_min = 2π
 
     LaTeX: g = 2\\pi
-    Section: §4 (Bootstrap & Hierarchy)
     Status: VERIFIED
 
     Empirical: g_emp ≈ 6.32, 2π = 6.2832 (0.6% agreement).
@@ -206,13 +185,11 @@ def g_from_topology():
         'error_pct': (6.32 / g_topo - 1) * 100,
     }
 
-
 def consciousness_level(T_kelvin=310.0):
     """
     k_conscious from thermal matching E(k) = k_B T_bio.
 
     LaTeX: k_{\\rm conscious}(T) = 51 - 2\\ln(k_B T/m_\\pi c^2)/\\ln(2\\pi)
-    Section: §9 (Consciousness)
     Status: VERIFIED
 
     For T = 310 K (mammalian body temp): k_conscious ≈ 75.35
@@ -222,7 +199,6 @@ def consciousness_level(T_kelvin=310.0):
     E_eV = kB * T_kelvin
     E_MeV = E_eV * 1e-6
     return C.K_REF - 2.0 * math.log(E_MeV / C.M_PI_MEV) / math.log(C.TAU)
-
 
 # ─── Particle mass table ────────────────────────────────────────────────────
 
@@ -254,13 +230,11 @@ PARTICLE_TABLE = [
     ("electron",     57.0,   0.000511,    "lepton"),      # n=25, k = 44.5 + 25/2
 ]
 
-
 def k_level_table():
     """
     Build the full k-level table with predicted vs observed masses.
 
     LaTeX: n/a
-    Section: §4 (Bootstrap & Hierarchy)
     Status: INTERNAL
 
     Returns list of dicts with k, predicted E(k), observed mass, and error.
@@ -282,12 +256,10 @@ def k_level_table():
         })
     return rows
 
-
 def print_k_table():
     """Print the full k-level table for key anchors.
 
     LaTeX: n/a
-    Section: utility
     Status: INTERNAL
     """
     print(f"{'k':>6}  {'E (GeV)':>14}  {'E (MeV)':>14}  Note")
@@ -304,7 +276,6 @@ def print_k_table():
     ]:
         E = energy_gev(k)
         print(f"{k:>6.2f}  {E:>14.4e}  {E*1e3:>14.4e}  {note}")
-
 
 if __name__ == "__main__":
     print_k_table()

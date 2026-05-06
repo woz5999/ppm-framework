@@ -8,19 +8,16 @@ PPM neutrino sector predictions:
 2. θ_strong = 0 exactly (T-invariance of the τ-involution forbids the θ-term)
 3. Sterile neutrino mass window from k-level brackets
 
-Section references: §6 (Gauge Structure), §7 (SM Parameters)
 """
 
 import math
 from . import constants as C
-
 
 def theta_strong():
     """
     Strong CP angle θ = 0 exactly.
 
     LaTeX: \\theta_{\\rm strong} = 0
-    Section: §6 (Gauge Structure)
     Status: DERIVED (VERIFIED)
 
     Physical argument: The strong-CP term L_θ = θ (g²/32π²) G^a_{μν} G̃^{a,μν}
@@ -39,7 +36,6 @@ def theta_strong():
         'note': 'Resolves strong CP problem without axion'
     }
 
-
 def pmns_tribimaximal():
     """
     PMNS neutrino mixing matrix: tribimaximal (TBM) form.
@@ -50,7 +46,6 @@ def pmns_tribimaximal():
         1/\\sqrt{6} & -1/\\sqrt{3} & 1/\\sqrt{2}
     \\end{pmatrix}
 
-    Section: §7 (SM Parameters)
     Status: VERIFIED (approximate; θ₁₃ = 0 is now excluded at >5σ)
 
     TBM predictions:
@@ -85,7 +80,6 @@ def pmns_tribimaximal():
         'note': 'TBM is zeroth-order; corrections from τ-involution + RG expected'
     }
 
-
 def sterile_neutrino_mass_window():
     """
     Sterile neutrino mass window from PPM hierarchy k-levels.
@@ -100,7 +94,6 @@ def sterile_neutrino_mass_window():
     the active neutrino sector and the confinement scale.
 
     LaTeX: m_{\\rm sterile} \\in [E(k{=}62), E(k{=}61)]
-    Section: §7 (SM Parameters)
     Status: AWAITING DATA
     """
     from .hierarchy import energy_mev
@@ -119,7 +112,6 @@ def sterile_neutrino_mass_window():
         'note': 'Brackets 3.5 keV X-ray line (if confirmed); controversial observational status'
     }
 
-
 def neutrino_mass_bounds():
     """
     Neutrino mass scale from k-level assignments.
@@ -128,7 +120,6 @@ def neutrino_mass_bounds():
     consistent with oscillation data (Δm² ~ 10⁻³ eV²).
 
     LaTeX: m_\\nu \\in [E(k{=}64), E(k{=}63)]
-    Section: §7 (SM Parameters)
     Status: FLAGGED
     """
     from .hierarchy import energy_mev
@@ -145,7 +136,6 @@ def neutrino_mass_bounds():
         'status': 'VERIFIED (order-of-magnitude)',
         'note': 'Individual masses not predicted; mass splittings from hierarchy spacing'
     }
-
 
 if __name__ == "__main__":
     ts = theta_strong()

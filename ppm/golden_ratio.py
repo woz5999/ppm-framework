@@ -18,20 +18,17 @@ Square pyramidal numbers: P_n = n(n+1)(2n+1)/6
     P₃² = 196  (the muon quantum number / instanton exponent ratio)
     P₄  = 30   (zero mode count)
 
-Section references: §3 (Measurement Axiom), §8 (Exact Predictions),
                     section-gravity.tex (Why φ subsection)
 """
 
 import math
 from . import constants as C
 
-
 def pyramidal_number(n):
     """
     Square pyramidal number P_n = n(n+1)(2n+1)/6.
 
     LaTeX: P_n = n(n+1)(2n+1)/6
-    Section: utility
     Status: INTERNAL
 
     P_n counts the number of spheres in a pyramid with square base of side n.
@@ -42,7 +39,6 @@ def pyramidal_number(n):
     P₁=1, P₂=5, P₃=14, P₄=30, P₅=55, ...
     """
     return n * (n + 1) * (2*n + 1) // 6
-
 
 def pyramidal_identity():
     """
@@ -56,7 +52,6 @@ def pyramidal_identity():
     of the instanton sector.
 
     LaTeX: P_3^2 \\ln \\varphi \\approx P_4 \\pi
-    Section: §10.5 (Why φ?)
     Status: VERIFIED
 
     Both 196 and 30 arise as square pyramidal numbers from CP³ spectral geometry:
@@ -84,13 +79,11 @@ def pyramidal_identity():
         'note': 'P₃²·ln(φ) ≈ P₄·π to 0.074% — both sides from CP³ spectral geometry'
     }
 
-
 def cpn_selectivity():
     """
     Show that the pyramidal identity is specific to CP³ (n=3).
 
     LaTeX: \\text{Ratio}(n) = d_1 \\ln(\\varphi) / [\\dim PGL(n+1) \\cdot \\pi/(2n)]
-    Section: §10.5 (Why φ?)
     Status: VERIFIED
 
     For CP^n, the analogous identity would be:
@@ -118,7 +111,6 @@ def cpn_selectivity():
         }
     return results
 
-
 # ─── A₅ decomposition of instanton moduli ──────────────────────────────────
 
 def a5_decomposition():
@@ -126,7 +118,6 @@ def a5_decomposition():
     sl(4,R) under A₅ ≅ PSL(2,5) decomposes as χ₁ ⊕ 3·χ₃ ⊕ χ₅.
 
     LaTeX: \\mathfrak{sl}(4,\\mathbb{R})|_{A_5} = \\chi_1 \\oplus 3\\chi_3 \\oplus \\chi_5
-    Section: section-gravity.tex (Why φ subsection), eq:sl4_A5_decomp
     Status: DERIVED
 
     A₅ irreps: χ₁ (dim 1), χ₃ (dim 3), χ₃' (dim 3), χ₄ (dim 4), χ₅ (dim 5)
@@ -158,7 +149,6 @@ def a5_decomposition():
         'status': 'DERIVED'
     }
 
-
 def dirichlet_l_function():
     """
     Dirichlet L-function L(1,(·/5)) = 2ln(φ)/√5.
@@ -173,7 +163,6 @@ def dirichlet_l_function():
     ln(φ) because φ is the fundamental unit of Z[φ] = Z[(1+√5)/2].
 
     LaTeX: L(1, (\\cdot/5)) = \\frac{2\\ln\\varphi}{\\sqrt{5}}
-    Section: §10.5 (Why φ?)
     Status: VERIFIED
     """
     L_value = 2.0 * math.log(C.PHI) / math.sqrt(5.0)
@@ -185,12 +174,10 @@ def dirichlet_l_function():
         'note': 'Connects A₅ group theory to Q(√5) number theory via Dirichlet character mod 5'
     }
 
-
 def print_golden_ratio_summary():
     """Print summary of golden ratio structural analysis.
 
     LaTeX: n/a
-    Section: utility
     Status: INTERNAL
     """
     print("=== Golden Ratio in PPM: Structural Origin ===\n")
@@ -212,7 +199,6 @@ def print_golden_ratio_summary():
     print("  A₅ acts on instanton moduli (icosahedral subgroup of PGL(4,C))")
     print("  Character field of A₅ = Q(√5)")
     print(f"  Fundamental unit of Q(√5) = φ = {C.PHI:.6f}")
-
 
 if __name__ == "__main__":
     print_golden_ratio_summary()

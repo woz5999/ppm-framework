@@ -10,19 +10,16 @@ This involution generates the RP³ fixed-point set and is responsible for:
 2. The τ-conjugate sector giving λ = −λ_PPM
 3. The geometric identity Δλ = 1/(2√π)
 
-Section references: §2 (τ Involution), §7 (SM Parameters)
 """
 
 import math
 from . import constants as C
-
 
 def lambda_ppm():
     """
     Higgs quartic coupling from RP³ normal bundle curvature.
 
     LaTeX: \\lambda_{\\rm PPM} = \\frac{1}{4\\sqrt{\\pi}} \\approx 0.14105
-    Section: §2 (τ involution), §7 (SM parameters)
     Status: DERIVED (VERIFIED)
 
     The RP³ ↪ CP³ has a normal bundle whose curvature, integrated over RP³,
@@ -31,13 +28,11 @@ def lambda_ppm():
     """
     return 1.0 / (4.0 * math.sqrt(math.pi))
 
-
 def lambda_tau_conjugate():
     """
     Higgs quartic in the τ-conjugate sector.
 
     LaTeX: \\lambda_{\\tau} = -\\lambda_{\\rm PPM}
-    Section: §2 (τ involution), §7 (SM parameters)
     Status: VERIFIED
 
     The anti-holomorphic involution τ reverses the sign of τ-odd quantities.
@@ -45,13 +40,11 @@ def lambda_tau_conjugate():
     """
     return -lambda_ppm()
 
-
 def delta_lambda():
     """
     Geometric identity: separation between τ-sector endpoints.
 
     LaTeX: \\Delta\\lambda = \\lambda_{\\rm PPM} - \\lambda_{\\tau} = \\frac{1}{2\\sqrt{\\pi}} \\approx 0.28209
-    Section: §2 (τ involution), §7 (SM parameters)
     Status: VERIFIED
 
     Both endpoints are geometrically fixed (RP³ curvature in both τ-orientations).
@@ -64,13 +57,11 @@ def delta_lambda():
     """
     return lambda_ppm() - lambda_tau_conjugate()
 
-
 def delta_lambda_observed(loops=2):
     """
     Observed Δλ from SM running (for comparison with geometric identity).
 
     LaTeX: \\Delta\\lambda_{\\rm SM}\\;\\text{(SM running, 1-loop or 2-loop)}
-    Section: §7 (SM parameters), section4-new.tex
     Status: VERIFIED
 
     section4-new.tex:
@@ -83,13 +74,11 @@ def delta_lambda_observed(loops=2):
         return 0.270  # One-loop SM running
     return 0.286  # Two-loop SM running
 
-
 def higgs_quartic_comparison():
     """
     Compare λ_PPM to observed Higgs quartic at M_Z.
 
     LaTeX: \\lambda_{\\rm PPM}\\;\\text{vs}\\;\\lambda(M_Z)
-    Section: §7 (SM parameters)
     Status: FLAGGED
 
     Observed: λ(M_Z) ≈ 0.1292 (MSbar)
@@ -113,13 +102,11 @@ def higgs_quartic_comparison():
         'note': 'λ_PPM is geometric value from RP³ curvature; 9.2% gap is tree-level accuracy'
     }
 
-
 def top_yukawa_ppm():
     """
     PPM tree-level top Yukawa coupling.
 
     LaTeX: y_t^{\\rm PPM} = \\frac{\\pi}{2(2\\pi)^{1/4}} \\approx 0.992
-    Section: §7 (SM parameters)
     Status: DERIVED (VERIFIED session 27)
 
     IMPORTANT convention: y_t = √2 × m_t/v, not m_t/v = 0.701.
@@ -127,13 +114,11 @@ def top_yukawa_ppm():
     """
     return math.pi / (2.0 * (C.TAU ** 0.25))
 
-
 def beta_lambda_ppm():
     """
     One-loop β_λ at the PPM geometric point (λ_PPM, y_t_PPM, SM gauge at M_Z).
 
     LaTeX: 16\\pi^2 \\beta_\\lambda = 24\\lambda^2 + 12\\lambda y_t^2 - 6y_t^4 + \\dots
-    Section: §7 (SM parameters)
     Status: VERIFIED
 
     Standard SM formula (PDG/Buttazzo et al.):
@@ -166,13 +151,11 @@ def beta_lambda_ppm():
         'note': 'β_λ ≈ −0.0254; Option B (β_λ=0) ruled out by SM beta functions'
     }
 
-
 def geometric_identity_check():
     """
     Verify the geometric identity Δλ = 1/(2√π).
 
     LaTeX: \\Delta\\lambda \\stackrel{?}{=} 1/(2\\sqrt{\\pi})
-    Section: §2 (τ involution), §7 (SM parameters)
     Status: INTERNAL
 
     Returns dict with both the formula value and its components.
@@ -190,10 +173,8 @@ def geometric_identity_check():
         'sm_match_pct_2loop': abs(0.286 / dl - 1) * 100,
     }
 
-
 # ─── Coleman-Weinberg EWSB ──────────────────────────────────────────────────
 #
-# Section: ch07 (SM parameters), ch10 (electroweak symmetry breaking)
 #
 # PPM UV boundary conditions at k=0 (conformal, m²=0):
 #   y_t(k=0) = π^{3/4} / 2^{5/4}
@@ -203,13 +184,11 @@ def geometric_identity_check():
 # Run one-loop SM RGEs downward and check the Coleman-Weinberg condition
 # λ(v) = 3y_t(v)⁴/(4π²) at k_EWSB = 44.5.
 
-
 def _sm_beta_functions(y, t):
     """
     One-loop SM beta functions for [y_t, λ, g₁, g₂, g₃].
 
     LaTeX: \\beta_i\\;\\text{(one-loop SM RGEs)}
-    Section: utility (SM running)
     Status: INTERNAL
 
     Parameters
@@ -247,7 +226,6 @@ def _sm_beta_functions(y, t):
 
     return [beta_yt, beta_lam, beta_g1, beta_g2, beta_g3]
 
-
 def ewsb_coleman_weinberg(k_target=None, n_steps=200000):
     """
     Run SM couplings from PPM UV boundary (k=0) down to k_target and
@@ -263,7 +241,6 @@ def ewsb_coleman_weinberg(k_target=None, n_steps=200000):
         λ(v) = 3 y_t(v)⁴ / (4π²)
 
     LaTeX: \\lambda(v) = 3 y_t(v)^4 / (4\\pi^2)
-    Section: §7 (SM parameters), §10 (EWSB)
     Status: VERIFIED
 
     Parameters
@@ -387,7 +364,6 @@ def ewsb_coleman_weinberg(k_target=None, n_steps=200000):
         result['delta_k'] = None
 
     return result
-
 
 if __name__ == "__main__":
     print(f"λ_PPM            = {lambda_ppm():.6f}  (expect 0.141047)")

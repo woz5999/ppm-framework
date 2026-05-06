@@ -12,7 +12,6 @@ coefficients) and R2 (Fubini-Study normalization). The
 functions here implement the framework structure and
 leading-order results.
 
-LaTeX: ch05 (Generations), ch10 (Particle Spectrum)
 """
 
 import math
@@ -20,15 +19,12 @@ from . import constants as C
 from . import hierarchy as H
 from . import gauge as G
 
-
 def fiber_modes():
     """Fiber mode structure on RP³.
 
-    LaTeX: \\textit{Code: ppm.spectrum.fiber_modes()}  [ch10]
     The Z₂-equivariant fiber bundle over RP³ has modes labeled
     by the k-level. Each mode corresponds to a physical degree
     of freedom when it satisfies the Bohr-Sommerfeld condition.
-    Section: §10.1
     Status: FORMULA
     """
     modes = []
@@ -54,15 +50,12 @@ def fiber_modes():
         'status': 'FORMULA'
     }
 
-
 def bohr_sommerfeld():
     """Bohr-Sommerfeld quantization condition.
 
-    LaTeX: \\textit{Code: ppm.spectrum.bohr_sommerfeld()}  [ch10]
     ∮ p·dq = 2πn on closed geodesics of RP³ selects allowed k-levels.
     The pion mass (k=51) is the empirical anchor; all other masses
     follow from the geometric hierarchy g=2π.
-    Section: §10.2
     Status: FORMULA
     """
     return {
@@ -73,13 +66,11 @@ def bohr_sommerfeld():
         'status': 'FORMULA'
     }
 
-
 def top_quark():
     """Top quark mass from Yukawa coupling.
 
     LaTeX: y_t = π/(2(2π)^{1/4}), m_t = y_t v/√2
-    \\textit{Code: ppm.spectrum.top_quark()}  [ch10]
-    Section: §10.3
+    \\textit{Code: ppm.spectrum.top_quark()}
     Status: VERIFIED
     """
     from . import higgs as HI
@@ -94,12 +85,9 @@ def top_quark():
         'status': 'VERIFIED'
     }
 
-
 def heavy_quarks():
     """Heavy quark mass predictions (leading order).
 
-    LaTeX: \\textit{Code: ppm.spectrum.heavy_quarks()}  [ch10]
-    Section: §10.4
     Status: OPEN (blocked on R1, R2 for precision)
     """
     return {
@@ -111,12 +99,9 @@ def heavy_quarks():
         'status': 'OPEN'
     }
 
-
 def tau_mass():
     """Tau lepton mass from hierarchy.
 
-    LaTeX: \\textit{Code: ppm.spectrum.tau_mass()}  [ch10]
-    Section: §10.5
     Status: FORMULA
     """
     k_tau = 48
@@ -129,13 +114,11 @@ def tau_mass():
         'status': 'FORMULA'
     }
 
-
 def muon_electron():
     """Muon-electron mass ratio.
 
     LaTeX: m_μ/m_e = (3/2)e^{π²/2}  (wall suppression)
-    \\textit{Code: ppm.spectrum.muon_electron()}  [ch10]
-    Section: §10.6
+    \\textit{Code: ppm.spectrum.muon_electron()}
     Status: VERIFIED
     """
     lmr = G.lepton_mass_ratios()
@@ -148,12 +131,9 @@ def muon_electron():
         'status': 'VERIFIED'
     }
 
-
 def lepton_mass_ratios():
     """All lepton mass ratios.
 
-    LaTeX: \\textit{Code: ppm.spectrum.lepton_mass_ratios()}  [ch05, ch10]
-    Section: §5.4, §10.6
     Status: VERIFIED (μ/e), FLAGGED (τ/μ)
     """
     return G.lepton_mass_ratios()

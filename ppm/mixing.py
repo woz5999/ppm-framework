@@ -4,22 +4,18 @@ ppm.mixing — Quark and lepton mixing matrices
 
 Wrapper module for CKM, PMNS, and CP violation computations.
 Re-exports from berry_phase.py and neutrino.py under the names
-used in ch10 Code: references.
+used Code: references.
 
-LaTeX: ch10 (Particle Spectrum), §10.7–10.9
 """
 
 from .berry_phase import ckm_angles, delta_cp, jarlskog_invariant
 from .neutrino import theta_strong
 
-
 def ckm_berry():
     """CKM matrix from Berry phase on RP³.
 
-    LaTeX: \\textit{Code: ppm.mixing.ckm_berry()}  [ch10]
     The CKM phase δ_CP = π(1 - 1/φ) arises as the Berry phase of the
     Z₂-equivariant fiber bundle over RP³.
-    Section: §10.7
     Status: VERIFIED
     """
     angles = ckm_angles()
@@ -36,12 +32,9 @@ def ckm_berry():
         'status': 'VERIFIED'
     }
 
-
 def cp_violation():
     """CP violation from Berry phase.
 
-    LaTeX: \\textit{Code: ppm.mixing.cp_violation()}  [ch10]
-    Section: §10.8
     Status: VERIFIED
     """
     dcp = delta_cp()
@@ -53,14 +46,11 @@ def cp_violation():
         'status': 'VERIFIED'
     }
 
-
 def strong_cp():
     """Strong CP: θ_strong = 0 from T-invariance of the τ-involution.
 
-    LaTeX: \\textit{Code: ppm.strong_cp()}  [ch10]
     The strong-CP term is odd under time reversal T; the framework's
     actualization axiom imposes T-invariance via τ → θ-term forbidden.
-    Section: §10.10
     Status: VERIFIED
     """
     return {

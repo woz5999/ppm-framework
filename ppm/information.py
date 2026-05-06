@@ -6,28 +6,24 @@ Computes channel capacity, entropy, Holevo bound, and Landauer limit
 within the PPM fiber-coherence framework. These quantities characterize
 the information-processing capacity at each k-level.
 
-LaTeX: ch07 (Information Theory)
 """
 
 import math
 from . import constants as C
 from . import hierarchy as H
 
-
 # ─── Constants ───────────────────────────────────────────────────────────────
 
 K_B_NAT = 1.0  # Boltzmann constant in natural units (nats)
 LN2 = math.log(2)
 
-
 def channel_capacity(k=None):
     """Channel capacity at k-level from fiber coherence.
 
     LaTeX: C(k) = log₂(d_k) where d_k = dim of fiber representation at level k
-    \\textit{Code: ppm.information.channel_capacity()}  [ch07]
+    \\textit{Code: ppm.information.channel_capacity()}
     For the CP³ sigma model, the fiber at level k carries a representation
     of dimension scaling as φ^k.
-    Section: §7.1
     Status: FORMULA
     """
     if k is None:
@@ -43,14 +39,12 @@ def channel_capacity(k=None):
         'status': 'FORMULA'
     }
 
-
 def entropy(k=None):
     """Von Neumann entropy of projected state at k-level.
 
     LaTeX: S(k) = ln(d_k) where d_k is the fiber dimension
-    \\textit{Code: ppm.information.entropy()}  [ch07]
+    \\textit{Code: ppm.information.entropy()}
     Projection CP³ → RP³ discards fiber information, producing entropy.
-    Section: §7.2
     Status: FORMULA
     """
     if k is None:
@@ -65,13 +59,11 @@ def entropy(k=None):
         'status': 'FORMULA'
     }
 
-
 def efficiency(k=None):
     """Information efficiency: ratio of accessible to total information.
 
     LaTeX: η(k) = dim(RP³-fiber) / dim(CP³-fiber)
-    \\textit{Code: ppm.information.efficiency()}  [ch07]
-    Section: §7.3
+    \\textit{Code: ppm.information.efficiency()}
     Status: FORMULA
     """
     if k is None:
@@ -89,13 +81,11 @@ def efficiency(k=None):
         'status': 'FORMULA'
     }
 
-
 def holevo():
     """Holevo bound from fiber geometry.
 
     LaTeX: χ = S(ρ) - Σ p_i S(ρ_i)  ≤  log(d_k)
-    \\textit{Code: ppm.information.holevo()}  [ch07]
-    Section: §7.6
+    \\textit{Code: ppm.information.holevo()}
     Status: FORMULA
     """
     # At the pion scale
@@ -112,15 +102,13 @@ def holevo():
         'status': 'FORMULA'
     }
 
-
 def landauer():
     """Landauer limit from PPM thermodynamics.
 
     LaTeX: E_erase ≥ k_B T ln 2
-    \\textit{Code: ppm.information.landauer()}  [ch07]
+    \\textit{Code: ppm.information.landauer()}
     In PPM, this bound is saturated at the consciousness-scale k-window
     boundary.
-    Section: §7.7
     Status: FORMULA
     """
     T = 310.0  # mammalian body temperature

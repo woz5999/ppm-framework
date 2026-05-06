@@ -24,16 +24,13 @@ from . import dynamics as D
 from . import active_inference as AI
 from . import kahler_spectrum as KS
 
-
 PASS_THRESHOLD_PCT = 0.1   # <= 0.1% difference → PASS
 WARN_THRESHOLD_PCT = 5.0   # <= 5% difference → WARN; else FAIL
-
 
 def check(name, computed, expected, tol_pct=None):
     """Return a result dict for one check.
 
     LaTeX: n/a
-    Section: utility (verify suite)
     Status: INTERNAL
     """
     if tol_pct is None:
@@ -52,12 +49,10 @@ def check(name, computed, expected, tol_pct=None):
     return {'name': name, 'computed': computed, 'expected': expected,
             'diff_pct': diff_pct, 'status': status}
 
-
 def run_all():
     """Run all implemented checks. Returns list of result dicts.
 
     LaTeX: n/a
-    Section: utility (verify suite)
     Status: VERIFIED
     """
     results = []
@@ -159,8 +154,8 @@ def run_all():
 
     # ─── Lindblad dynamics (ppm.dynamics) ────────────────────────────────────
     # Numerical validation that the implemented actualization channel
-    # reproduces the analytical claims in ch08-variational §Actualization
-    # Free Energy and ch18-quantum §Hamiltonian Architecture.
+    # reproduces the analytical claims
+    # Free Energy.
 
     dyn_trace_drift = check_lindblad_trace_preservation()
     results.append(check("Lindblad: |Tr(ρ(T)) − 1| ~ 0",
@@ -187,8 +182,8 @@ def run_all():
     # inner-loop ρ Lindblad coupled to outer-loop θ gradient descent on F —
     # converges to a self-consistent (ρ, θ) fixed point with monotone-on-
     # average F descent. Documents the implementation against the chapter
-    # claims in ch02-operator §Cross-Scale Specialization (Consciousness
-    # Scale) and ch18-quantum §Reduced Dynamics.
+    # claims (Consciousness
+    # Scale).
 
     ai_descent_ratio = check_active_inference_F_descent()
     results.append(check("Active inference: F_final / F_initial after descent",
@@ -231,7 +226,6 @@ def run_all():
     # product-state ρ ⇒ Φ = 0 ⇒ no frame motion. Standard MI-on-bipartition
     # identity. Sanity-checks the implementation in
     # ppm.active_inference.phi_prefactor_from_lindblad against the
-    # ch13-consciousness §T13.7 derivation.
     phi_product, phi_bell = check_phi_prefactor_product_state_zero()
     results.append(check(
         "Φ ≈ 0 on bipartite product state (no integration)",
@@ -263,7 +257,6 @@ def run_all():
 
     return results
 
-
 # ─── Lindblad dynamics check helpers ────────────────────────────────────────
 #
 # Each helper sets up a small dimensionless Lindblad evolution and returns
@@ -271,14 +264,12 @@ def run_all():
 # Costs are kept low (k_max=1, total_dim=16, < 1k RK4 steps each) so the
 # full verify.run_all() suite stays under a few seconds.
 
-
 def check_lindblad_trace_preservation():
     """
     Evolve a generic τ-mixed pure state under H_α + actualization dissipator and
     return the absolute drift |Tr(ρ(T)) − 1| at the end of the evolution.
 
-    LaTeX: eq:lindblad
-    Section: ch08-variational §Actualization Free Energy
+    LaTeX:
     Status: VERIFIED
 
     Analytical claim: Lindblad evolution preserves trace exactly; numerical
@@ -298,13 +289,11 @@ def check_lindblad_trace_preservation():
     _, rho_T = traj[-1]
     return abs(rho_T.trace().real - 1.0)
 
-
 def check_lindblad_positivity_preservation():
     """
     Evolve as in trace test; return |min(eig(ρ(T)))| if negative, else 0.
 
-    LaTeX: eq:lindblad
-    Section: ch08-variational §Actualization Free Energy
+    LaTeX:
     Status: VERIFIED
 
     Analytical claim: Lindblad evolution preserves positivity (CP-divisibility).
@@ -326,13 +315,11 @@ def check_lindblad_positivity_preservation():
     min_eig = float(np.linalg.eigvalsh(herm).min())
     return abs(min(0.0, min_eig))
 
-
 def check_born_rule_fixed_point():
     """
     Born-rule yield from the single-event projection.
 
     LaTeX: |\psi\rangle\langle\psi| projection
-    Section: ch08-variational §Actualization Free Energy
     Status: VERIFIED
 
     For |ψ⟩ = cos(π/4) |+⟩ + sin(π/4) |−⟩, applying Â (= τ-projector) gives
@@ -352,14 +339,12 @@ def check_born_rule_fixed_point():
     projected = A.apply_to(rho)
     return float(projected.trace().real)
 
-
 def check_penrose_diosi_decoherence_match():
     """
     Off-diagonal decay rate matches the analytical Penrose–Diósi-style
     prediction τ_dec = 2/γ (i.e., |ρ_{+−}(t)|/|ρ_{+−}(0)| = exp(−γt/2)).
 
     LaTeX: \tau_{dec} = 2/\gamma
-    Section: ch12 §Gravitational Decoherence
     Status: VERIFIED
 
     Returns the ratio of (numerical decay) / (analytical decay) at t=2/γ
@@ -387,13 +372,11 @@ def check_penrose_diosi_decoherence_match():
     analytical = math.exp(-0.5 * gamma * t_target)
     return numerical / analytical
 
-
 def check_active_inference_F_descent():
     """
     Run a short active-inference loop and return F_final / F_initial.
 
     LaTeX: \mathcal{F}[\rho]
-    Section: ch08-variational §Actualization Free Energy
     Status: VERIFIED
 
     Expected: ratio < 1 (F descended). The 0.75 tolerance in the verify
@@ -415,7 +398,6 @@ def check_active_inference_F_descent():
         return 0.0
     return F_final / F_initial
 
-
 def check_active_inference_fixed_point_stability():
     """
     Run an active-inference loop and return the F drift across the last
@@ -423,7 +405,6 @@ def check_active_inference_fixed_point_stability():
     point).
 
     LaTeX: \mathcal{F}[\rho_*]
-    Section: ch08-variational §Actualization Free Energy
     Status: VERIFIED
     """
     import math
@@ -441,12 +422,10 @@ def check_active_inference_fixed_point_stability():
         return 0.0
     return max(recent_F) - min(recent_F)
 
-
 def _two_boundary_MI_at_alpha(alpha: float, n_cycles: int = 10):
     """Run a small TwoBoundaryActiveInferenceLoop and return MI(ρ_1; ρ_2).
 
     LaTeX: n/a
-    Section: utility (verify suite)
     Status: INTERNAL
     """
     import math
@@ -479,33 +458,27 @@ def _two_boundary_MI_at_alpha(alpha: float, n_cycles: int = 10):
     S12 = vne(snap['rho_joint'].matrix)
     return S1 + S2 - S12
 
-
 def check_two_boundary_independent_zero_MI():
     """At α=0 (no shared coupling), joint state stays product → MI ≈ 0.
 
     LaTeX: I(S_1; S_2) = 0
-    Section: ch08-variational §Actualization Free Energy
     Status: VERIFIED
     """
     return _two_boundary_MI_at_alpha(alpha=0.0, n_cycles=10)
-
 
 def check_two_boundary_coupled_positive_MI():
     """At α=1 (full joint-detection coupling), MI > 0 emerges.
 
     LaTeX: I(S_1; S_2) > 0
-    Section: ch08-variational §Actualization Free Energy
     Status: VERIFIED
     """
     return _two_boundary_MI_at_alpha(alpha=1.0, n_cycles=10)
-
 
 def check_frame_finding_recovers_alpha():
     """
     Adaptive measurement frame-finding canonical demo.
 
     LaTeX: \alpha\;\text{(boundary frame)}
-    Section: ch08-variational §Actualization Free Energy
     Status: VERIFIED
 
     Hidden state ρ = |ψ_K(α)⟩⟨ψ_K(α)| with α = π/3. FrameFindingLoop
@@ -526,7 +499,6 @@ def check_frame_finding_recovers_alpha():
     loop.run(n_steps=200)
     return abs(loop.theta_AB - target)
 
-
 def check_phi_aggregation_recovers_signal():
     """
     Φ-style aggregation canonical demo: at high signal noise (analog of the
@@ -535,7 +507,6 @@ def check_phi_aggregation_recovers_signal():
     the consciousness-scale R(k_c) ≈ 1 regime.
 
     LaTeX: \Phi\;\text{aggregation}
-    Section: ch13 §Phi
     Status: VERIFIED
 
     Returns: mean error reduction across multiple seeds. Positive means
@@ -572,13 +543,11 @@ def check_phi_aggregation_recovers_signal():
     mean_integ = sum(integ_errs) / len(integ_errs)
     return mean_naive - mean_integ
 
-
 def check_decoherence_race_active_advantage():
     """
     Decoherence race canonical demo: selective advantage of adaptation.
 
     LaTeX: \tau_{dec}^{active} > \tau_{dec}^{passive}
-    Section: ch08-variational §Actualization Free Energy
     Status: VERIFIED
 
     Active system (η=0.05) and passive system (η=0) start from same ρ and
@@ -599,7 +568,6 @@ def check_decoherence_race_active_advantage():
         eta_active=0.05)
     return result['fitness_advantage']
 
-
 def check_phi_prefactor_product_state_zero():
     """
     Φ-prefactor sanity check: the prefactor in the frame-evolution equation
@@ -608,13 +576,12 @@ def check_phi_prefactor_product_state_zero():
     Bell state on a 2x2 system (maximal mutual information).
 
     LaTeX: \Phi(\rho_{prod}) = 0
-    Section: ch13 §Phi
     Status: VERIFIED
 
     Returns (phi_product, phi_bell) for two unit tests of the
     ppm.active_inference.phi_prefactor_from_lindblad implementation.
 
-    Backs the ch13-consciousness §T13.7 / ch19-boundaries §Frame
+    Backs the /
     Rotation derivation: integrated information enters linearly,
     separating systems that undergo active inference from those that
     do not.
@@ -643,14 +610,12 @@ def check_phi_prefactor_product_state_zero():
 
     return float(phi_product), float(phi_bell)
 
-
 def check_zeno_regime_protection():
     """
     Quantum Zeno regime: with γ ≫ ω in the dissipator, an initially τ-even
     pure state held against a τ-mixing Hamiltonian retains τ-odd weight < 5%.
 
     LaTeX: \tau_{Zeno}
-    Section: ch08-variational §Quantum Zeno
     Status: VERIFIED
 
     Returns the τ-odd weight at t = 1.0 with γ_zeno = 1000, ω_mix = 1.0.
@@ -675,12 +640,10 @@ def check_zeno_regime_protection():
     _, rho_T = traj[-1]
     return rho_T.tau_odd_weight()
 
-
 def print_report():
     """Print the full verification report.
 
     LaTeX: n/a
-    Section: utility (verify suite)
     Status: INTERNAL
     """
     results = run_all()
@@ -713,14 +676,11 @@ def print_report():
 
     return results
 
-
 # ─── Aliases for LaTeX Code: references ─────────────────────────────────────
 
 def self_consistency():
     """Self-consistency verification subset.
 
-    LaTeX: \\textit{Code: ppm.verify.self_consistency()}  [ch14]
-    Section: ch14 §Self-Consistency
     Status: VERIFIED
     """
     results = run_all()
@@ -730,7 +690,6 @@ def self_consistency():
         'n_total': len(results),
         'status': 'PASS' if all(r['status'] != 'FAIL' for r in results) else 'FAIL'
     }
-
 
 if __name__ == "__main__":
     print_report()

@@ -12,21 +12,17 @@ Key result:
     Observed: 1.20 ± 0.08 rad (68.4 ± 3°)
     Agreement: within 1σ
 
-Section references: Appendix B.5.3
 """
 
 import math
 from . import constants as C
-
 
 def delta_cp():
     """
     CP-violating phase from Berry phase on Spin(RP³).
 
     LaTeX: \\delta_{CP} = \\pi\\left(1 - \\frac{1}{\\varphi}\\right) = \\frac{\\pi}{\\varphi^2}
-    Section: ch10b-mixing.tex §10.2 (CP Violation in the Quark Sector),
-             ch10b-mixing.tex §Berry Connection on Spin(RP³)
-             (sec:T10.berry_connection) for the bundle-level derivation.
+             (.berry_connection) for the bundle-level derivation.
     Status: DERIVED (VERIFIED)
 
     This phase is the Berry phase on the spinor bundle Spin(RP³) ≅ RP³ × C²
@@ -63,13 +59,11 @@ def delta_cp():
         'status': 'VERIFIED'
     }
 
-
 def ckm_angles():
     """
     CKM quark mixing angle MAGNITUDES from wavefunction-overlap mass-ratios.
 
     LaTeX: \\theta_C \\approx \\sqrt{m_d/m_s}
-    Section: ch10b-mixing.tex §10.3 (Quark Mixing Magnitudes)
     Status: FLAGGED
 
     The CKM matrix decomposes into magnitude and phase parts:
@@ -77,7 +71,7 @@ def ckm_angles():
         V_ij = |V_ij| × exp(i arg V_ij)
 
     The PHASE structure (CP-violating phase δ_CP = π/φ²) is the Berry phase
-    on Spin(RP³) — see delta_cp() above and ch10b-mixing.tex §Berry
+    on Spin(RP³) — see delta_cp() above
     Connection on Spin(RP³) for the derivation.
 
     The MAGNITUDES |V_ij| are NOT produced by the Berry connection alone.
@@ -130,13 +124,11 @@ def ckm_angles():
         'note': 'Full CKM matrix from Berry phase integrals; individual angles approximate'
     }
 
-
 def jarlskog_invariant():
     """
     Jarlskog invariant J from PPM Berry phase.
 
     LaTeX: J = c_{12} c_{23} c_{13}^2 s_{12} s_{23} s_{13} \\sin(\\delta_{CP})
-    Section: ch10b-mixing.tex §10.4 (Jarlskog Invariant)
     Status: VERIFIED
 
     Using approximate PPM angles and δ_CP = π/φ²:
@@ -161,7 +153,6 @@ def jarlskog_invariant():
         'sin_delta_cp': sin_delta,
         'status': 'VERIFIED'
     }
-
 
 if __name__ == "__main__":
     dcp = delta_cp()

@@ -2,11 +2,10 @@
 ppm.gravity — Gravitational physics
 =====================================
 
-Wrapper module providing the interface referenced in ch12-gravity.tex.
+Wrapper module providing the interface referenced.
 Most computations live in cosmology.py; this module re-exports them
 under the names used in the technical document's Code: references.
 
-LaTeX: ch12 (Gravity and Cosmology)
 """
 
 from .cosmology import (
@@ -24,16 +23,14 @@ from .cosmology import (
 from . import constants as C
 import math
 
-
 def newton_constant():
     """Newton's gravitational constant from PPM.
 
     LaTeX: G = 16π⁴ ℏc α / (m_π² √N_∞)
-    \\textit{Code: ppm.gravity.newton_constant()}  [ch12]
-    Section: §12.1
+    \\textit{Code: ppm.gravity.newton_constant()}
     Status: VERIFIED
 
-    Uses the neutral pion mass m_{π⁰} = 134.977 MeV (per ch12-gravity.tex
+    Uses the neutral pion mass m_{π⁰} = 134.977 MeV (
     "The neutral pion input yields the better match in both G and Λ
     simultaneously"). The Λ formula in cosmology.cosmological_constant()
     uses the same neutral pion mass; both give error ≈ +1.5–1.7%.
@@ -52,14 +49,11 @@ def newton_constant():
         'status': 'VERIFIED'
     }
 
-
 def two_couplings():
     """Relation between G and Λ via N_∞.
 
-    LaTeX: \\textit{Code: ppm.gravity.two_couplings()}  [ch12]
     Both G and Λ derive from N_∞ = φ^{392}. The ratio GΛ/c⁴ is
     fixed by geometry.
-    Section: §12.2
     Status: VERIFIED
     """
     G = newton_constant()['G_ppm_si']
@@ -73,23 +67,17 @@ def two_couplings():
         'status': 'VERIFIED'
     }
 
-
 def hubble():
     """Hubble constant from Friedmann age.
 
-    LaTeX: \\textit{Code: ppm.gravity.hubble()}  [ch12]
-    Section: §12.7 (ch12-gravity.tex)
     Status: VERIFIED
     """
     return hubble_from_age()
 
-
 def dark_energy():
     """Dark energy equation of state from backreaction.
 
-    LaTeX: \\textit{Code: ppm.gravity.dark_energy()}  [ch12]
     w_eff = -1 + (2/3)(Ω_δ/Ω_DE) where Ω_δ is the backreaction fraction.
-    Section: §12.5
     Status: VERIFIED
     """
     w_lo = w_eff(0.01)
@@ -98,5 +86,4 @@ def dark_energy():
         'w_eff_low': w_lo,
         'w_eff_high': w_hi,
     }
-
 

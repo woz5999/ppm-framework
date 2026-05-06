@@ -15,12 +15,10 @@ Key results (Δk from known values):
     Confinement:   Δk ≈ 1.9  (two-loop with flavor thresholds)
     Consciousness: R=1 at k ≈ 75.4  (exact from hierarchy formula)
 
-Section references: §5 (Hierarchy & Bootstrap), §4 (Measurement Theory)
 """
 
 import math
 from . import constants as C
-
 
 # ─── Two-loop beta function ─────────────────────────────────────────────────
 
@@ -40,13 +38,11 @@ def beta_coefficients_su3(n_f):
     -------
     tuple (b0, b1)
 
-    Section: §6 (Gauge Structure), Confinement
     Status: VERIFIED
     """
     b0 = 11.0 - 2.0 * n_f / 3.0
     b1 = 102.0 - 38.0 * n_f / 3.0
     return b0, b1
-
 
 def run_alpha_s_twoloop(mu_start, mu_end, alpha_start, n_f, n_steps=200000):
     """
@@ -70,7 +66,6 @@ def run_alpha_s_twoloop(mu_start, mu_end, alpha_start, n_f, n_steps=200000):
     -------
     tuple (mus, alphas) — arrays of energy scales and coupling values
 
-    Section: §6 (Gauge Structure), Two-loop running
     Status: VERIFIED
     """
     b0, b1 = beta_coefficients_su3(n_f)
@@ -103,7 +98,6 @@ def run_alpha_s_twoloop(mu_start, mu_end, alpha_start, n_f, n_steps=200000):
 
     return mus, alphas
 
-
 # ─── Quark mass thresholds ──────────────────────────────────────────────────
 
 # (mass_GeV, n_f above threshold)
@@ -114,7 +108,6 @@ QUARK_THRESHOLDS = [
 ]
 
 # Below charm: n_f = 3 effectively
-
 
 # ─── Confinement scale prediction ───────────────────────────────────────────
 
@@ -137,7 +130,6 @@ def confinement_scale(alpha_mz=None):
     dict with mu_conf_GeV, k_conf, delta_k, alpha_at_mb, alpha_at_mc,
          lambda_qcd_MeV, status, note
 
-    Section: §6 (Gauge Structure), Confinement
     Status: VERIFIED
     """
     from .hierarchy import k_from_energy_gev
@@ -200,7 +192,6 @@ def confinement_scale(alpha_mz=None):
               if delta_k else 'Confinement not reached',
     }
 
-
 # ─── α_s at Pati-Salam scale ────────────────────────────────────────────────
 
 def alpha3_at_pati_salam(alpha_mz=None):
@@ -220,7 +211,6 @@ def alpha3_at_pati_salam(alpha_mz=None):
     -------
     dict with alpha3_ps, alpha_gut_ppm, normalization_ratio, status
 
-    Section: §6 (Gauge Structure), Pati-Salam scale
     Status: OPEN
     """
     from .hierarchy import energy_gev
@@ -251,7 +241,6 @@ def alpha3_at_pati_salam(alpha_mz=None):
               if alpha_ps > 0 else 'Landau pole encountered',
     }
 
-
 # ─── EWSB bifurcation ───────────────────────────────────────────────────────
 
 def ewsb_bifurcation(use_ppm_quartic=True):
@@ -273,7 +262,6 @@ def ewsb_bifurcation(use_ppm_quartic=True):
     -------
     dict with E_ewsb_GeV, k_ewsb, delta_k, c_T, mu_GeV, m_H_GeV, status
 
-    Section: §10 (EWSB)
     Status: VERIFIED
     """
     from .hierarchy import k_from_energy_gev
@@ -312,7 +300,6 @@ def ewsb_bifurcation(use_ppm_quartic=True):
                 f'(using {label} quartic λ = {lam:.4f})',
     }
 
-
 # ─── Cascade stability ──────────────────────────────────────────────────────
 
 # Gauge group dimensions at each stage of the symmetry-breaking cascade.
@@ -322,7 +309,6 @@ CASCADE_STEPS = [
     ('EWSB: SU(2)_L × U(1)_Y → U(1)_em', 12,  9),
     ('Confinement: SU(3)_C → hadrons',      9,  1),
 ]
-
 
 def cascade_irreversibility():
     """
@@ -340,7 +326,6 @@ def cascade_irreversibility():
     -------
     list of dicts with name, dim_G, dim_H, dim_coset, delta_F, irreversible
 
-    Section: §6 (Gauge Structure), §9 (Thermodynamics)
     Status: VERIFIED
     """
     results = []
@@ -357,7 +342,6 @@ def cascade_irreversibility():
         })
     return results
 
-
 # ─── Information-theoretic quantities ────────────────────────────────────────
 
 def signal_to_noise(k, T_kelvin=310.0):
@@ -365,7 +349,6 @@ def signal_to_noise(k, T_kelvin=310.0):
     Signal-to-noise ratio R(k) = E(k) / (k_B T).
 
     LaTeX: R(k) = E(k) / (k_B T)
-    Section: §4 (Measurement Theory)
     Status: VERIFIED
 
     Parameters
@@ -381,7 +364,6 @@ def signal_to_noise(k, T_kelvin=310.0):
     kB_eV = 8.617333e-5
     kBT_MeV = kB_eV * T_kelvin * 1e-6
     return energy_mev(k) / kBT_MeV
-
 
 def channel_capacity(k, T_kelvin=310.0):
     """
@@ -400,14 +382,12 @@ def channel_capacity(k, T_kelvin=310.0):
     -------
     float — I(k) in bits
 
-    Section: §4 (Measurement Theory)
     Status: DERIVED
     """
     R = signal_to_noise(k, T_kelvin)
     if R <= 1:
         return 0.0
     return 3.0 * math.log2(R)
-
 
 def dual_efficiency(k, T_kelvin=310.0):
     """
@@ -424,7 +404,6 @@ def dual_efficiency(k, T_kelvin=310.0):
     -------
     dict with eta_I, eta_S, R, I_bits
 
-    Section: §4 (Measurement Theory)
     Status: DERIVED
     """
     R = signal_to_noise(k, T_kelvin)
@@ -442,7 +421,6 @@ def dual_efficiency(k, T_kelvin=310.0):
         'R': R,
         'I_bits': I_bits,
     }
-
 
 # ─── Consciousness-regime attractor ─────────────────────────────────────────
 
@@ -465,7 +443,6 @@ def consciousness_attractor(T_kelvin=310.0):
     -------
     dict with R_min, E_min_eV, k_min, k_channel_closure, status
 
-    Section: §5 (Hierarchy & Bootstrap)
     Status: DERIVED
     """
     from .hierarchy import k_from_energy_mev
@@ -494,7 +471,6 @@ def consciousness_attractor(T_kelvin=310.0):
         'note': f'Bare attractor at k ≈ {k_min:.1f}; constraints shift to k ≈ 73–75',
     }
 
-
 # ─── Summary ────────────────────────────────────────────────────────────────
 
 def summary():
@@ -502,7 +478,6 @@ def summary():
     Summary table of all k-level stability predictions.
 
     LaTeX: n/a
-    Section: §4 (Measurement Theory), §5 (Hierarchy)
     Status: INTERNAL
 
     Returns
@@ -544,12 +519,10 @@ def summary():
         },
     ]
 
-
 def print_summary():
     """Print formatted summary of k-level predictions.
 
     LaTeX: n/a
-    Section: utility
     Status: INTERNAL
     """
     print("=" * 80)
@@ -570,7 +543,6 @@ def print_summary():
         kp = f"{row['k_predicted']:.1f}" if row['k_predicted'] is not None else "N/A"
         print(f"  {row['scale']:<25s}  {row['mechanism']:<40s}  "
               f"{kp:>6s}  {row['k_known']:>7.1f}  {row['delta_k']:>5.1f}")
-
 
 if __name__ == "__main__":
     print_summary()

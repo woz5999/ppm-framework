@@ -9,15 +9,12 @@ Route I  (Spectral): Θ^τ/Θ_{CP³} at t*=1/32 → 1/α = 137.257 (0.16%)  [COM
 Route II (Cogito loop): Λ_obs → N → α via G formula → 1/α ≈ 137.6 (~0.4%)  [PARTIAL]
 Route III (Instanton): R_τ = (1/2)e^{-30π} as τ fixed point  [PARKED — prefactor open]
 
-Section reference: §5 (Three Derivations of α)
 """
 
 import math
 from . import constants as C
 
-
 ALPHA_OBSERVED = 1.0 / C.ALPHA_EM_INV  # ≈ 7.2974e-3
-
 
 # ─── Route I: Spectral Geometry ──────────────────────────────────────────────
 
@@ -26,7 +23,6 @@ def _twisted_heat_traces(t, nmax=200):
     Compute Θ^τ(t) and Θ_{CP³}(t).
 
     LaTeX: n/a
-    Section: utility
     Status: INTERNAL
 
     Θ^τ(t)    = Σ_k tr(τ|V_k) e^{-λ_k t}
@@ -48,13 +44,11 @@ def _twisted_heat_traces(t, nmax=200):
         theta_cp3 += d_k * w
     return theta_tau, theta_cp3
 
-
 def t_star(n=3):
     """
     Half-variance condition at the spectral gap.
 
-    LaTeX: eq:half_variance  (t* = 1/(2(n+1)²))
-    Section: §5 (Three Derivations of α)
+    LaTeX:  (t* = 1/(2(n+1)²))
     Status: VERIFIED
 
     For CP³ (n=3): t* = 1/(2×16) = 1/32
@@ -64,13 +58,11 @@ def t_star(n=3):
     """
     return 1.0 / (2.0 * (n + 1)**2)
 
-
 def alpha_from_spectral_geometry(nmax=200):
     """
     Route I: α from the twisted heat trace ratio Θ^τ/Θ_{CP³} at t*=1/32.
 
     LaTeX: \\alpha = \\Theta^\\tau / \\Theta_{CP^3}\\bigm|_{t=1/32}
-    Section: §5 (Three Derivations of α), Route I
     Status: VERIFIED
 
     section5-alpha.tex: "the twisted ratio Θ^τ(t)/Θ_{CP³}(t) = α at t*=1/32,
@@ -90,13 +82,11 @@ def alpha_from_spectral_geometry(nmax=200):
         'status': 'COMPLETE',
     }
 
-
 def alpha_cpn_family(n_range=range(1, 8), nmax=300):
     """
     Compute 1/α predictions across the CP^n family using the half-variance condition.
 
     LaTeX: \\alpha(CP^n) = \\Theta^\\tau / \\Theta_{CP^n}\\bigm|_{t=1/(2(n+1)^2)}
-    Section: §5 (Three Derivations of α), CP^n family scan
     Status: VERIFIED
 
     section5-alpha.tex: CP¹→1/3.2, CP²→1/18, CP³→1/137.3, CP⁴→1/1258, CP⁵→1/13314.
@@ -118,7 +108,6 @@ def alpha_cpn_family(n_range=range(1, 8), nmax=300):
         results[n] = {'alpha_inv': 1.0 / alpha, 't_star': ts}
     return results
 
-
 # ─── Route II: Cogito Loop ───────────────────────────────────────────────────
 
 def alpha_from_cogito_loop():
@@ -126,7 +115,6 @@ def alpha_from_cogito_loop():
     Route II: α from the cogito loop consistency check.
 
     LaTeX: \\alpha = G \\cdot m_\\pi^2 \\cdot \\sqrt{N} / (16\\pi^4 \\hbar c)
-    Section: §5 (Three Derivations of α), Route II
     Status: FLAGGED
 
     Uses observed G and Λ to extract N, then derives α:
@@ -165,7 +153,6 @@ def alpha_from_cogito_loop():
         'status': 'PARTIAL (anchored to G_obs, Λ_obs)',
     }
 
-
 # ─── Route III: Measurement Instanton ────────────────────────────────────────
 
 def alpha_from_instanton():
@@ -173,7 +160,6 @@ def alpha_from_instanton():
     Route III: α as the self-consistent τ firing rate.
 
     LaTeX: R_\\tau = R_\\tau^{pert} \\times e^{-S_{inst}} \\approx (1/2) e^{-30\\pi}
-    Section: §5 (Three Derivations of α), Route III
     Status: OPEN
 
     CRITICAL NOTE: The bare value (1/2)e^{-30π} = 5.86×10^{-42} differs from
@@ -194,7 +180,6 @@ def alpha_from_instanton():
         'status': 'PARKED (prefactor open)',
     }
 
-
 # ─── Comparison ──────────────────────────────────────────────────────────────
 
 def alpha_comparison():
@@ -202,7 +187,6 @@ def alpha_comparison():
     Compare all three routes.
 
     LaTeX: n/a
-    Section: §5 (Three Derivations of α)
     Status: INTERNAL
 
     Route I:   1/α = 137.257 (0.16% off) — COMPLETE
@@ -220,16 +204,13 @@ def alpha_comparison():
         'alpha_inv_observed': 1.0 / ALPHA_OBSERVED,
     }
 
-
 def alpha_observed():
     """Standard observed value 1/137.036.
 
     LaTeX: \\alpha = 1/137.036
-    Section: §5 (Three Derivations of α)
     Status: VERIFIED
     """
     return ALPHA_OBSERVED
-
 
 if __name__ == "__main__":
     print("=== Route I: Spectral Geometry ===")
@@ -254,5 +235,4 @@ if __name__ == "__main__":
     fam = alpha_cpn_family()
     for n, d in fam.items():
         print(f"  CP^{n}: 1/α = {d['alpha_inv']:.1f}  (t* = {d['t_star']:.6f})")
-
 

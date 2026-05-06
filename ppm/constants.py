@@ -26,14 +26,12 @@ PHI  = (1.0 + math.sqrt(5.0)) / 2.0  # φ = golden ratio ≈ 1.61803
 
 N_OUTCOMES = 4          # Number of measurement outcomes per micro-event
                         # → state space is CP^{N-1} = CP³
-                        # Section §1 (axiom)
 
 CP3_DIM    = N_OUTCOMES - 1   # = 3 (complex dimension of CP³)
 
 R_SQUARED  = 2.0 * (N_OUTCOMES + 1)  # = 2(N+1) = 10 in 2D effective theory
                                       # Fubini-Study radius squared
                                       # LaTeX: r^2 = 2(N+1)
-                                      # Section §7 (instanton action)
                                       # Status: DERIVED
 R          = math.sqrt(R_SQUARED)     # = √10 ≈ 3.162
 
@@ -49,7 +47,6 @@ LAMBDA_PPM = 1.0 / (4.0 * math.sqrt(PI))
 #   lambda ~ -0.08 at 10^16 (vacuum metastability). PPM's lambda = 0.141
 #   at E_break would give m_H ~ 223 GeV after running — much worse.
 #   The geometric value must be compared directly at the EW scale.
-# Section §2 (τ involution), §7 (SM parameters)
 # Status: DERIVED (VERIFIED)
 
 LAMBDA_TAU_CONJUGATE = -LAMBDA_PPM
@@ -71,7 +68,6 @@ LAMBDA_PPM_OBSERVED = 0.1292   # Observed Higgs quartic at M_Z (MSbar)
 Y_TOP_PPM = PI / (2.0 * (TAU ** 0.25))
 # LaTeX: y_t^{\rm PPM} = \frac{\pi}{2(2\pi)^{1/4}} \approx 0.992
 # PPM tree-level top Yukawa; y_t = √2 × m_t/v convention
-# Section §7 (SM parameters)
 # Status: DERIVED (VERIFIED session 27)
 # NOTE: NOT m_t/v = 0.701; that is the ratio, not the Yukawa coupling
 
@@ -209,7 +205,6 @@ def _verify():
     """Print a quick sanity check of key constant values.
 
     LaTeX: n/a
-    Section: utility
     Status: INTERNAL
     """
     print(f"LAMBDA_PPM     = {LAMBDA_PPM:.6f}  (expect 0.141047)")
@@ -220,7 +215,6 @@ def _verify():
     print(f"SIN2_TW_PPM    = {SIN2_THETA_W_PPM:.4f}  (expect 0.375 = 3/8)")
     print(f"PHI-196 match  = {PHI_196_EXPONENT_MATCH_PERCENT:.4f}%  (expect ~0.07%)")
     print(f"Q_NOME         = {Q_NOME:.6f}  (expect 0.001719)")
-
 
 if __name__ == "__main__":
     _verify()

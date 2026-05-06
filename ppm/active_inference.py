@@ -11,22 +11,13 @@ from the same Lindblad geometry as physics, by coupling:
 θ = (θ_AB, θ_CD) ∈ T² parameterizes the measurement-torus rotation acting on the
 actualization operator: A_b(θ) = R(θ) Â R†(θ), where R is an SO(2)×SO(2)
 rotation in the Kähler doublet (|A⟩, |B⟩) plane and the gauge doublet
-(|C⟩, |D⟩) plane. T² = PGL(4,R) / Stab(V_AB ⊕ V_CD), per ch07-information §7.5.
+(|C⟩, |D⟩) plane. T² = PGL(4,R) / Stab(V_AB ⊕ V_CD)
 
 Provides:
     TensorProductBasis              # composes two Bases (system + environment)
     partial_trace                   # trace out one subsystem
     ParameterizedBoundaryOperator   # A_b(θ_AB, θ_CD) family       (Phase B)
     ActiveInferenceLoop             # alternating inner+outer dynamics  (Phase D)
-
-Relationship to chapter prose
------------------------------
-- ch07-information.tex §7.5: defines T² and the doublet structure.
-- ch04-fact-types.tex: fact types A, B (Kähler doublet) and C, D (gauge doublet).
-- ch18-quantum.tex §Reduced Dynamics: inner-outer loop framing.
-- ch02-operator.tex §Cross-Scale Specialization (Consciousness Scale):
-  "Minimization over ρ gives the Lindblad dissipation. Minimization over θ
-  gives the frame dynamics (active inference)."
 
 Design decisions:
     - A_b(θ) explicit form via principled-toy stipulation
@@ -35,7 +26,6 @@ Design decisions:
     - Tier 2 coupling: shared environment
     - Φ > 0 assumed, not computed
 
-Section: active (Tier 1 + Tier 2 implemented: TensorProductBasis, partial_trace,
         ParameterizedBoundaryOperator, ActiveInferenceLoop, FrameFindingLoop,
         TwoBoundaryActiveInferenceLoop, run_decoherence_race; validated by
         ppm.verify active-inference checks and tests/test_active_inference.py)
@@ -49,7 +39,6 @@ from .dynamics import (
     Basis, Density, Operator,
     free_hamiltonian, lindblad_step,
 )
-
 
 # ─── TensorProductBasis ──────────────────────────────────────────────────────
 
@@ -137,7 +126,6 @@ class TensorProductBasis:
         joint = np.kron(rho_S.matrix, rho_env.matrix)
         return Density(self, joint)
 
-
 # ─── Partial trace ───────────────────────────────────────────────────────────
 
 def partial_trace(rho_total: Density, joint_basis: TensorProductBasis,
@@ -146,7 +134,6 @@ def partial_trace(rho_total: Density, joint_basis: TensorProductBasis,
     Trace out one subsystem from a density matrix on a TensorProductBasis.
 
     LaTeX: \\rho_S = \\mathrm{Tr}_{\\rm env}\\rho_{\\rm total}
-    Section: ch08-variational §Tensor Products
     Status: VERIFIED
 
     Parameters
@@ -191,7 +178,6 @@ def partial_trace(rho_total: Density, joint_basis: TensorProductBasis,
     else:
         raise ValueError(f"trace_out must be 'env' or 'S', got {trace_out!r}")
 
-
 # ─── ParameterizedBoundaryOperator ───────────────────────────────────────────
 #
 # A1 (locked): the actualization operator at frame θ ∈ T² is the rank-2
@@ -205,7 +191,7 @@ def partial_trace(rho_total: Density, joint_basis: TensorProductBasis,
 #     |ψ_G(θ_CD)⟩ = cos(θ_CD) |C⟩ + sin(θ_CD) |D⟩       (gauge doublet rotation)
 #
 # |A⟩, |B⟩ are the basis vectors representing fact types A, B (Kähler doublet,
-# SU(3)-triplet sector of U(3) isotropy irrep per ch07-information §7.5).
+# SU(3)-triplet sector of U(3) isotropy irrep).
 # |C⟩, |D⟩ are the basis vectors for fact types C, D (gauge doublet,
 # singlet/chiral sector). All four are orthogonal τ-even basis vectors.
 #
@@ -224,14 +210,12 @@ def partial_trace(rho_total: Density, joint_basis: TensorProductBasis,
 # Toy basis assignment for |A⟩, |B⟩, |C⟩, |D⟩ uses four consecutive τ-even
 # modes at k=1. Canonical isotropy-irrep alignment is an open refinement.
 
-
 def default_doublet_indices(basis: Basis) -> tuple[int, int, int, int]:
     """
     A1 toy stipulation: return four consecutive τ-even basis indices at k=1
     representing fact types (A, B, C, D).
 
     LaTeX: n/a
-    Section: ch08-variational §Doublet Stipulation
     Status: INTERNAL
 
     Requires basis.k_max ≥ 1 and at least 4 τ-even modes at k=1. At k=1 there
@@ -251,7 +235,6 @@ def default_doublet_indices(basis: Basis) -> tuple[int, int, int, int]:
     # k=1 has 9 τ-even modes — plenty for the 4 we need
     return (start, start + 1, start + 2, start + 3)
 
-
 def parameterized_boundary_operator(basis: Basis,
                                     doublet_indices: tuple[int, int, int, int],
                                     theta_AB: float,
@@ -260,7 +243,6 @@ def parameterized_boundary_operator(basis: Basis,
     Construct the θ-parameterized actualization operator A_b(θ_AB, θ_CD).
 
     LaTeX: A_b(\\theta) = |\\psi_K(\\theta_{AB})\\rangle\\langle\\psi_K(\\theta_{AB})| + |\\psi_G(\\theta_{CD})\\rangle\\langle\\psi_G(\\theta_{CD})|
-    Section: ch08-variational §Parameterized Boundary Operator
     Status: VERIFIED
 
     Returns the rank-2 projector onto the doublet-rotated states:
@@ -323,7 +305,6 @@ def parameterized_boundary_operator(basis: Basis,
     matrix = np.outer(psi_K, np.conj(psi_K)) + np.outer(psi_G, np.conj(psi_G))
     return Operator(basis, matrix)
 
-
 # ─── Free energy at θ + gradient ─────────────────────────────────────────────
 #
 # The actualization free energy at frame θ is
@@ -334,7 +315,6 @@ def parameterized_boundary_operator(basis: Basis,
 # gradient is feasible (A_b(θ) is a closed-form rotation-conjugate) and could
 # replace this if numerical performance becomes an issue.
 
-
 def free_energy_at_theta(rho: Density, basis: Basis,
                          doublet_indices: tuple[int, int, int, int],
                          theta_AB: float, theta_CD: float) -> float:
@@ -342,7 +322,6 @@ def free_energy_at_theta(rho: Density, basis: Basis,
     Evaluate F[ρ, θ] = -log Tr[A_b(θ) ρ A_b(θ)†].
 
     LaTeX: F[\\rho, \\theta] = -\\log \\mathrm{Tr}[A_b(\\theta) \\rho A_b(\\theta)^\\dagger]
-    Section: ch08-variational §Actualization Free Energy
     Status: VERIFIED
 
     Returns +inf when the yield is zero (ρ has no support in the doublet
@@ -359,7 +338,6 @@ def free_energy_at_theta(rho: Density, basis: Basis,
         return float('inf')
     return float(-np.log(P))
 
-
 def gradient_F_theta(rho: Density, basis: Basis,
                      doublet_indices: tuple[int, int, int, int],
                      theta_AB: float, theta_CD: float,
@@ -368,7 +346,6 @@ def gradient_F_theta(rho: Density, basis: Basis,
     Central-difference gradient of F[ρ, θ] in (θ_AB, θ_CD).
 
     LaTeX: \\nabla_\\theta F[\\rho, \\theta]
-    Section: ch08-variational §Actualization Free Energy
     Status: VERIFIED
 
     Returns a 2-element ndarray [∂F/∂θ_AB, ∂F/∂θ_CD].
@@ -396,12 +373,11 @@ def gradient_F_theta(rho: Density, basis: Basis,
     grad_CD = (F_pc - F_mc) / (2.0 * h)
     return np.array([grad_AB, grad_CD])
 
-
 # ─── Φ prefactor for the frame-evolution equation ────────────────────────────
 #
 # The frame-evolution equation ∂_t θ_i = -Φ[ρ] ∂F_eff/∂θ_i carries Φ as the
-# rate-controlling prefactor. Per ch13-consciousness §T13.7 ("Why the prefactor
-# is linear in Φ") and ch19-boundaries §Frame Rotation as Active Inference,
+# rate-controlling prefactor. ("Why the prefactor
+# is linear in Φ"),
 # the linearity of Φ in this equation is forced at leading order by three
 # converging arguments (Mori-Zwanzig adiabatic elimination, dimensional
 # necessity, decoupling smoothness). A residual dimensionless O(1) coefficient
@@ -416,14 +392,12 @@ def gradient_F_theta(rho: Density, basis: Basis,
 # the framework's structural prediction is the linearity, not any specific
 # numerical value.
 
-
 def phi_prefactor_from_lindblad(rho_total: Density,
                                  joint_basis: TensorProductBasis) -> float:
     """
     Compute Φ for the frame-evolution prefactor on a bipartite system.
 
     LaTeX: \\Phi = S(\\rho_S) + S(\\rho_{\\rm env}) - S(\\rho_{\\rm total})
-    Section: ch13-consciousness §T13.7 (Φ prefactor)
     Status: VERIFIED
 
     Returns Φ as quantum mutual information across the bipartition:
@@ -450,14 +424,14 @@ def phi_prefactor_from_lindblad(rho_total: Density,
     This function commits to mutual-information Φ on a single bipartition.
     Other IIT definitions exist and would yield different numerical values;
     only the product κ × Φ (with κ the dimensionless coefficient defined
-    in ch13-consciousness §T13.7) is convention-invariant. The framework's
+) is convention-invariant. The framework's
     structural prediction is the LINEARITY of the prefactor in Φ, not a
     specific numerical value.
 
     For a partition over more than two factors, the IIT definition
     requires minimization over partitions; this function does not
     implement that minimization. For the framework's bipartite-Markov-
-    boundary formulation (per ch19-boundaries), a single bipartition is
+    boundary formulation (), a single bipartition is
     the natural setting.
     """
     rho_S = partial_trace(rho_total, joint_basis, trace_out='env')
@@ -472,7 +446,6 @@ def phi_prefactor_from_lindblad(rho_total: Density,
     return (_von_neumann_entropy(rho_S)
             + _von_neumann_entropy(rho_env)
             - _von_neumann_entropy(rho_total))
-
 
 # ─── ActiveInferenceLoop ─────────────────────────────────────────────────────
 #
@@ -492,9 +465,7 @@ def phi_prefactor_from_lindblad(rho_total: Density,
 # At convergence, ρ has equilibrated under the Lindblad with current θ AND
 # θ has stopped moving (gradient near zero).
 #
-# Section: ch02-operator.tex §Cross-Scale Specialization Consciousness Scale
-#         ch18-quantum.tex §Reduced Dynamics
-
+#
 
 class ActiveInferenceLoop:
     """
@@ -631,7 +602,6 @@ class ActiveInferenceLoop:
         recent_F = [s['F'] for s in self.trajectory[-window:]]
         return (max(recent_F) - min(recent_F)) < F_tol
 
-
 # ─── TwoBoundarySystem ───────────────────────────────────────────────────────
 #
 # Tier 2 multi-boundary structure with shared environment.
@@ -641,13 +611,12 @@ class ActiveInferenceLoop:
 # arises from a shared environment: both trace out the same H_env, producing
 # correlated decoherence on (ρ_1, ρ_2). Per A4 (locked).
 #
-# This operationalizes ch18-quantum §Reduced Dynamics's claim that "the
+# This operationalizes's claim that "the
 # probabilistic Markov property of ch:boundaries and the dynamical Markov
 # property of the master equation are the same property at different levels
 # of description."
 #
 # Tier 2 coupling: shared environment.
-
 
 class TwoBoundarySystem:
     """
@@ -714,7 +683,6 @@ class TwoBoundarySystem:
         rho_S12 = self.reduced_S1S2(rho_total)
         return partial_trace(rho_S12, self._S12, trace_out='S')
 
-
 # ─── FrameFindingLoop (canonical demo: adaptive frame discovery) ────────────
 #
 # Pure outer-loop active inference: given a fixed (held) ρ that the system
@@ -729,7 +697,6 @@ class TwoBoundarySystem:
 #   ρ = |ψ_K(α)⟩⟨ψ_K(α)|       → optimal θ_AB = α
 #   ρ = (1/2)(|A⟩⟨A| + |B⟩⟨B|) → flat F over θ_AB (symmetric mixture)
 #   ρ = pure |A⟩⟨A|             → optimal θ_AB = 0
-
 
 class FrameFindingLoop:
     """
@@ -767,7 +734,7 @@ class FrameFindingLoop:
     N_aggregate : int
         Number of gradient samples to average per step. N=1 is naive
         single-shot gradient descent. N>1 implements Φ-style aggregation
-        (see ch18-consciousness.tex §Active Inference at the Consciousness
+        (
         Scale). Default 1.
     seed : int
         RNG seed for noise reproducibility. Default 0.
@@ -804,7 +771,7 @@ class FrameFindingLoop:
             (k_consciousness ≈ 75), individual events carry near-zero
             information; aggregating ~10⁴ correlated firings is the
             framework's prescribed mechanism for extracting usable signal.
-            See ch18-consciousness.tex §Active Inference at the
+
             Consciousness Scale.
         seed : int
             RNG seed for noise reproducibility.
@@ -871,14 +838,12 @@ class FrameFindingLoop:
             self._record(step=i)
         return self.trajectory
 
-
 # ─── RandomFrameWalk (baseline for frame-finding contest) ──────────────────
 #
 # Pure-noise frame search: at each step θ wanders randomly without any
 # gradient information. Demonstrates the contribution of gradient-driven
 # active inference by contrast — the random walker has the same step budget
 # but no directional signal.
-
 
 class RandomFrameWalk:
     """
@@ -944,7 +909,6 @@ class RandomFrameWalk:
             self._record(step=i)
         return self.trajectory
 
-
 # ─── Decoherence race (canonical demo: selective advantage of adaptation) ───
 #
 # Compare two single-boundary trajectories under identical Lindblad dynamics:
@@ -958,7 +922,6 @@ class RandomFrameWalk:
 # This operationalizes the framework's claim that active inference confers a
 # selective advantage: systems that adapt their measurement frame to incoming
 # data maintain lower free energy than passive systems whose frame is fixed.
-
 
 def run_decoherence_race(rho_0: Density,
                           theta_init: tuple[float, float],
@@ -974,7 +937,6 @@ def run_decoherence_race(rho_0: Density,
     initial state with the same Lindblad parameters.
 
     LaTeX: \\Delta F = \\bar F_{\\rm passive} - \\bar F_{\\rm active}
-    Section: ch08-variational §Active Inference, ch13 §Decoherence Race
     Status: VERIFIED
 
     Returns a dict with both trajectories and summary metrics:
@@ -1015,7 +977,6 @@ def run_decoherence_race(rho_0: Density,
         'fitness_advantage': mean_F_passive - mean_F_active,
     }
 
-
 def fitness_vs_eta_sweep(rho_0: Density,
                           theta_init: tuple[float, float],
                           basis: Basis,
@@ -1030,7 +991,6 @@ def fitness_vs_eta_sweep(rho_0: Density,
     selective-advantage gradient: faster adaptation → lower mean-F → fitter.
 
     LaTeX: \\bar F(\\eta)
-    Section: ch08-variational §Active Inference
     Status: VERIFIED
 
     Returns:
@@ -1047,7 +1007,6 @@ def fitness_vs_eta_sweep(rho_0: Density,
         mean_Fs.append(float(sum(vals) / len(vals)) if vals else float('inf'))
     return {'etas': list(etas), 'mean_F': mean_Fs}
 
-
 # Note: an earlier draft of this module included a `run_natural_selection`
 # function that simulated populations of agents with reproduction, mutation,
 # and selection. That work was pulled back as out of scope for the active
@@ -1058,7 +1017,6 @@ def fitness_vs_eta_sweep(rho_0: Density,
 # The cost gradient is the framework's contribution; what climbs it lives
 # downstream. See `fitness_vs_eta_sweep` above for the framework-native
 # demonstration.
-
 
 # ─── TwoBoundaryActiveInferenceLoop ─────────────────────────────────────────
 #
@@ -1079,30 +1037,25 @@ def fitness_vs_eta_sweep(rho_0: Density,
 # This is the canonical active-inference form when the boundary has only
 # local access to its own state, even though the joint dynamics is correlated.
 
-
 def _embed_S1(op_local, basis_S2):
     """Embed an operator on S1 as op_local ⊗ I_S2 on the joint S1 ⊗ S2 basis.
 
     LaTeX: n/a
-    Section: utility
     Status: INTERNAL
     """
     D2 = basis_S2.total_dim
     eye_S2 = np.eye(D2, dtype=np.complex128)
     return np.kron(op_local.matrix, eye_S2)
 
-
 def _embed_S2(op_local, basis_S1):
     """Embed an operator on S2 as I_S1 ⊗ op_local on the joint basis.
 
     LaTeX: n/a
-    Section: utility
     Status: INTERNAL
     """
     D1 = basis_S1.total_dim
     eye_S1 = np.eye(D1, dtype=np.complex128)
     return np.kron(eye_S1, op_local.matrix)
-
 
 def shared_environment_jump_operators(joint_basis: TensorProductBasis,
                                        A_b1_local: Operator,
@@ -1115,7 +1068,6 @@ def shared_environment_jump_operators(joint_basis: TensorProductBasis,
     coupling between two boundaries.
 
     LaTeX: \\{L_{\\rm local,1}, L_{\\rm local,2}, L_{\\rm cross}\\}
-    Section: ch08-variational §Two-Boundary Coupling
     Status: VERIFIED
 
     Returns (A_ops, gammas) suitable for `lindblad_step(rho_joint, H, A_ops,
@@ -1182,7 +1134,6 @@ def shared_environment_jump_operators(joint_basis: TensorProductBasis,
     A_ops = [L1, L2, L_cross]
     gammas = [(1.0 - alpha) * gamma, (1.0 - alpha) * gamma, alpha * gamma]
     return A_ops, gammas
-
 
 class TwoBoundaryActiveInferenceLoop:
     """

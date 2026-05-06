@@ -13,12 +13,10 @@ Coupling normalization: α_GUT = 0.1 (PPM) vs α ≈ 0.024 (SM-required at E_bre
 Factor ~4× discrepancy. Root cause: Fubini-Study kinetic-term normalization ≠ MSbar.
 Resolution requires CP³ sigma-model matching (holonomy calculation = FFS blocker).
 
-Section references: §6 (Gauge Structure), §7 (SM Parameters)
 """
 
 import math
 from . import constants as C
-
 
 # ─── One-loop RGE ─────────────────────────────────────────────────────────────
 
@@ -48,7 +46,6 @@ def run_alpha_1loop(alpha0, b, ln_mu_over_mu0):
     -------
     float, or nan if Landau pole encountered
 
-    Section: §6 (Gauge Structure)
     Status: VERIFIED
     """
     inv_alpha = 1.0/alpha0 - b/(2.0*math.pi) * ln_mu_over_mu0
@@ -56,13 +53,11 @@ def run_alpha_1loop(alpha0, b, ln_mu_over_mu0):
         return float('nan')
     return 1.0/inv_alpha
 
-
 # SM beta coefficients
 B1 = 41.0/10.0    # U(1), GUT-normalized
 B2 = -19.0/6.0   # SU(2)
 B3_6F = -7.0     # SU(3), 6 flavors (above M_top)
 B3_5F = -23.0/3.0  # SU(3), 5 flavors (M_Z to M_top)
-
 
 # ─── PPM gauge predictions ────────────────────────────────────────────────────
 
@@ -71,31 +66,26 @@ def alpha_gut():
     GUT-scale unified coupling from Fubini-Study metric.
 
     LaTeX: \\alpha_{\\rm GUT} = \\frac{1}{r^2} = \\frac{1}{10} = 0.1
-    Section: §6 (Gauge Structure)
     Status: DERIVED
     Note: This is the PPM-geometric value. SM one-loop running requires α ≈ 0.024
           at E_break — the factor ~4× discrepancy is a known open item (holonomy).
     """
     return 1.0 / C.R_SQUARED
 
-
 def sin2_theta_W_pati_salam():
     """
     Weinberg angle at k_break from Pati-Salam group theory.
 
     LaTeX: \\sin^2\\theta_W|_{k_{\\rm break}} = \\frac{3}{8} = 0.375
-    Section: §6 (Gauge Structure)
     Status: DERIVED (Pati-Salam embedding SU(4)→SU(3)×SU(2)×U(1))
     """
     return 3.0 / 8.0
-
 
 def sin2_theta_W_sm_running(E_break_GeV=None):
     """
     Weinberg angle at E_break from SM one-loop running.
 
     LaTeX: \\sin^2\\theta_W(E_{\\rm break})\\;\\text{from one-loop SM RGE}
-    Section: §6 (Gauge Structure)
     Status: VERIFIED
 
     Computes sin²θ_W at E_break by running α₁ and α₂ up from M_Z using
@@ -136,13 +126,11 @@ def sin2_theta_W_sm_running(E_break_GeV=None):
         'note': '0.13% agreement — genuine success of Pati-Salam embedding'
     }
 
-
 def couplings_at_ebreak(E_break_GeV=None):
     """
     SM-required coupling values at E_break (running UP from M_Z).
 
     LaTeX: \\alpha_i(E_{\\rm break})\\;\\text{from one-loop SM RGE}
-    Section: §6 (Gauge Structure)
     Status: OPEN
 
     Compared to PPM prediction α_GUT = 0.1 (Fubini-Study).
@@ -173,13 +161,11 @@ def couplings_at_ebreak(E_break_GeV=None):
                 'resolution requires CP³ sigma-model matching (holonomy/FFS)'
     }
 
-
 def generation_count():
     """
     Number of fermion generations from CP³ topology.
 
     LaTeX: N_{\\rm gen} = 3
-    Section: §6 (Gauge Structure)
     Status: DERIVED (CP³ Chern class / cohomology argument)
     """
     return {
@@ -188,19 +174,17 @@ def generation_count():
         'note': 'From CP³ topology; exact cohomology argument'
     }
 
-
 def lepton_mass_ratios():
     """
     Lepton mass hierarchy from orbifold topology.
 
     LaTeX: m_\\tau/m_\\mu \\approx (2\\pi)^{3/2};\\; m_\\mu/m_e \\approx (3/2)e^{\\pi^2/2}
-    Section: §8 (Particle Spectrum), eq:bulk_spacing, eq:wall_suppression
     Status: FLAGGED
 
-    eq:bulk_spacing: m_τ/m_μ ≈ (2π)^{3/2} = 15.75  (observed: 16.82, error −6.3%)
+   : m_τ/m_μ ≈ (2π)^{3/2} = 15.75  (observed: 16.82, error −6.3%)
         Exponent 3/2 reflects codimension of RP³ in CP³.
 
-    eq:wall_suppression: m_μ/m_e ≈ (3/2)e^{π²/2} = 208.6  (observed: 206.77, error +0.9%)
+   : m_μ/m_e ≈ (3/2)e^{π²/2} = 208.6  (observed: 206.77, error +0.9%)
         e^{π²/2} from blanket volume; 3/2 prefactor conjectured from codim/2.
     """
     m_tau, m_mu, m_e = 1776.86, 105.658, 0.51100  # MeV
@@ -219,22 +203,20 @@ def lepton_mass_ratios():
         'mu_e_err_pct': (ratio_mu_e_ppm / ratio_mu_e_obs - 1) * 100,
     }
 
-
 def alpha_blanket_volume():
     """
     1/α from blanket volume: e^{π²/2} = 139.0 (1.5% error).
 
     LaTeX: 1/\\alpha \\approx e^{\\pi^2/2}
-    Section: §5 (Three Derivations of α), eq:alpha_vol
     Status: VERIFIED
 
-    eq:alpha_vol: independent route to α from RP³ domain wall geometry.
+   : independent route to α from RP³ domain wall geometry.
     Structurally independent from the spectral route.
 
     Combined with heat kernel (136.8): weighted average = 137.5 (0.36% from 137.036).
     """
     alpha_inv_blanket = math.exp(math.pi**2 / 2.0)
-    alpha_inv_hk = 136.8  # from separate-manifold heat kernel ratio (§6)
+    alpha_inv_hk = 136.8  # from separate-manifold heat kernel ratio
     weighted = (2 * alpha_inv_hk + alpha_inv_blanket) / 3.0
     return {
         'alpha_inv_blanket': alpha_inv_blanket,
@@ -245,14 +227,11 @@ def alpha_blanket_volume():
         'err_weighted_pct': (weighted / C.ALPHA_EM_INV - 1) * 100,
     }
 
-
 # ─── Aliases for LaTeX Code: references ─────────────────────────────────────
 
 def breaking_chain():
     """Pati-Salam → SM breaking chain.
 
-    LaTeX: \\textit{Code: ppm.gauge.breaking_chain()}  [ch04]
-    Section: ch04 §Pati-Salam → SM
     Status: VERIFIED
 
     Returns: dict with breaking scales and group-theory data.
@@ -268,12 +247,9 @@ def breaking_chain():
         'status': 'VERIFIED'
     }
 
-
 def hypercharge():
     """Hypercharge embedding from Pati-Salam.
 
-    LaTeX: \\textit{Code: ppm.gauge.hypercharge()}  [ch04]
-    Section: ch04 §Hypercharge
     Status: VERIFIED
 
     Returns: dict with hypercharge normalization and Weinberg angle.
@@ -285,7 +261,6 @@ def hypercharge():
         'source': 'SU(4)_C ⊃ SU(3)_C × U(1)_{B-L}; Y = T_{3R} + (B-L)/2',
         'status': 'VERIFIED'
     }
-
 
 if __name__ == "__main__":
     print("=== PPM Gauge Predictions ===")

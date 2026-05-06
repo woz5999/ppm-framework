@@ -15,19 +15,16 @@ Key results (all VERIFIED in prior sessions unless marked OPEN/PARKED):
 5. Z_T² per scalar:    log Z_T² = 0.5274 (VERIFIED session 28, from Dedekind η)
 6. Z_worldsheet:       PARKED — requires FFS instanton-background fluctuation spectrum
 
-Section references: §8 (Exact Predictions), Appendix A (Technical Derivations)
 """
 
 import math
 from . import constants as C
-
 
 def instanton_action():
     """
     Degree-3 CP³ instanton action.
 
     LaTeX: S = (N-1) \\times r^2 \\times \\pi = 3 \\times 10 \\times \\pi = 30\\pi
-    Section: Appendix A
     Status: DERIVED (VERIFIED)
 
     Derivation chain:
@@ -38,20 +35,17 @@ def instanton_action():
     d = C.N_OUTCOMES - 1   # = 3
     return d * C.R_SQUARED * math.pi
 
-
 def instanton_suppression():
     """
     Instanton suppression factor e^{-S} = e^{-30π}.
 
     LaTeX: e^{-S} = e^{-30\\pi}
-    Section: §10.5 (Why φ?), Appendix A
     Status: VERIFIED
 
     This is the core exponential suppression of non-perturbative effects.
     Its near-equality to φ^{-196} is the key numerical result of the framework.
     """
     return math.exp(-instanton_action())
-
 
 def phi_196_check():
     """
@@ -63,7 +57,6 @@ def phi_196_check():
     Mismatch  = (94.317 - 94.248) / 94.248 = 0.073%
 
     LaTeX: e^{-30\\pi} \\approx \\varphi^{-196}
-    Section: §10.5 (Why φ?), Appendix A
     Status: VERIFIED
 
     This is the central numerical coincidence — the framework's prediction
@@ -83,7 +76,6 @@ def phi_196_check():
         'note': '0.073% mismatch in exponent — core numerical result'
     }
 
-
 def zero_mode_count():
     """
     Number of zero modes for the degree-(N-1) instanton.
@@ -92,7 +84,6 @@ def zero_mode_count():
     Equivalently: h^0(f^*T_{\\mathbb{CP}^3}) = 3 \\times 5 = 15 complex = 30 real
     And: dim_R(PGL(4,C)) = 2(N^2-1) = 30
 
-    Section: Appendix A (Instanton Sector)
     Status: VERIFIED
 
     These three expressions agree, confirming that PGL(4,C) acts transitively
@@ -111,13 +102,11 @@ def zero_mode_count():
         'status': 'VERIFIED'
     }
 
-
 def zero_mode_volume(V_perp=None):
     """
     Zero-mode integral (collective coordinate volume).
 
     LaTeX: F_{\\rm zero} = V_\\perp^{N_{\\rm zero}/2} = 10^{15}
-    Section: Appendix A (Instanton Sector)
     Status: VERIFIED
 
     Where V_⊥ = β×πR = 10 (transverse volume in Planck units)
@@ -137,7 +126,6 @@ def zero_mode_volume(V_perp=None):
         'n_half': n_half
     }
 
-
 # ─── T² zeta-regulated partition function ─────────────────────────────────────
 
 def t2_modular_parameter():
@@ -145,7 +133,6 @@ def t2_modular_parameter():
     Modular parameter τ for the T² = S¹_β × S¹_Hopf.
 
     LaTeX: \\tau = i\\frac{\\beta}{\\pi R} = i\\frac{10/\\pi}{\\pi} = i\\frac{10}{\\pi^2}
-    Section: Appendix A (Instanton Sector)
     Status: VERIFIED
 
     With R = l_P (Planck units), β = 10/π from S = 30π constraint.
@@ -161,13 +148,11 @@ def t2_modular_parameter():
         'q': q
     }
 
-
 def dedekind_eta(tau_imag, n_terms=200):
     """
     |η(iτ_im)| = q^{1/24} × ∏_{n=1}^∞ (1 - q^n)  where q = e^{-2πτ_im}
 
     LaTeX: |\\eta(i\\tau_{\\rm Im})| = q^{1/24} \\prod_{n=1}^\\infty (1-q^n)
-    Section: utility (T² partition function)
     Status: INTERNAL
     """
     q = math.exp(-2.0 * math.pi * tau_imag)
@@ -180,7 +165,6 @@ def dedekind_eta(tau_imag, n_terms=200):
     eta = (q ** (1.0/24.0)) * product
     return eta
 
-
 def zt2_per_scalar():
     """
     T² zeta-regulated partition function per real scalar degree of freedom.
@@ -191,7 +175,6 @@ def zt2_per_scalar():
     NO FFS data needed — Z_T² is computable purely from the T² geometry (τ fixed
     by S=30π and R=l_P).
 
-    Section: Appendix A (Instanton Sector)
     Status: VERIFIED
 
     Result:
@@ -211,13 +194,11 @@ def zt2_per_scalar():
         'status': 'VERIFIED'
     }
 
-
 def zt2_total(n_dof=6):
     """
     Total Z_T² for n_dof real scalar degrees of freedom.
 
     LaTeX: Z_{T^2}^{\\rm total} = (Z_{T^2}^{\\rm per\\,scalar})^{n_{\\rm dof}}
-    Section: Appendix A (Instanton Sector)
     Status: VERIFIED
 
     Parameters
@@ -233,7 +214,6 @@ def zt2_total(n_dof=6):
         'log_ZT2_per_scalar': per['log_ZT2']
     }
 
-
 # ─── Instanton prefactor assembly ─────────────────────────────────────────────
 
 def prefactor_subtotal(translation_factor=150.0, n_dof=6):
@@ -246,7 +226,6 @@ def prefactor_subtotal(translation_factor=150.0, n_dof=6):
         log Z_T²    = 3.164              [T² contribution; VERIFIED]
 
     LaTeX: \\log J = \\log F_{\\rm zero} + \\log F_{\\rm trans} + \\log Z_{T^2}^{\\rm total} + \\log Z_{\\rm worldsheet}
-    Section: Appendix A (Instanton Sector)
     Status: OPEN
 
     Target: log J ≈ -100 (for c₁_topo ~ 10^{-44})
@@ -274,7 +253,6 @@ def prefactor_subtotal(translation_factor=150.0, n_dof=6):
             'Z_worldsheet': 'PARKED — requires FFS instanton-background fluctuation spectrum'
         }
     }
-
 
 if __name__ == "__main__":
     s = prefactor_subtotal()

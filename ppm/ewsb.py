@@ -2,10 +2,9 @@
 ppm.ewsb — Electroweak symmetry breaking
 ==========================================
 
-Wrapper module for EWSB computations referenced in ch04, ch09, ch10.
+Wrapper module for EWSB computations referenced.
 Re-exports from higgs.py and hierarchy.py.
 
-LaTeX: ch04 (Fact Types), ch09 (Hierarchy), ch10 (Spectrum)
 """
 
 from .higgs import (
@@ -16,13 +15,10 @@ from .hierarchy import ewsb_scale, energy_gev, energy_mev
 from . import constants as C
 import math
 
-
 def electroweak_scale():
     """EWSB scale from PPM hierarchy.
 
-    LaTeX: \\textit{Code: ppm.ewsb}  [ch04, ch09, ch10]
     E(k=44.5) via the geometric hierarchy g=2π.
-    Section: §9.4
     Status: VERIFIED
     """
     return {
@@ -35,5 +31,4 @@ def electroweak_scale():
         'm_H_obs_gev': 125.25,
         'status': 'VERIFIED'
     }
-
 
