@@ -93,14 +93,14 @@ def build_table():
     yt = HI.top_yukawa_ppm()
     m_t_pred = yt * 246.22 / math.sqrt(2.0)
     rows.append(_row('PRED.5', 'm_t [GeV]',
-        m_t_pred, 173.0, 1, 'VERIFIED',
+        m_t_pred, C.M_TOP_GEV, 1, 'VERIFIED',
         f'y_t_PPM = {yt:.4f}; m_t = y_t × v/√2'))
 
     # ─── PRED.6: 1/α = 137.257 (Route I) ────────────────────────────────
     r1 = A.alpha_from_spectral_geometry()
     rows.append(_row('PRED.6', '1/α (Route I spectral)',
         r1['alpha_inv'], C.ALPHA_EM_INV, 1, 'VERIFIED',
-        f'Twisted heat trace ratio at t*=1/32; err {r1["error_pct"]:+.3f}%'))
+        f'Twisted heat trace ratio at t*=1/32; err {-r1["error_pct"]:+.3f}%'))
 
     # ─── PRED.7: sin²θ_W = 3/8 at E_break ──────────────────────────────
     stw = G.sin2_theta_W_sm_running()
@@ -255,7 +255,7 @@ def build_table():
 
     rows.append(_row('DER.9', '1/α (Route II cogito)',
         A.alpha_from_cogito_loop()['alpha_inv'], C.ALPHA_EM_INV, 2, 'VERIFIED',
-        f'Uses G_obs+Λ_obs; err {A.alpha_from_cogito_loop()["error_pct"]:+.2f}%'))
+        f'Uses G_obs+Λ_obs; err {-A.alpha_from_cogito_loop()["error_pct"]:+.2f}%'))
 
     rows.append(_row('DER.10', 'λ_PPM = 1/(4√π)',
         HI.lambda_ppm(), None, 1, 'VERIFIED',
