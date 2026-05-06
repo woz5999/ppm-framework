@@ -20,7 +20,7 @@ Curve 2 (floor): tau_event(k) = pi hbar / (2 E(k))
 Together the two curves bracket the allowed coherence window at
 each scale.  Both start at tau_Planck at k=1; they diverge at higher
 k (smaller mass), with tau_grav rising as 1/m^3 and tau_event rising
-only as 1/E.  At the consciousness scale, the floor sits at ~40 fs
+only as 1/E.  At the consciousness scale, the floor sits at ~38 fs
 while the ceiling is gravitationally irrelevant.
 
 Regime bands:
