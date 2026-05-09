@@ -10,6 +10,7 @@
 ## A Topological Framework for Physics, Information, and the Observer
 
 [![Run on Fly.io](https://img.shields.io/badge/Run-Voila%20on%20Fly.io-blue)](https://ppm-framework.fly.dev/)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila/render/notebooks/predictions.ipynb)
 [![tests](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/woz5999/ppm-framework/actions/workflows/tests.yml)
 
 ---
@@ -68,13 +69,15 @@ Inline sliders let you break the framework at the points readers are most likely
 Plus five fixed-comparison falsification tests (CP² vs CP³, τ = identity, m_π ±10%, N_∞ exponent
 variation, square-pyramidal-number variation) and an Active Inference live demo.
 
-[**→ Run in browser (no install)**](https://ppm-framework.fly.dev/voila/render/predictions.ipynb)
+**Run in browser (no install):** [Fly](https://ppm-framework.fly.dev/voila/render/predictions.ipynb) · [Binder](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila/render/notebooks/predictions.ipynb)
 
 ### `derivations.ipynb` — Technical Derivations
 
 Every equation and intermediate step from the Technical Reference, reproduced in code. Spectral
 data, the three α derivation routes, instanton calculations, the golden-ratio chain, cosmological
 derivations. Mapped section-by-section to the paper, for physicists checking the math.
+
+**Run in browser (no install):** [Fly](https://ppm-framework.fly.dev/voila/render/derivations.ipynb) · [Binder](https://mybinder.org/v2/gh/woz5999/ppm-framework/HEAD?urlpath=voila/render/notebooks/derivations.ipynb)
 
 ---
 
