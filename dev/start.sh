@@ -7,14 +7,13 @@ jupyter lab \
   --ip=0.0.0.0 \
   --port=8888 \
   --no-browser \
-  --NotebookApp.token='' \
-  --allow-root &
+  --NotebookApp.token='' &
 
 voila \
   --port=8889 \
   --no-browser \
   --token='' \
   --Voila.ip=0.0.0.0 \
-  /workspace/notebooks &
+  /home/jovyan/work/notebooks &
 
 wait

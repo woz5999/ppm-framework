@@ -1,0 +1,31 @@
+# Bulk and stale content kept out of the Docker build context.
+# Affects local `docker build` (dev/Dockerfile). mybinder.org uses its
+# own ignore semantics (it builds from git), so this is local-only.
+
+# Git + caches
+.git
+.github
+.pytest_cache
+__pycache__
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# Python build artifacts
+*.egg-info
+build/
+dist/
+.eggs/
+
+# Superseded / archived notebook content — not for shipping
+notebooks/archive/
+
+# Test output directories
+figures_test/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
