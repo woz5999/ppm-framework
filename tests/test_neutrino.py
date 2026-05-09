@@ -94,10 +94,13 @@ class TestSterileNeutrinoMassWindow(unittest.TestCase):
         self.assertEqual(NU.sterile_neutrino_mass_window()['xray_line_keV'], 3.5)
 
     def test_brackets_xray_consistent(self):
-        """brackets_xray flag is the literal E_lower < 3.5 < E_upper test."""
+        """brackets_xray flag tests whether implied sterile mass (2×E_γ for
+        radiative ν_R → ν+γ decay) lies in the [E_lower, E_upper] window."""
         result = NU.sterile_neutrino_mass_window()
-        expected = (result['E_lower_keV'] < result['xray_line_keV']
-                    < result['E_upper_keV'])
+        implied_mass = 2.0 * result['xray_line_keV']
+        self.assertEqual(result['sterile_mass_implied_keV'], implied_mass)
+        expected = (result['E_lower_keV'] <= implied_mass
+                    <= result['E_upper_keV'])
         self.assertEqual(result['brackets_xray'], expected)
 
 

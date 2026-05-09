@@ -34,10 +34,19 @@ class TestRowSchema(unittest.TestCase):
 
     def test_row_keys(self):
         expected = {'id', 'quantity', 'ppm_value', 'observed_value',
-                    'error_pct', 'tier', 'status', 'notes'}
+                    'error_pct', 'tier', 'status', 'notes',
+                    'comparison_type'}
         for row in self.rows:
             self.assertEqual(set(row.keys()), expected,
                              f"row {row.get('id', '?')} has wrong keys")
+
+    def test_comparison_type_valid(self):
+        """Every row carries a valid comparison_type tag."""
+        valid = {'empirical', 'identity', 'derived'}
+        for row in self.rows:
+            self.assertIn(row['comparison_type'], valid,
+                          f"row {row['id']} has invalid comparison_type "
+                          f"{row['comparison_type']!r}")
 
     def test_id_is_string(self):
         for row in self.rows:

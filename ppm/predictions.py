@@ -28,11 +28,28 @@ from . import mixing as MX
 from . import bridges as BR
 from . import topology as TOP
 
-def _row(pred_id, quantity, ppm_val, obs_val, tier, status, notes=""):
+def _row(pred_id, quantity, ppm_val, obs_val, tier, status,
+         notes="", comparison_type='empirical'):
     """Build a single prediction row.
 
     LaTeX: n/a
     Status: INTERNAL
+
+    comparison_type tags what kind of comparison the row encodes:
+      'empirical' — PPM's geometric value vs a measured quantity. Δ is
+                    informative: it's the gap between framework and nature.
+      'identity'  — two independently-defined theoretical quantities claimed
+                    to coincide (LHS vs RHS). Δ is the strength of the claim.
+      'derived'   — closed-form structural quantity with no observable
+                    counterpart and no independent meeting point. The row
+                    presents the derived value; the 'observed_value' (if
+                    present) is the same closed form computed elsewhere
+                    or a definitional target. Δ is uninformative — the row
+                    should NOT be counted as empirical agreement with nature.
+
+    Downstream consumers (scorecards, figures, summaries) MUST distinguish
+    these three when reporting coverage; mixing them silently inflates the
+    apparent verification rate with package-vs-formula self-checks.
     """
     if obs_val and obs_val != 0 and ppm_val is not None:
         err = (ppm_val / obs_val - 1.0) * 100.0
@@ -46,7 +63,8 @@ def _row(pred_id, quantity, ppm_val, obs_val, tier, status, notes=""):
         'error_pct': err,
         'tier': tier,
         'status': status,
-        'notes': notes
+        'notes': notes,
+        'comparison_type': comparison_type,
     }
 
 def build_table():
@@ -80,14 +98,20 @@ def build_table():
         f'Berry phase on RP³; within 1σ of observed'))
 
     # ─── PRED.3: θ_strong = 0 ────────────────────────────────────────────
+    # Structural: τ is T-invariant, θ-term is T-odd, so θ = 0 exactly.
+    # Experimental bound is |θ| < 10⁻¹⁰ (neutron EDM); not a measured value.
     rows.append(_row('PRED.3', 'θ_strong = 0',
         0.0, 0.0, 1, 'VERIFIED',
-        'T-invariance of τ-involution → strong-CP θ-term is T-odd → θ = 0 exactly'))
+        'T-invariance of τ-involution → strong-CP θ-term is T-odd → θ = 0 exactly',
+        comparison_type='derived'))
 
-    # ─── PRED.4: v = 246.2 GeV (Higgs VEV) ──────────────────────────────
+    # ─── PRED.4: v = 246.22 GeV (Higgs VEV) ─────────────────────────────
+    # By construction: v identifies with E(k_EWSB) which is calibrated to
+    # the EW scale. Predicted = observed by definition; no comparison.
     rows.append(_row('PRED.4', 'v (Higgs VEV) [GeV]',
-        246.2, 246.22, 1, 'VERIFIED',
-        '<0.01% error; from E(44.5) + SU(2) geometry'))
+        246.22, 246.22, 1, 'VERIFIED',
+        'v identifies with E(k_EWSB); from E(44.5) + SU(2) geometry',
+        comparison_type='derived'))
 
     # ─── PRED.5: m_t = 172.7 GeV ────────────────────────────────────────
     yt = HI.top_yukawa_ppm()
@@ -103,10 +127,15 @@ def build_table():
         f'Twisted heat trace ratio at t*=1/32; err {-r1["error_pct"]:+.3f}%'))
 
     # ─── PRED.7: sin²θ_W = 3/8 at E_break ──────────────────────────────
+    # The displayed comparator is the SM running result at E_break, itself a
+    # derived value. The underlying experimental anchor is sin²θ_W(M_Z); the
+    # claim here is that the geometric 3/8 at the Pati-Salam scale meets the
+    # SM running prediction at that scale. Identity check, not direct vs experiment.
     stw = G.sin2_theta_W_sm_running()
     rows.append(_row('PRED.7', 'sin²θ_W at E_break',
         stw['sin2_tW_ppm'], stw['sin2_tW_sm'], 1, 'VERIFIED',
-        f'Pati-Salam 3/8; SM running gives {stw["sin2_tW_sm"]:.5f}'))
+        f'Pati-Salam 3/8; SM running gives {stw["sin2_tW_sm"]:.5f}',
+        comparison_type='identity'))
 
     # ─── PRED.8: N_gen = 3 ───────────────────────────────────────────────
     rows.append(_row('PRED.8', 'N_generations',
@@ -178,7 +207,8 @@ def build_table():
     sn = NU.sterile_neutrino_mass_window()
     rows.append(_row('PRED.18', 'Sterile ν mass window [keV]',
         None, None, 3, 'VERIFIED',
-        f'k=61: {sn["E_upper_keV"]:.1f} keV, k=62: {sn["E_lower_keV"]:.1f} keV'))
+        f'k=61: {sn["E_upper_keV"]:.1f} keV, k=62: {sn["E_lower_keV"]:.1f} keV',
+        comparison_type='derived'))
 
     # ─── PRED.19: Ω_DM ≈ 0.24 (CONCEPTUAL) ─────────────────────────────
     rows.append(_row('PRED.19', 'Ω_DM',
@@ -190,18 +220,21 @@ def build_table():
     w_hi = GR.w_eff(0.1)
     rows.append(_row('PRED.20', 'w_eff range',
         None, None, 3, 'VERIFIED',
-        f'w = −1 + (2/3)(Ω_δ/Ω_DE). Range [{w_lo:.3f}, {w_hi:.3f}]'))
+        f'w = −1 + (2/3)(Ω_δ/Ω_DE). Range [{w_lo:.3f}, {w_hi:.3f}]',
+        comparison_type='derived'))
 
     # ─── PRED.21: τ_p ~ 10^{40} yr ──────────────────────────────────────
     rows.append(_row('PRED.21', 'τ_proton [yr]',
         1e40, None, 3, 'VERIFIED',
-        'Above Super-K (>10^{34}); beyond Hyper-K (~10^{35})'))
+        'Above Super-K (>10^{34}); beyond Hyper-K (~10^{35})',
+        comparison_type='derived'))
 
     # ─── PRED.22: M_R ≈ 10^{13.7} GeV ──────────────────────────────────
     E_break = H.energy_gev(C.K_BREAK)
     rows.append(_row('PRED.22', 'M_R (seesaw) [GeV]',
         E_break, None, 3, 'VERIFIED',
-        f'Pati-Salam scale E(k_break={C.K_BREAK}) = {E_break:.2e} GeV'))
+        f'Pati-Salam scale E(k_break={C.K_BREAK}) = {E_break:.2e} GeV',
+        comparison_type='derived'))
 
     # ─── PRED.23: GW dispersion coefficient (Planck scale, from a₄ heat kernel) ─────
     # The framework predicts the dimensionless dispersion coefficient α_GW.
@@ -215,68 +248,106 @@ def build_table():
     rows.append(_row('PRED.23', 'α_GW (GW dispersion coeff.)',
         GR.ALPHA_GW, None, 3, 'AWAITING DATA',
         f'Predicted Δv/c — LIGO 100 Hz: {gw_ligo["delta_v_over_c"]:.1e}; '
-        f'UHE 10¹⁵ Hz: {gw_uhe["delta_v_over_c"]:.1e}; both far below sensitivity'))
+        f'UHE 10¹⁵ Hz: {gw_uhe["delta_v_over_c"]:.1e}; both far below sensitivity',
+        comparison_type='derived'))
 
     # ─── Derived quantities (verified but not numbered PREDs) ────────────
+    # Most DER rows are STRUCTURAL closed-form values where 'observed' is
+    # the same closed form computed elsewhere (definitional or regression
+    # check), or have no observable counterpart. Tagged 'derived'. The four
+    # 'identity' rows (DER.3, DER.4, DER.9, DER.15, DER.16) are genuine
+    # claims that two independently-defined theoretical quantities coincide.
 
+    # DER.1 — derived: 30π is structural, no measurement
     rows.append(_row('DER.1', 'S_instanton = 30π',
         I.instanton_action(), 30 * math.pi, 1, 'VERIFIED',
-        'Degree-3 Veronese: (N-1)r²π'))
+        'Degree-3 Veronese: (N-1)r²π',
+        comparison_type='derived'))
 
+    # DER.2 — derived: integer count, no measurement
     rows.append(_row('DER.2', 'N_zero_modes = 30',
         float(I.zero_mode_count()['n_real']), 30.0, 1, 'VERIFIED',
-        '2(N²-1) = dim_R(PGL(4,C))'))
+        '2(N²-1) = dim_R(PGL(4,C))',
+        comparison_type='derived'))
 
+    # DER.3 — identity: instanton action 30π meets φ-bridge counting 196·ln(φ)
     rows.append(_row('DER.3', 'e^{-30π} ≈ φ^{-196}',
         I.instanton_action(), 196 * math.log(C.PHI), 1, 'VERIFIED',
-        f'Exponent mismatch {I.phi_196_check()["mismatch_pct"]:.3f}%'))
+        f'Exponent mismatch {I.phi_196_check()["mismatch_pct"]:.3f}%',
+        comparison_type='identity'))
 
+    # DER.4 — identity: pyramidal-number identity (LHS vs RHS)
     pi_id = GR_phi.pyramidal_identity()
     rows.append(_row('DER.4', 'P₃²·ln(φ) ≈ P₄·π',
         pi_id['ratio'], 1.0, 1, 'VERIFIED',
-        f'Mismatch {pi_id["mismatch_pct"]:.3f}%'))
+        f'Mismatch {pi_id["mismatch_pct"]:.3f}%',
+        comparison_type='identity'))
 
+    # DER.5 — derived: package-vs-formula sanity check on the rational closed form
     rows.append(_row('DER.5', 'ζ_Δ(0) = -733/945',
         S.zeta_delta_0(), -733/945, 1, 'VERIFIED',
-        'CP³ scalar Laplacian'))
+        'CP³ scalar Laplacian',
+        comparison_type='derived'))
 
+    # DER.6 — derived: package-computed value vs hardcoded same value
     rows.append(_row('DER.6', 'log Z_T² per scalar',
         I.zt2_per_scalar()['log_ZT2'], 0.5274, 1, 'VERIFIED',
-        'Dedekind η at τ=i×10/π²'))
+        'Dedekind η at τ=i×10/π²',
+        comparison_type='derived'))
 
+    # DER.7 — derived: no observable counterpart for k_conscious
     rows.append(_row('DER.7', 'k_conscious(310K)',
         GR.k_conscious(310), None, 1, 'VERIFIED',
-        f'E(k)=k_BT matching; k={GR.k_conscious(310):.2f}'))
+        f'E(k)=k_BT matching; k={GR.k_conscious(310):.2f}',
+        comparison_type='derived'))
 
+    # DER.8 — derived: no clean observational comparator
     ti = GR.integration_time(310)
     rows.append(_row('DER.8', 't_integrate [ms]',
         ti['t_integrate_ms'], None, 1, 'VERIFIED',
-        f'τ_sys²/τ_bath = {ti["t_integrate_ms"]:.3f} ms'))
+        f'τ_sys²/τ_bath = {ti["t_integrate_ms"]:.3f} ms',
+        comparison_type='derived'))
 
+    # DER.9 — identity: cogito-loop closure (uses G_obs and Λ_obs as inputs;
+    # the claim is that the loop closes back to observed α, not an independent
+    # prediction of α from the framework alone)
     rows.append(_row('DER.9', '1/α (Route II cogito)',
         A.alpha_from_cogito_loop()['alpha_inv'], C.ALPHA_EM_INV, 2, 'VERIFIED',
-        f'Uses G_obs+Λ_obs; err {-A.alpha_from_cogito_loop()["error_pct"]:+.2f}%'))
+        f'Uses G_obs+Λ_obs; err {-A.alpha_from_cogito_loop()["error_pct"]:+.2f}%',
+        comparison_type='identity'))
 
+    # DER.10 — derived: closed-form structural value, no observable
     rows.append(_row('DER.10', 'λ_PPM = 1/(4√π)',
         HI.lambda_ppm(), None, 1, 'VERIFIED',
-        f'{HI.lambda_ppm():.6f}; RP³ normal bundle curvature'))
+        f'{HI.lambda_ppm():.6f}; RP³ normal bundle curvature',
+        comparison_type='derived'))
 
+    # DER.11 — empirical: y_t observed (= √2·m_t/v) is the experimental anchor
     rows.append(_row('DER.11', 'y_t = π/(2(2π)^{1/4})',
         HI.top_yukawa_ppm(), C.Y_TOP_OBSERVED, 1, 'VERIFIED',
-        f'{HI.top_yukawa_ppm():.4f}; convention y_t = √2 m_t/v'))
+        f'{HI.top_yukawa_ppm():.4f}; convention y_t = √2 m_t/v',
+        comparison_type='empirical'))
 
     # ─── Consciousness-scale predictions ─────────────────────────────────
+    # DER.12 — derived: ΔS = 3·ln(2π) is structural; "observed 5.51" is the
+    # same closed form rounded
     rows.append(_row('DER.12', 'ΔS per event [nats]',
         CON.delta_s()['nats'], 5.51, 1, 'VERIFIED',
-        '3 ln(2π) ≈ 5.51'))
+        '3 ln(2π) ≈ 5.51',
+        comparison_type='derived'))
 
+    # DER.13 — derived: formula output; ~200 nats is order-of-magnitude target
     rows.append(_row('DER.13', 'Φ (awake brain) [nats]',
         CON.integrated_information(), 200.0, 1, 'FORMULA',
-        f'c_Σ√N α² = {CON.integrated_information():.1f}; area-law scaling'))
+        f'c_Σ√N α² = {CON.integrated_information():.1f}; area-law scaling',
+        comparison_type='derived'))
 
+    # DER.14 — derived: structural exponent (Φ ∝ N^{1/2} is the testable claim;
+    # the value 1/2 itself is theoretical, not measured)
     rows.append(_row('DER.14', 'Φ scaling exponent',
         0.5, 0.5, 1, 'FORMULA',
-        'Φ ∝ N^{1/2} from 2D area law; testable across species'))
+        'Φ ∝ N^{1/2} from 2D area law; testable across species',
+        comparison_type='derived'))
 
     # ─── PRED.24: sin²θ₁₂ (PMNS, TBM = 1/3) ─────────────────────────────
     rows.append(_row('PRED.24', 'sin²θ₁₂ (PMNS)',
@@ -300,26 +371,35 @@ def build_table():
     jrk = ckm_full.get('jarlskog')
     if jrk is not None:
         rows.append(_row('PRED.27', 'Jarlskog J (CKM)',
-            jrk['J'], 3.18e-5, 2, 'VERIFIED',
-            f'PPM J ≈ {jrk["J"]:.2e}; obs 3.18e-5'))
+            jrk['J'], 3.08e-5, 2, 'VERIFIED',
+            f'PPM J ≈ {jrk["J"]:.2e}; obs 3.08e-5 (PDG 2024)'))
 
     # ─── DER.15: self-consistency (2π)^27 √α = φ^98 ──────────────────────
+    # IDENTITY: LHS uses observed α; RHS is φ^98. Two independently-defined
+    # expressions claimed to coincide.
     sc = BR.verify_self_consistency_condition()
     rows.append(_row('DER.15', '(2π)^27·√α ≈ φ^98 (self-consistency)',
         sc['LHS_value'], sc['RHS_value'], 1, 'VERIFIED',
-        f'Bootstrap relation; mismatch {sc["error_pct"]:.3f}%'))
+        f'Bootstrap relation; mismatch {sc["error_pct"]:.3f}%',
+        comparison_type='identity'))
 
     # ─── DER.16: bridge sum rule 2χ(CP³) = 8 ────────────────────────────
+    # IDENTITY: bridge orbit sum (defined from bridge structure) meets
+    # 2χ(CP³) (Euler characteristic of arena).
     sr = BR.verify_orbit_sum_rule()
     rows.append(_row('DER.16', 'Bridge τ-exponent sum = 2χ(CP³)',
         float(sr['total_sum']), float(sr['expected']), 1, 'VERIFIED',
-        f'2(0+1+3) = 8 = 2χ(CP³); six-bridge architecture closes'))
+        f'2(0+1+3) = 8 = 2χ(CP³); six-bridge architecture closes',
+        comparison_type='identity'))
 
     # ─── DER.17: N_∞ = φ^392 (boundary capacity) ────────────────────────
+    # DERIVED: φ^392 is the static topological invariant; no observable
+    # counterpart for "boundary capacity" itself
     cap = TOP.boundary_capacity()
     rows.append(_row('DER.17', 'N_∞ = φ^{392} (boundary capacity)',
         cap['N_inf'], None, 1, 'VERIFIED',
-        f'log₁₀ N_∞ ≈ {cap["log10_N_inf"]:.2f}; static topological invariant'))
+        f'log₁₀ N_∞ ≈ {cap["log10_N_inf"]:.2f}; static topological invariant',
+        comparison_type='derived'))
 
     return rows
 
@@ -335,6 +415,24 @@ def summary_stats(rows=None):
     for r in rows:
         s = r['status']
         stats[s] = stats.get(s, 0) + 1
+    return stats
+
+
+def comparison_type_breakdown(rows=None):
+    """Count predictions by comparison_type. The honest coverage report.
+
+    Returns a dict like:
+        {'empirical': 18, 'identity': 5, 'derived': 20}
+
+    Downstream consumers (scorecard, figures, summary prose) should report
+    these three counts separately, not collapse to a single 'verified' total.
+    """
+    if rows is None:
+        rows = build_table()
+    stats = {'empirical': 0, 'identity': 0, 'derived': 0}
+    for r in rows:
+        ct = r.get('comparison_type', 'empirical')
+        stats[ct] = stats.get(ct, 0) + 1
     return stats
 
 def print_table():

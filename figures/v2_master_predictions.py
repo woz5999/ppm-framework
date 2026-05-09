@@ -1,9 +1,14 @@
 """
 v2_master_predictions.py — PPM Master Predictions Horizontal Bar Chart
 
-Redesigned from dense 37-row table to readable horizontal bar chart.
-Shows error % for each prediction, grouped and colored by tier.
-Only displays predictions with actual error values (skip conceptual/None).
+Empirical-only deviation chart: each bar shows
+  (PPM_predicted / observed − 1) × 100%
+for rows tagged comparison_type='empirical' in the master registry — i.e.,
+PPM's geometric value compared against a measured quantity. Identity rows
+(LHS vs RHS structural claims) and derived rows (closed-form values with
+no observable counterpart; PPM-vs-same-closed-form is package regression,
+not empirical agreement) are excluded; mixing them in would inflate the
+apparent verification rate with synthetic 0% matches.
 
 Run: python v2_master_predictions.py
 """
@@ -21,8 +26,10 @@ apply_style()
 
 rows = build_table()
 
-# Filter to rows with actual error values and sort
-plot_rows = [r for r in rows if r['error_pct'] is not None]
+# Filter to EMPIRICAL rows only.
+plot_rows = [r for r in rows
+             if r['error_pct'] is not None
+             and r.get('comparison_type', 'empirical') == 'empirical']
 plot_rows.sort(key=lambda r: (r['tier'], abs(r['error_pct'])))
 
 # Distinct tier colors (improved from original)
@@ -50,18 +57,21 @@ for i, (err, row) in enumerate(zip(errors, plot_rows)):
 ax.set_yticks(y_positions)
 ax.set_yticklabels(labels, fontsize=9, color=WHITE)
 ax.set_xlabel('Error: (Predicted/Observed − 1) × 100%', fontsize=12, color=WHITE)
-ax.set_title('PPM Master Prediction Table: All Derived Quantities vs Observation',
+ax.set_title('PPM Empirical Predictions vs Observation',
              fontsize=14, color=WHITE, pad=15)
 ax.grid(True, alpha=0.2, linestyle=':', axis='x')
 
-# Legend with clear tier definitions
+# Legend showing only tiers present in the filtered data
 from matplotlib.patches import Patch
-legend_elements = [
-    Patch(facecolor=GREEN, label='Tier 1: <2%'),
-    Patch(facecolor=CYAN, label='Tier 2: 2-10%'),
-    Patch(facecolor=ORANGE, label='Tier 3: 10-25%'),
-    Patch(facecolor=RED, label='Tier 4: Cosmological'),
-]
+tier_labels = {
+    1: ('Tier 1: <2%',          GREEN),
+    2: ('Tier 2: 2-10%',        CYAN),
+    3: ('Tier 3: 10-25%',       ORANGE),
+    4: ('Tier 4: Cosmological', RED),
+}
+present_tiers = sorted({r['tier'] for r in plot_rows})
+legend_elements = [Patch(facecolor=tier_labels[t][1], label=tier_labels[t][0])
+                   for t in present_tiers if t in tier_labels]
 ax.legend(handles=legend_elements, fontsize=10, loc='lower right')
 
 ax.invert_yaxis()
