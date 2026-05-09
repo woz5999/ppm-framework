@@ -7,13 +7,14 @@ set -e
 # any byte invalidates the cache and forces a rebuild on next launch
 # (3-5 min). Without a bump, Binder serves the cached image and the
 # installed ppm package stays frozen at whatever was current at last build.
-# Last bump: 2026-05-09
+# Last bump: 2026-05-09b
+
+# Binder runs vanilla JupyterLab. Voila lives in the Fly deployment and
+# is intentionally not part of the Binder image — keeping Binder simple
+# and avoiding the failure modes that come with the extra extension.
 
 # Install the ppm package so it's importable in Binder sessions
 pip install --no-deps .
 
-# Enable Voilà and ipywidgets explicitly. repo2docker handles this on
-# its own for most setups; the explicit enables make the dependency
-# obvious and are harmless if redundant.
-jupyter server extension enable voila --sys-prefix
+# Enable ipywidgets so sliders render correctly in classic notebook view
 jupyter nbextension enable --py widgetsnbextension --sys-prefix
