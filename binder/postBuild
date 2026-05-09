@@ -7,7 +7,7 @@ set -e
 # any byte invalidates the cache and forces a rebuild on next launch
 # (3-5 min). Without a bump, Binder serves the cached image and the
 # installed ppm package stays frozen at whatever was current at last build.
-# Last bump: 2026-05-09d
+# Last bump: 2026-05-09g
 
 # Binder runs vanilla JupyterLab. ipywidgets 8.x auto-registers as a
 # JupyterLab extension on install — no explicit enable needed.
