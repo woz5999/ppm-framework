@@ -1,3 +1,14 @@
+> # ⚠️ Archived — this repository has moved
+>
+> This repository (`woz5999/ppm-framework`) is **deprecated and no longer
+> maintained**. Active development continues under the project organization:
+>
+> ### → [github.com/ProjectiveProcessMonism/ppm-framework](https://github.com/ProjectiveProcessMonism/ppm-framework)
+>
+> Please update bookmarks, forks, Binder links, and any cited URLs to the new
+> location. Issues and pull requests opened here will not be reviewed.
+
+---
 
 # Projective Process Monism
 
